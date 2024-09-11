@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course Purchase Success</title>
+</head>
+<body>
+<p>Dear <span th:text="${name}">User</span>,</p>
+<p>Congratulations! You have successfully purchased the course(s):</p>
+<p><strong>Course Name(s):</strong> <span th:text="${courseName}">Course Name</span></p>
+<p><strong>Price:</strong> <span th:text="${totalPrice}">Price</span></p>
+<p>Thank you for choosing our platform.</p>
+<p>Best regards,</p>
+<p>Your Application Team</p>
+</body>
+</html>
