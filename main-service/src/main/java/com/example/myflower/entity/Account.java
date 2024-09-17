@@ -9,10 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -46,10 +46,16 @@ public class Account implements UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountProviderEnum provider;
+    private AccountProviderEnum externalAuthType;
+
+    @Column
+    private String externalAuthId;
 
     @Column(nullable = true)
     private String avatar;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal balance;
 
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;

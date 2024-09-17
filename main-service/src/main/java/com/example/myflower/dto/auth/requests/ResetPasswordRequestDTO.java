@@ -8,6 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 public class ResetPasswordRequestDTO {
-    private String new_password;
-    private String repeat_password;
+    private String newPassword;
+    private String repeatPassword;
 }
