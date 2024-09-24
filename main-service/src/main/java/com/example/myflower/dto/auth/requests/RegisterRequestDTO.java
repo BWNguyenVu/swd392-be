@@ -14,8 +14,6 @@ public class RegisterRequestDTO {
     private String email;
     private String password;
     private String name;
-    @JsonProperty(value = "accountRole")
-    private AccountRoleEnum accountRoleEnum;
     @JsonProperty(value = "accountGender")
     private AccountGenderEnum accountGenderEnum;
 }
