@@ -4,7 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.myflower.entity.Account;
 import com.example.myflower.exception.token.ErrorResponse;
 import com.example.myflower.exception.token.InvalidToken;
-import com.example.myflower.service.AuthService;
+import com.example.myflower.service.impl.AuthServiceImpl;
 import com.example.myflower.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JWTService jwtService;
     @Autowired
     @Lazy
-    private AuthService authService;
+    private AuthServiceImpl authService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");

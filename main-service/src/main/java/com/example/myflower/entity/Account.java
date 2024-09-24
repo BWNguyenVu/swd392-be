@@ -2,6 +2,7 @@ package com.example.myflower.entity;
 
 import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,7 +43,7 @@ public class Account implements UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountGenderEnum role;
+    private AccountRoleEnum role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
