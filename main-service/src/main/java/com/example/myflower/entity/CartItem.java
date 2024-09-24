@@ -3,6 +3,8 @@ package com.example.myflower.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -21,4 +23,8 @@ public class CartItem {
     private FlowerListing flower;
     @Column(nullable = false)
     private Integer quantity;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

@@ -1,10 +1,9 @@
 package com.example.myflower.entity;
 
-import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
+import com.example.myflower.entity.enumType.RatingEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlowerListing {
+public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,22 +20,9 @@ public class FlowerListing {
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
     @Column(nullable = false)
-    private String name;
+    private String title;
     @Column(nullable = false)
     private String description;
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-    @Column(nullable = false)
-    private String flowerType;
-    @Column(nullable = false)
-    private String eventType;
-    @Column(nullable = false)
-    private Integer stockBalance;
-    @Column(nullable = false)
-    private String address;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private FlowerListingStatusEnum status;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

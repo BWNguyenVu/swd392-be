@@ -4,6 +4,8 @@ import com.example.myflower.entity.enumType.RatingEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -25,4 +27,10 @@ public class Feedback {
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private RatingEnum rating;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

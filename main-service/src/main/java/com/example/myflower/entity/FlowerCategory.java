@@ -3,7 +3,6 @@ package com.example.myflower.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,20 +11,14 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDetail {
+public class FlowerCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderSummaryId",referencedColumnName = "id", nullable = false)
-    private OrderSummary orderSummary;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId",referencedColumnName = "id", nullable = false)
-    private Account user;
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
     @Column(nullable = false)
-    private Integer quantity;
+    private String name;
+    @Column(nullable = false)
+    private String categoryParentName;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

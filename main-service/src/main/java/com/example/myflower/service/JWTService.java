@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.function.Function;
 @Component
 public class JWTService {
-    private static final String SECRET = "CRAZY@IWASCRAZYONCE@THEYPUTMEINARUBBERROOM@ARUBBERROOMWITHRATS@ANDRATSMAKEMECRAZY!@$";
+    private static final String SECRET = "CRAZY@IWASC";
     private final long EXPIRATION = 1 * 24 * 60 * 60 * 1000;
     private final long EXPIRATION_REFRESHTOKEN = 7 * 24 * 60 * 60 * 1000;
     public String generateToken(String email) {
