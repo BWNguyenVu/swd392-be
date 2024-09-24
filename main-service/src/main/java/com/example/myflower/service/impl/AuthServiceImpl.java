@@ -1,14 +1,16 @@
-package com.example.myflower.service;
+package com.example.myflower.service.impl;
 
 import com.example.myflower.consts.Constants;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.repository.AccountRepository;
+import com.example.myflower.service.JWTService;
 import com.example.myflower.utils.AccountUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthServiceImpl implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -146,7 +150,13 @@ public class AuthService implements UserDetailsService {
         account.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
         account.setExternalAuthType(AccountProviderEnum.LOCAL);
         account.setGender(registerRequestDTO.getAccountGenderEnum());
+        account.setRole(AccountRoleEnum.USER);
         account.setAvatar(Constants.DEFAULT_USER_AVATAR);
+        account.setName(registerRequestDTO.getName());
+        account.setEmail(registerRequestDTO.getEmail());
+        account.setBalance(BigDecimal.ZERO);
+        account.setStatus(AccountStatusEnum.UNVERIFIED);
+        account.setCreateAt(LocalDateTime.now());
         return account;
     }
 
