@@ -2,7 +2,7 @@ package com.example.myflower.controller;
 
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
-import com.example.myflower.service.AuthService;
+import com.example.myflower.service.impl.AuthServiceImpl;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class AuthController {
     private AccountUtils accountUtils;
 
     @Autowired
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     @GetMapping("/welcome")
     public String welcome() {

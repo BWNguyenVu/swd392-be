@@ -1,18 +1,19 @@
-package com.example.myflower.service;
+package com.example.myflower.service.impl;
 
+import com.example.myflower.consts.Constants;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.entity.Account;
-import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.repository.AccountRepository;
+import com.example.myflower.service.JWTService;
 import com.example.myflower.utils.AccountUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthServiceImpl implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -44,8 +47,6 @@ public class AuthService implements UserDetailsService {
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
-
-    private static final String defaultAvatar = "logo.png";
 
     @Autowired
     private KafkaTemplate<String, Account> kafkaTemplate;
@@ -147,9 +148,15 @@ public class AuthService implements UserDetailsService {
     private @NotNull Account getAccount(RegisterRequestDTO registerRequestDTO) {
         Account account = new Account();
         account.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
-        account.setProvider(AccountProviderEnum.LOCAL);
+        account.setExternalAuthType(AccountProviderEnum.LOCAL);
         account.setGender(registerRequestDTO.getAccountGenderEnum());
-        account.setAvatar(defaultAvatar);
+        account.setRole(AccountRoleEnum.USER);
+        account.setAvatar(Constants.DEFAULT_USER_AVATAR);
+        account.setName(registerRequestDTO.getName());
+        account.setEmail(registerRequestDTO.getEmail());
+        account.setBalance(BigDecimal.ZERO);
+        account.setStatus(AccountStatusEnum.UNVERIFIED);
+        account.setCreateAt(LocalDateTime.now());
         return account;
     }
 
@@ -192,7 +199,7 @@ public class AuthService implements UserDetailsService {
         try {
             // AFTER USER CLICK LINK FORGOT PASSWORD IN EMAIL THEN REDIRECT TO API HERE (RESET PASSWORD)
             // CHECK PASSWORD AND REPEAT PASSWORD
-            if (!resetPasswordRequest.getNew_password().equals(resetPasswordRequest.getRepeat_password())) {
+            if (!resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getRepeatPassword())) {
                 throw new AuthAppException(ErrorCode.PASSWORD_REPEAT_INCORRECT);
             }
             // CALL FUNC
@@ -201,7 +208,7 @@ public class AuthService implements UserDetailsService {
             Optional<Account> accountOptional = accountRepository.findByEmail(email);
             if (accountOptional.isPresent()) {
                 Account account = accountOptional.get();
-                account.setPassword(passwordEncoder.encode(resetPasswordRequest.getNew_password()));
+                account.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
                 accountRepository.save(account);
             }
 
@@ -219,15 +226,15 @@ public class AuthService implements UserDetailsService {
             // GET ACCOUNT FROM TOKEN IN HEADER || FUNCTION REQUIRED: ENSURE USER'S LOGIN AND REMEMBER OLD PASSWORD
             Account account = accountUtils.getCurrentAccount();
             // CHECK OLD PASSWORD
-            if (!passwordEncoder.matches(changePasswordRequest.getOld_password(), account.getPassword())) {
+            if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), account.getPassword())) {
                 throw new AuthAppException(ErrorCode.OLD_PASSWORD_INCORRECT);
             }
             // CHECK NEW PASSWORD MATCH REPEAT PASSWORD
-            if (!changePasswordRequest.getNew_password().equals(changePasswordRequest.getRepeat_password())) {
+            if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getRepeatPassword())) {
                 throw new AuthAppException(ErrorCode.PASSWORD_REPEAT_INCORRECT);
             }
             // ENCODED PASSWORD AFTER SAVE TO DATABASE
-            account.setPassword(passwordEncoder.encode(changePasswordRequest.getNew_password()));
+            account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             accountRepository.save(account);
 
             ChangePasswordResponseDTO changePasswordResponse = new ChangePasswordResponseDTO("Password changed successfully", null, 200);

@@ -1,7 +1,7 @@
 package com.example.myflower.config;
 
 import com.example.myflower.filter.JwtFilter;
-import com.example.myflower.service.AuthService;
+import com.example.myflower.service.impl.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     @Autowired
     @Lazy
-    AuthService authService;
+    AuthServiceImpl authService;
 
     @Autowired
     JwtFilter filter;

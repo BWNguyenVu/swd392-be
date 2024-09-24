@@ -2,13 +2,16 @@ package com.example.myflower.entity;
 
 import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -42,14 +45,20 @@ public class Account implements UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountGenderEnum role;
+    private AccountRoleEnum role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountProviderEnum provider;
+    private AccountProviderEnum externalAuthType;
+
+    @Column
+    private String externalAuthId;
 
     @Column(nullable = true)
     private String avatar;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal balance;
 
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
@@ -103,5 +112,35 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<OrderSummary> orderSummaries;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<WalletLog> walletLogs;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<FlowerListing> flowerListings;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Blog> blogs;
+
+
 
 }
