@@ -2,7 +2,9 @@ package com.example.myflower.entity;
 
 import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -42,7 +45,7 @@ public class Account implements UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountGenderEnum role;
+    private AccountRoleEnum role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -109,5 +112,32 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private List<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private List<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private List<OrderSummary> orderSummaries;
+
+//    @OneToMany(mappedBy = "account")
+//    @JsonIgnore
+//    private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private List<WalletLog> walletLogs;
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private List<Feedback> feedbacks;
+
+
+
 
 }
