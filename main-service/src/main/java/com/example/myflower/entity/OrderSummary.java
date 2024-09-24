@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,6 +23,8 @@ public class OrderSummary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
     private FlowerListing flowerListing;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Transaction transaction;
     @Column(nullable = false, length = 100)
     private String buyerName;
     @Column(nullable = false, length = 50)
@@ -35,4 +38,10 @@ public class OrderSummary {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

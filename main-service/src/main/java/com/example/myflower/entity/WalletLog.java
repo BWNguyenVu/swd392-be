@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,4 +30,10 @@ public class WalletLog {
     private String paymentMethod;
     @Column(nullable = false)
     private WalletLogStatusEnum status;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

@@ -113,30 +113,33 @@ public class Account implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Feedback> feedbacks;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CartItem> cartItems;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<OrderSummary> orderSummaries;
 
-//    @OneToMany(mappedBy = "account")
-//    @JsonIgnore
-//    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Transaction> transactions;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<WalletLog> walletLogs;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<Feedback> feedbacks;
+    private List<FlowerListing> flowerListings;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Blog> blogs;
 
 
 
