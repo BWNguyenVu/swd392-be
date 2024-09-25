@@ -1,4 +1,4 @@
-package com.example.myflower.service;
+package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.cart.requests.InsertUpdateFlowerToCartRequestDTO;
@@ -11,7 +11,7 @@ import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.repository.CartItemRepository;
 import com.example.myflower.repository.FlowerListingRepository;
-import com.example.myflower.service.interfaces.ICartItemService;
+import com.example.myflower.service.ICartItemService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CartItemService implements ICartItemService {
+public class CartItemServiceImpl implements ICartItemService {
     private final CartItemRepository cartItemRepository;
     private final FlowerListingRepository flowerListingRepository;
     private final AccountRepository accountRepository;
