@@ -2,7 +2,7 @@ package com.example.myflower.controller;
 
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.cart.requests.InsertUpdateFlowerToCartRequestDTO;
-import com.example.myflower.service.interfaces.ICartItemService;
+import com.example.myflower.service.ICartItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
