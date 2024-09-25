@@ -19,7 +19,7 @@ public class WalletLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Account user;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -30,7 +30,7 @@ public class WalletLog {
     private String paymentMethod;
     @Column(nullable = false)
     private WalletLogStatusEnum status;
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

@@ -22,7 +22,7 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(1013,"Account not found", HttpStatus.NOT_FOUND),
     ACCOUNT_NOT_INSTRUCTOR(1014,"Account not instructor", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_STUDENT(1015,"Account not student", HttpStatus.BAD_REQUEST),
-    ADD_BALANCE_INVALID(1016, "Add balance amount must be greater than 20.000", HttpStatus.BAD_REQUEST),
+    ADD_BALANCE_INVALID(1016, "Add balance amount must be greater than 20.000 VNĐ", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND(1017,"Email not found, please register account.", HttpStatus.NOT_FOUND),
     UNAUTHORIZED(1018, "Unauthorized", HttpStatus.UNAUTHORIZED),
 
