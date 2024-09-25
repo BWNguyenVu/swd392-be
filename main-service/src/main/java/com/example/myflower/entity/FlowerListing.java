@@ -26,9 +26,7 @@ public class FlowerListing {
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
-    @Column(nullable = false)
-    private String flowerType;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String eventType;
     @Column(nullable = false)
     private Integer stockBalance;
