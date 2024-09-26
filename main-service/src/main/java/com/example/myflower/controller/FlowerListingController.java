@@ -25,10 +25,13 @@ public class FlowerListingController {
     public ResponseEntity<FlowerListingListResponseDTO> getFlowerListings(
             @RequestParam(required = false, defaultValue = "") String searchString,
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false) String order
     ) {
-        return ResponseEntity.ok().body(flowerListingService.getFlowerListings(searchString, pageNumber, sortBy, order));
+        return ResponseEntity.ok().body(
+                flowerListingService.getFlowerListings(searchString, pageNumber, pageSize, sortBy, order)
+        );
     }
 
     @GetMapping("/{id}")
