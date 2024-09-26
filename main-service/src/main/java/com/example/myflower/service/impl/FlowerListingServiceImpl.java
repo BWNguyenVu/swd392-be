@@ -32,17 +32,23 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @NonNull
     private FlowerListingRepository flowerListingRepository;
 
-    public FlowerListingListResponseDTO getFlowerListings(String searchString, Integer pageNumber, String sortBy, String order) {
-        int pageSize = 20;
+    public FlowerListingListResponseDTO getFlowerListings(String searchString, Integer pageNumber, Integer pageSize, String sortBy, String order) {
         //Construct sort by field parameters
-        Sort sort = switch (sortBy) {
-            case "name" -> Sort.by("name");
-            case "price" -> Sort.by("price");
-            default -> Sort.by("createdAt");
-        };
+        Sort sort;
+        switch (sortBy) {
+            case Constants.SORT_FLOWER_LISTING_BY_NAME:
+                sort = Sort.by(Constants.SORT_FLOWER_LISTING_BY_NAME);
+                break;
+            case Constants.SORT_FLOWER_LISTING_BY_PRICE:
+                sort = Sort.by(Constants.SORT_FLOWER_LISTING_BY_PRICE);
+                break;
+            default:
+                sort = Sort.by(Constants.SORT_FLOWER_LISTING_BY_CREATE_DATE);
+                break;
+        }
         //Construct sort order parameters
         if (Constants.SORT_ORDER_DESCENDING.equals(order)) {
-            sort.descending();
+            sort = sort.descending();
         }
         //Construct pagination and sort parameters
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
