@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flowers")
 @CrossOrigin("*")
 @RequiredArgsConstructor
-public class FlowerListingController {
+public class    FlowerListingController {
     @NonNull
     private FlowerListingService flowerListingService;
 

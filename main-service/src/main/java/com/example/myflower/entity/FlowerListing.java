@@ -41,4 +41,6 @@ public class FlowerListing {
     private LocalDateTime updatedAt;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+    @Column(name ="reject_reason")
+    private String rejectReason;
 }
