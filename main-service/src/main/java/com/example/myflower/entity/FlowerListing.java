@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -28,6 +30,9 @@ public class FlowerListing {
     private BigDecimal price;
     @Column(nullable = true)
     private String eventType;
+    @ManyToMany
+    @JoinTable(name = "flower_listing_categories", joinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+    private Set<FlowerCategory> categories = new HashSet<>();
     @Column(nullable = false)
     private Integer stockBalance;
     @Column(nullable = false)

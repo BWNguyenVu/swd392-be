@@ -1,9 +1,12 @@
 package com.example.myflower.entity;
 
+import com.example.myflower.entity.enumType.CategoryParentEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,7 +21,8 @@ public class FlowerCategory {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private String categoryParentName;
+    @Enumerated(EnumType.STRING)
+    private CategoryParentEnum categoryParent;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

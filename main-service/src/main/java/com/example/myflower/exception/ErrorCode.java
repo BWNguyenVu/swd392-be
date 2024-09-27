@@ -42,6 +42,7 @@ public enum ErrorCode {
 
     //    FLOWERS | CODE: 3XXX
     FLOWER_NOT_FOUND(3000, "Flower not found", HttpStatus.NOT_FOUND),
+    FLOWER_CATEGORY_NOT_FOUND(3101, "Flower category not found", HttpStatus.NOT_FOUND),
     ;
     @Getter
     private final Integer code;
