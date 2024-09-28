@@ -1,6 +1,7 @@
 package com.example.myflower.controller;
 
 import com.example.myflower.dto.auth.requests.CreateFlowerListingRequestDTO;
+import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/flowers")
@@ -27,11 +30,18 @@ public class    FlowerListingController {
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
-            @RequestParam(required = false) String order
-    ) {
-        return ResponseEntity.ok().body(
-                flowerListingService.getFlowerListings(searchString, pageNumber, pageSize, sortBy, order)
-        );
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) List<Integer> categoryIds)
+    {
+        GetFlowerListingsRequestDTO requestDTO = GetFlowerListingsRequestDTO.builder()
+                .searchString(searchString)
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .sortBy(sortBy)
+                .order(order)
+                .categoryIds(categoryIds)
+                .build();
+        return ResponseEntity.ok().body(flowerListingService.getFlowerListings(requestDTO));
     }
 
     @GetMapping("/{id}")
