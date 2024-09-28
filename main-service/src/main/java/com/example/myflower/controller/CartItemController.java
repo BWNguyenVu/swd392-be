@@ -2,7 +2,7 @@ package com.example.myflower.controller;
 
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.cart.requests.InsertUpdateFlowerToCartRequestDTO;
-import com.example.myflower.service.ICartItemService;
+import com.example.myflower.service.CartItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartItemController {
-    private final ICartItemService cartItemService;
+    private final CartItemService cartItemService;
 
     // them moi hoac cap nhat flower trong gio hang
     @PostMapping("insert-update")

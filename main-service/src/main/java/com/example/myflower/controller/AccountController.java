@@ -3,7 +3,7 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
-import com.example.myflower.service.IAccountService;
+import com.example.myflower.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/account")
 @CrossOrigin("*")
 public class AccountController {
-    private final IAccountService accountService;
+    private final AccountService accountService;
 
-    public AccountController(IAccountService accountService) {
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
 

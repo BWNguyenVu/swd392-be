@@ -1,7 +1,7 @@
 package com.example.myflower.controller;
 
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.service.IAdminService;
+import com.example.myflower.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     @Autowired
-    private IAdminService adminService;
+    private AdminService adminService;
 
     @PutMapping("/flower-listings/approve/{id}")
     public FlowerListingResponseDTO approveListing(@PathVariable Integer id) {

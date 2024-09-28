@@ -3,11 +3,13 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerListing;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerListingException;
+import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.FlowerListingRepository;
-import com.example.myflower.service.IAdminService;
+import com.example.myflower.service.AdminService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl implements IAdminService {
+public class AdminServiceImpl implements AdminService {
 
     @NonNull
     private final FlowerListingRepository flowerListingRepository;
@@ -26,21 +28,30 @@ public class AdminServiceImpl implements IAdminService {
     public FlowerListingResponseDTO approveFlowerListing(Integer id) {
         Account adminAccount = AccountUtils.getCurrentAccount();
 
-        FlowerListing flowerListing = flowerListingRepository.findById(id)
+        if (!(adminAccount != null && AccountRoleEnum.ADMIN.equals(adminAccount.getRole()))) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+
+        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
         flowerListing.setStatus(FlowerListingStatusEnum.APPROVED);
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing approvedListing = flowerListingRepository.save(flowerListing);
-        return this.toFlowerListingResponseDTO(approvedListing);
+        return FlowerListingMapper.toFlowerListingResponseDTO(approvedListing);
     }
 
     @Override
     public FlowerListingResponseDTO rejectFlowerListing(Integer id, String reason) {
         Account adminAccount = AccountUtils.getCurrentAccount();
 
-        FlowerListing flowerListing = flowerListingRepository.findById(id)
+        //Check if the requester is admin
+        if (!(adminAccount != null && AccountRoleEnum.ADMIN.equals(adminAccount.getRole()))) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+
+        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
         flowerListing.setStatus(FlowerListingStatusEnum.REJECTED);
@@ -48,20 +59,6 @@ public class AdminServiceImpl implements IAdminService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
-        return this.toFlowerListingResponseDTO(rejectedListing);
-    }
-
-    // Helper method to convert entity to DTO
-    private FlowerListingResponseDTO toFlowerListingResponseDTO(FlowerListing flowerListing) {
-        return FlowerListingResponseDTO.builder()
-                .id(flowerListing.getId())
-                .name(flowerListing.getName())
-                .description(flowerListing.getDescription())
-                .price(flowerListing.getPrice())
-                .status(FlowerListingStatusEnum.valueOf(flowerListing.getStatus().name()))
-                .rejectReason(flowerListing.getRejectReason())
-                .createdAt(flowerListing.getCreatedAt())
-                .updatedAt(flowerListing.getUpdatedAt())
-                .build();
+        return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
     }
 }

@@ -9,7 +9,6 @@ import com.example.myflower.entity.Account;
 import com.example.myflower.service.FlowerListingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ import java.util.List;
 @RequestMapping("/flowers")
 @CrossOrigin("*")
 @RequiredArgsConstructor
-public class    FlowerListingController {
+public class FlowerListingController {
     @NonNull
     private FlowerListingService flowerListingService;
 
