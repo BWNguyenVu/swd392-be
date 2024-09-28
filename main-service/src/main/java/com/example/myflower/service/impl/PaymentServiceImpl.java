@@ -2,7 +2,7 @@ package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.payment.responses.CreatePaymentResponseDTO;
-import com.example.myflower.service.IPaymentService;
+import com.example.myflower.service.PaymentService;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
 import vn.payos.type.CheckoutResponseData;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Service
-public class PaymentServiceImpl implements IPaymentService {
+public class PaymentServiceImpl implements PaymentService {
     final String returnUrl = "http://localhost:3000/";
     final String cancelUrl = "http://localhost:3000/";
 

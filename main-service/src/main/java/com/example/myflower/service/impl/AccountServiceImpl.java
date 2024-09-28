@@ -10,9 +10,8 @@ import com.example.myflower.entity.WalletLog;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
-import com.example.myflower.repository.WalletLogRepository;
-import com.example.myflower.service.IAccountService;
-import com.example.myflower.service.IPaymentService;
+import com.example.myflower.service.AccountService;
+import com.example.myflower.service.PaymentService;
 import com.example.myflower.service.IWalletLogService;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.http.HttpStatus;
@@ -23,14 +22,14 @@ import vn.payos.type.ItemData;
 import java.math.BigDecimal;
 
 @Service
-public class AccountServiceImpl implements IAccountService {
-    private final IPaymentService iPaymentService;
+public class AccountServiceImpl implements AccountService {
+    private final PaymentService paymentService;
     private final IWalletLogService iWalletLogService;
     private static final BigDecimal MIN_BALANCE_AMOUNT = new BigDecimal("20000.00");
 
     // Constructor Injection cho các dependency
-    public AccountServiceImpl(IPaymentService iPaymentService, IWalletLogService iWalletLogService) {
-        this.iPaymentService = iPaymentService;
+    public AccountServiceImpl(PaymentService paymentService, IWalletLogService iWalletLogService) {
+        this.paymentService = paymentService;
         this.iWalletLogService = iWalletLogService;
     }
 
@@ -51,7 +50,7 @@ public class AccountServiceImpl implements IAccountService {
             CreatePaymentRequestDTO createPaymentRequestDTO = buildPaymentRequest(addBalanceTitle, amount);
 
             // Process payment
-            CreatePaymentResponseDTO paymentResponse = iPaymentService.createPayment(createPaymentRequestDTO);
+            CreatePaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentRequestDTO);
 
             // Log the wallet transaction
             WalletLog walletLog = logWalletTransaction(account, amount);

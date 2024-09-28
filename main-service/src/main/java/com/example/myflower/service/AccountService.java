@@ -5,7 +5,7 @@ import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import org.springframework.http.ResponseEntity;
 
-public interface IAccountService {
+public interface AccountService {
     ResponseEntity<AddBalanceResponseDTO> addBalance(AddBalanceRequestDTO addBalanceRequestDTO);
     ResponseEntity<GetBalanceResponseDTO> getBalance();
 }
