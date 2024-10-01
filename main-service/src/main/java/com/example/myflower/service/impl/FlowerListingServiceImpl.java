@@ -17,6 +17,8 @@ import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.FlowerCategoryRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.FlowerListingService;
+import com.example.myflower.service.StorageService;
+import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +26,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -34,11 +38,15 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FlowerListingServiceImpl implements FlowerListingService {
     @NonNull
+    private StorageService storageService;
+
+    @NonNull
     private FlowerListingRepository flowerListingRepository;
 
     @NonNull
     private FlowerCategoryRepository flowerCategoryRepository;
 
+    @Override
     public FlowerListingListResponseDTO getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
     {
         //Construct sort by field parameters
@@ -62,9 +70,14 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), sort);
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(requestDTO.getSearchString(), requestDTO.getCategoryIds(), Boolean.FALSE, pageable);
+        //Map file name to storage url
+        flowerListingsPage.stream()
+                .forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
+
         return FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
     }
 
+    @Override
     public FlowerListingResponseDTO getFlowerListingByID(Integer id) {
         FlowerListing result = flowerListingRepository
                 .findByIdAndDeleteStatus(id, Boolean.FALSE)
@@ -72,28 +85,46 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         return FlowerListingMapper.toFlowerListingResponseDTO(result);
     }
 
+    @Override
     public FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account) {
-        // Fetch categories by their IDs
-        List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
+        try {
+            // Fetch categories by their IDs
+            List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
+            MultipartFile imageFile = flowerListingRequestDTO.getImage();
 
-        FlowerListing flowerListing = FlowerListing
-                .builder()
-                .name(flowerListingRequestDTO.getName())
-                .description(flowerListingRequestDTO.getDescription())
-                .user(account)
-                .address(flowerListingRequestDTO.getAddress())
-                .price(flowerListingRequestDTO.getPrice())
-                .stockBalance(flowerListingRequestDTO.getStockBalance())
-                .categories(new HashSet<>(categories))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .status(FlowerListingStatusEnum.PENDING)
-                .isDeleted(Boolean.FALSE)
-                .build();
-        FlowerListing result = flowerListingRepository.save(flowerListing);
-        return FlowerListingMapper.toFlowerListingResponseDTO(result);
+            if (!ValidationUtils.validateImage(imageFile)) {
+                throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
+            }
+
+            //Store image at file storage
+            String fileName = storageService.uploadFile(imageFile);
+
+            FlowerListing flowerListing = FlowerListing
+                    .builder()
+                    .name(flowerListingRequestDTO.getName())
+                    .description(flowerListingRequestDTO.getDescription())
+                    .user(account)
+                    .address(flowerListingRequestDTO.getAddress())
+                    .price(flowerListingRequestDTO.getPrice())
+                    .stockBalance(flowerListingRequestDTO.getStockBalance())
+                    .categories(new HashSet<>(categories))
+                    .imageUrl(fileName)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .status(FlowerListingStatusEnum.PENDING)
+                    .isDeleted(Boolean.FALSE)
+                    .build();
+            FlowerListing result = flowerListingRepository.save(flowerListing);
+
+            result.setImageUrl(storageService.getFileUrl(fileName));
+            return FlowerListingMapper.toFlowerListingResponseDTO(result);
+        }
+        catch (IOException e) {
+            throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
+    @Override
     public FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO) {
         FlowerListing flowerListing = flowerListingRepository
                 .findById(id)
@@ -115,6 +146,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
         FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
 
+        updatedFlowerListing.setImageUrl(storageService.getFileUrl(updatedFlowerListing.getImageUrl()));
         return FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
     }
 }

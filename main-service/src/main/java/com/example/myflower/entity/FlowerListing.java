@@ -37,7 +37,8 @@ public class FlowerListing {
     private Integer stockBalance;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
+    private String imageUrl;
     @Enumerated(EnumType.STRING)
     private FlowerListingStatusEnum status;
     @Column(name = "created_at")

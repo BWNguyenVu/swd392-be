@@ -7,8 +7,10 @@ import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.service.FlowerListingService;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,8 @@ public class FlowerListingController {
         return ResponseEntity.ok().body(flowerListingService.getFlowerListingByID(id));
     }
 
-    @PostMapping
-    public ResponseEntity<FlowerListingResponseDTO> createFlowerListing(@AuthenticationPrincipal Account account, @RequestBody CreateFlowerListingRequestDTO flowerListingRequestDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FlowerListingResponseDTO> createFlowerListing(@AuthenticationPrincipal Account account, @Valid @ModelAttribute CreateFlowerListingRequestDTO flowerListingRequestDTO) {
         return ResponseEntity.ok().body(flowerListingService.createFlowerListing(flowerListingRequestDTO, account));
     }
 
