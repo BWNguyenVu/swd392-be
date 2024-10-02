@@ -26,6 +26,7 @@ public class FlowerListingResponseDTO implements Serializable {
     private Integer stockBalance;
     private String address;
     private List<FlowerCategoryResponseDTO> categories;
+    private String imageUrl;
     private FlowerListingStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
