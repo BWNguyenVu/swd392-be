@@ -3,6 +3,7 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.payment.responses.CreatePaymentResponseDTO;
 import com.example.myflower.service.PaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
 import vn.payos.type.CheckoutResponseData;
@@ -16,11 +17,10 @@ public class PaymentServiceImpl implements PaymentService {
     final String returnUrl = "http://localhost:3000/";
     final String cancelUrl = "http://localhost:3000/";
 
-    private final PayOS payOS;
+    @Autowired
+    private PayOS payOS;
 
-    public PaymentServiceImpl(PayOS payOS) {
-        this.payOS = payOS;
-    }
+    @Override
     public CreatePaymentResponseDTO createPayment(CreatePaymentRequestDTO createPaymentRequestDTO) {
         String currentTimeString = String.valueOf(new Date().getTime());
         long orderCode = Long.parseLong(currentTimeString.substring(currentTimeString.length() - 6));

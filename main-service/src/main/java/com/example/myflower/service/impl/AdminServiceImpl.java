@@ -8,11 +8,13 @@ import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.mapper.FlowerListingMapper;
+import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.AdminService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ public class AdminServiceImpl implements AdminService {
 
     @NonNull
     private final FlowerListingRepository flowerListingRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public FlowerListingResponseDTO approveFlowerListing(Integer id) {
@@ -60,5 +63,10 @@ public class AdminServiceImpl implements AdminService {
 
         FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
         return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
+    }
+
+    @Override
+    public Account getAccountAdmin (){
+        return accountRepository.findAccountsByRole(AccountRoleEnum.ADMIN);
     }
 }

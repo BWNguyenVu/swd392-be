@@ -17,9 +17,10 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
-
     @OneToOne(fetch = FetchType.LAZY)
     private OrderSummary orderSummary;
+    @OneToOne(fetch = FetchType.LAZY)
+    private WalletLog walletLog;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

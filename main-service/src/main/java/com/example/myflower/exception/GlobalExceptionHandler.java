@@ -2,9 +2,9 @@ package com.example.myflower.exception;
 
 import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.exception.flowers.FlowerListingException;
+import com.example.myflower.exception.order.OrderAppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,6 +48,17 @@ public class GlobalExceptionHandler {
         errorResponse.put("message", errorMessage);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = OrderAppException.class)
+    public ResponseEntity<ApiResponse> handlingOrderException(OrderAppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
 }
