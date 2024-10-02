@@ -6,34 +6,44 @@ import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.CreatePaymentResponseDTO;
 import com.example.myflower.entity.Account;
+import com.example.myflower.entity.OrderSummary;
+import com.example.myflower.entity.Transaction;
 import com.example.myflower.entity.WalletLog;
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
+import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.service.AccountService;
 import com.example.myflower.service.PaymentService;
-import com.example.myflower.service.IWalletLogService;
+import com.example.myflower.service.TransactionService;
+import com.example.myflower.service.WalletLogService;
 import com.example.myflower.utils.AccountUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import vn.payos.type.ItemData;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     private final PaymentService paymentService;
-    private final IWalletLogService iWalletLogService;
+    private final WalletLogService walletLogService;
     private static final BigDecimal MIN_BALANCE_AMOUNT = new BigDecimal("20000.00");
 
     // Constructor Injection cho các dependency
-    public AccountServiceImpl(PaymentService paymentService, IWalletLogService iWalletLogService) {
+    public AccountServiceImpl(PaymentService paymentService, WalletLogService walletLogService) {
         this.paymentService = paymentService;
-        this.iWalletLogService = iWalletLogService;
+        this.walletLogService = walletLogService;
     }
 
+    @Autowired
+    private TransactionService transactionService;
 
+    @Override
     public ResponseEntity<AddBalanceResponseDTO> addBalance(AddBalanceRequestDTO addBalanceRequestDTO) {
         final String addBalanceTitle = "Add balance";
         BigDecimal amount = addBalanceRequestDTO.getAmount();
@@ -84,9 +94,9 @@ public class AccountServiceImpl implements AccountService {
                 .amount(amount)
                 .type(WalletLogTypeEnum.DEPOSIT)
                 .status(WalletLogStatusEnum.PENDING)
-                .paymentMethod("Payos")
+                .paymentMethod(PaymentMethodEnum.PAYOS)
                 .build();
-        iWalletLogService.createWalletLog(walletLog, account);
+        walletLogService.createWalletLog(walletLog, account);
         return walletLog;
     }
 
@@ -109,6 +119,7 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
+    @Override
     public ResponseEntity<GetBalanceResponseDTO> getBalance() {
         Account account = AccountUtils.getCurrentAccount();
         return ResponseEntity.ok(new GetBalanceResponseDTO(
@@ -117,4 +128,40 @@ public class AccountServiceImpl implements AccountService {
         ));
     }
 
+    @Override
+    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary) {
+        if (type == WalletLogTypeEnum.ADD) {
+            account.setBalance(account.getBalance().add(amount));
+            createWalletLog(account, amount, type);
+        } else if (type == WalletLogTypeEnum.SUBTRACT) {
+            account.setBalance(account.getBalance().subtract(amount));
+            WalletLog walletLog = createWalletLog(account, amount, type);
+            if (actorEnum == WalletLogActorEnum.BUYER) {
+                createTransaction(account, orderSummary, walletLog);
+            }
+        }
+        return account;
+    }
+
+    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type) {
+        WalletLog walletLog = WalletLog.builder()
+                .user(account)
+                .amount(amount)
+                .type(type)
+                .paymentMethod(PaymentMethodEnum.WALLET)
+                .status(WalletLogStatusEnum.SUCCESS)
+                .createdAt(LocalDateTime.now())
+                .build();
+        walletLogService.createWalletLog(walletLog, account);
+        return walletLog;
+    }
+
+    private void createTransaction(Account account, OrderSummary orderSummary, WalletLog walletLog) {
+        Transaction transaction = Transaction.builder()
+                .user(account)
+                .walletLog(walletLog)
+                .orderSummary(orderSummary)
+                .build();
+        transactionService.createTransaction(transaction, account);
+    }
 }

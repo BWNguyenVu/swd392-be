@@ -1,5 +1,7 @@
 package com.example.myflower.entity;
 
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
+import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import jakarta.persistence.*;
@@ -24,10 +26,13 @@ public class WalletLog {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private WalletLogTypeEnum type;
+    @Enumerated(EnumType.STRING)
+    private WalletLogActorEnum actorEnum;
     @Column(nullable = false)
     private BigDecimal amount;
     @Column(nullable = false)
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethodEnum paymentMethod;
     @Column(nullable = false)
     private WalletLogStatusEnum status;
     @Column(name = "created_at", nullable = false)
