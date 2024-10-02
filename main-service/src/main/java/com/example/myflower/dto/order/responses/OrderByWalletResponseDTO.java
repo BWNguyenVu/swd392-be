@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -26,7 +27,8 @@ public class OrderByWalletResponseDTO {
     private BigDecimal totalAmount;
     private String note;
     private BigDecimal balance;
-    private List<OrderDetail> orderDetails;
+    private List<OrderDetailResponseDTO> orderDetails;
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
+    private LocalDateTime createdAt;
 }

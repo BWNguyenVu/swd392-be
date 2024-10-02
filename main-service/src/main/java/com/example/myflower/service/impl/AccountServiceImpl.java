@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
@@ -14,6 +15,7 @@ import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
+import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.AccountService;
 import com.example.myflower.service.PaymentService;
 import com.example.myflower.service.TransactionService;
@@ -33,6 +35,8 @@ public class AccountServiceImpl implements AccountService {
     private final PaymentService paymentService;
     private final WalletLogService walletLogService;
     private static final BigDecimal MIN_BALANCE_AMOUNT = new BigDecimal("20000.00");
+    @Autowired
+    private AccountRepository accountRepository;
 
     // Constructor Injection cho các dependency
     public AccountServiceImpl(PaymentService paymentService, WalletLogService walletLogService) {
@@ -132,24 +136,26 @@ public class AccountServiceImpl implements AccountService {
     public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary) {
         if (type == WalletLogTypeEnum.ADD) {
             account.setBalance(account.getBalance().add(amount));
-            createWalletLog(account, amount, type);
+            createWalletLog(account, amount, type, actorEnum);
         } else if (type == WalletLogTypeEnum.SUBTRACT) {
             account.setBalance(account.getBalance().subtract(amount));
-            WalletLog walletLog = createWalletLog(account, amount, type);
+            WalletLog walletLog = createWalletLog(account, amount, type, actorEnum);
             if (actorEnum == WalletLogActorEnum.BUYER) {
                 createTransaction(account, orderSummary, walletLog);
             }
         }
+        accountRepository.save(account);
         return account;
     }
 
-    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type) {
+    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum) {
         WalletLog walletLog = WalletLog.builder()
                 .user(account)
                 .amount(amount)
                 .type(type)
                 .paymentMethod(PaymentMethodEnum.WALLET)
                 .status(WalletLogStatusEnum.SUCCESS)
+                .actorEnum(actorEnum)
                 .createdAt(LocalDateTime.now())
                 .build();
         walletLogService.createWalletLog(walletLog, account);
@@ -161,7 +167,9 @@ public class AccountServiceImpl implements AccountService {
                 .user(account)
                 .walletLog(walletLog)
                 .orderSummary(orderSummary)
+                .createdAt(LocalDateTime.now())
                 .build();
+
         transactionService.createTransaction(transaction, account);
     }
 }

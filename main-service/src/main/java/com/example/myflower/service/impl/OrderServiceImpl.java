@@ -1,8 +1,10 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.requests.OrderDetailRequestDTO;
 import com.example.myflower.dto.order.responses.OrderByWalletResponseDTO;
+import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogActorEnum;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -66,13 +69,15 @@ public class OrderServiceImpl implements OrderService {
         OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
         orderSummaryRepository.save(orderSummary);
 
-        distributeBalance(account, totalPrice, orderSummary);
 
         // Create order details
         List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account);
 
+        distributeBalance(account, totalPrice, orderSummary);
+
+        List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
         // Return response with order details
-        return createOrderByWalletResponseDTO(orderSummary, account, orderDetails);
+        return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
     }
 
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary) {
@@ -83,9 +88,9 @@ public class OrderServiceImpl implements OrderService {
             Account accountSeller = entry.getKey();
             BigDecimal amountInitial = entry.getValue();
             // handle calculator
-            BigDecimal calculatorAmountForSeller = amountInitial.divide(accountAdmin.getFeeService(), 2, RoundingMode.HALF_UP);
+            BigDecimal calculatorAmountForSeller = amountInitial.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getFeeService()));
             // add balance for seller
-            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER,orderSummary);
+            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER, orderSummary);
         }
 
         // add balance for admin
@@ -116,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
                     .orElseThrow(() -> new OrderAppException(ErrorCode.FLOWER_NOT_FOUND));
 
             Account seller = flowerListing.getUser();
-            sellerBalanceMap.merge(seller, item.getPrice(), BigDecimal::add);
+            sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .orderSummary(orderSummary)
@@ -133,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
         return orderDetails;
     }
 
-    private OrderByWalletResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetail> orderDetails) {
+    private OrderByWalletResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
         return OrderByWalletResponseDTO.builder()
                 .message("Order by wallet successfully!")
                 .error(false)
@@ -142,7 +147,28 @@ public class OrderServiceImpl implements OrderService {
                 .balance(account.getBalance())
                 .status(OrderStatusEnum.SUCCESS)
                 .note(orderSummary.getNote())
-                .orderDetails(orderDetails)
+                .orderDetails(orderDetailsResponseDTO)
+                .createdAt(orderSummary.getCreatedAt())
+                .build();
+    }
+
+    private List<OrderDetailResponseDTO> convertOrderDetailDTO(List<OrderDetail> orderDetails) {
+        return orderDetails.stream().map(
+                this::convertOrderDetailDTO
+        ).toList();
+    }
+
+    private OrderDetailResponseDTO convertOrderDetailDTO(OrderDetail orderDetail) {
+        FlowerListingResponseDTO flowerListingResponseDTO = FlowerListingResponseDTO.builder()
+                .id(orderDetail.getId())
+                .name(orderDetail.getFlowerListing().getName())
+                .imageUrl(orderDetail.getFlowerListing().getImageUrl())
+                .description(orderDetail.getFlowerListing().getDescription())
+                .build();
+        return OrderDetailResponseDTO.builder()
+                .flowerListing(flowerListingResponseDTO)
+                .price(orderDetail.getPrice())
+                .quantity(orderDetail.getQuantity())
                 .build();
     }
 }
