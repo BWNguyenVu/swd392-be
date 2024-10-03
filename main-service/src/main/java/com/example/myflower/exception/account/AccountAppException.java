@@ -1,4 +1,4 @@
-package com.example.myflower.exception.order;
+package com.example.myflower.exception.account;
 
 import com.example.myflower.exception.ErrorCode;
 import lombok.Getter;
@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class OrderAppException extends RuntimeException{
-    private final ErrorCode errorCode;
+public class AccountAppException extends RuntimeException {
+  private final ErrorCode errorCode;
 }

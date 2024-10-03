@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddBalanceResponseDTO {
+    private Integer id;
     private Integer orderCode;
     private BigDecimal addBalance;
     private BigDecimal currentBalance;
@@ -21,6 +23,8 @@ public class AddBalanceResponseDTO {
     private String note;
     private WalletLogTypeEnum walletLogTypeEnum;
     private String checkoutUrl;
+    private String paymentLinkId;
+    private LocalDateTime createAt;
     private String message;
     private Integer error;
 

@@ -143,6 +143,10 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
+    private List<Payment> payments;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Blog> blogs;
 
 

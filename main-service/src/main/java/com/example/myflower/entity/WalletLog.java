@@ -23,6 +23,8 @@ public class WalletLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Account user;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Payment payment;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private WalletLogTypeEnum type;
@@ -33,8 +35,11 @@ public class WalletLog {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodEnum paymentMethod;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WalletLogStatusEnum status;
+    @Column(nullable = false)
+    private boolean isClosed;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
