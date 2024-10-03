@@ -25,6 +25,7 @@ public enum ErrorCode {
     ADD_BALANCE_INVALID(1016, "Add balance amount must be greater than 20.000 VNĐ", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND(1017,"Email not found, please register account.", HttpStatus.NOT_FOUND),
     UNAUTHORIZED(1018, "Unauthorized", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_NOT_MATCH(3002, "Account not match.", HttpStatus.BAD_REQUEST),
 
     //    Accounts | Emails | CODE: 15XX
     EMAIL_WAIT_VERIFY(1501, "This email has been registered and is not verified, please verify and login", HttpStatus.BAD_REQUEST),
