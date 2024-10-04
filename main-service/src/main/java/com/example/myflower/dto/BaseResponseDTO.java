@@ -1,24 +1,24 @@
 package com.example.myflower.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 
-
+@Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponseDTO {
     private String message;
-    private String error;
+    private Boolean success;
     private Integer code;
-    private Object result;
+    private Object data;
 
 
-    public BaseResponseDTO(String message, String error, Integer code, Object result) {
-        super();
+    public BaseResponseDTO(String message, Boolean success, Integer code, Object data) {
         this.message = message;
-        this.error = error;
+        this.success = success;
         this.code = code;
-        this.result = result;
+        this.data = data;
     }
 }

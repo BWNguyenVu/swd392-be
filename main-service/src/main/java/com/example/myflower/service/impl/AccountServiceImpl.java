@@ -2,6 +2,7 @@ package com.example.myflower.service.impl;
 
 import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.ReturnAddBalanceResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
@@ -15,6 +16,7 @@ import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
+import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.AccountService;
 import com.example.myflower.service.PaymentService;
@@ -148,21 +150,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment) {
+    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status) {
         adjustAccountBalance(account, amount, type);
 
         switch (type) {
             case ADD:
-                createWalletLog(account, amount, type, actorEnum, payment);
+                createWalletLog(account, amount, type, actorEnum, payment, status);
                 break;
             case SUBTRACT:
-                WalletLog walletLog = createWalletLog(account, amount, type, actorEnum, payment);
+                WalletLog walletLog = createWalletLog(account, amount, type, actorEnum, payment, status);
                 if (actorEnum == WalletLogActorEnum.BUYER) {
                     createTransaction(account, orderSummary, walletLog);
                 }
                 break;
             case DEPOSIT:
-                walletLogService.updateWalletLogByPayment(payment, WalletLogStatusEnum.SUCCESS);
+                walletLogService.updateWalletLogByPayment(payment, status);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported WalletLogTypeEnum: " + type);
@@ -183,13 +185,13 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
-    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment) {
+    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status) {
         WalletLog walletLog = WalletLog.builder()
                 .user(account)
                 .amount(amount)
                 .type(type)
                 .paymentMethod(PaymentMethodEnum.WALLET)
-                .status(WalletLogStatusEnum.SUCCESS)
+                .status(status)
                 .actorEnum(actorEnum)
                 .payment(payment)
                 .createdAt(LocalDateTime.now())
@@ -207,6 +209,12 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         transactionService.createTransaction(transaction, account);
+    }
+
+    @Override
+    public AccountResponseDTO getProfile() {
+        Account account = AccountUtils.getCurrentAccount();
+        return AccountMapper.mapToAccountResponseDTO(account);
     }
 
 }

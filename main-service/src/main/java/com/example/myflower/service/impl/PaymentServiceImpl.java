@@ -111,7 +111,8 @@ public class PaymentServiceImpl implements PaymentService {
                         WalletLogTypeEnum.DEPOSIT,
                         null,
                         null,
-                        payment
+                        payment,
+                        WalletLogStatusEnum.SUCCESS
                 );
             }
         } catch (Exception e) {

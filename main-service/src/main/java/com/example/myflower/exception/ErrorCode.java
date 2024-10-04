@@ -44,7 +44,10 @@ public enum ErrorCode {
     //    FLOWERS | CODE: 3XXX
     FLOWER_NOT_FOUND(3000, "Flower not found", HttpStatus.NOT_FOUND),
     FLOWER_CATEGORY_NOT_FOUND(3101, "Flower category not found", HttpStatus.NOT_FOUND),
-    INVALID_IMAGE(3102, "Invalid image file", HttpStatus.BAD_REQUEST)
+    INVALID_IMAGE(3102, "Invalid image file", HttpStatus.BAD_REQUEST),
+    FLOWER_NOT_APPROVED(3103, "Flower listing is not approved", HttpStatus.BAD_REQUEST),
+    FLOWER_OUT_OF_STOCK(3104, "Flower listing is out of stock", HttpStatus.BAD_REQUEST),
+    QUANTITY_INVALID(3105, "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
     ;
     @Getter
     private final Integer code;

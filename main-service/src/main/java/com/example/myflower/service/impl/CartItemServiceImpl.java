@@ -34,7 +34,7 @@ public class CartItemServiceImpl implements CartItemService {
         try {
             Account currentAccount = AccountUtils.getCurrentAccount();
             if (currentAccount == null) {
-                return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), "Unauthorized", HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
             }
 
             List<CartItem> cartItems = cartItemRepository.findAllByUser(currentAccount);
@@ -46,7 +46,7 @@ public class CartItemServiceImpl implements CartItemService {
                     cartItemResponse), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(new BaseResponseDTO("Error", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new BaseResponseDTO("e.getMessage()", false, HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,24 +56,24 @@ public class CartItemServiceImpl implements CartItemService {
         try {
             Account currentAccount = AccountUtils.getCurrentAccount();
             if (currentAccount == null)
-                return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), "Unauthorized", HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
 
             FlowerListing existingFlowerListing = flowerListingRepository.findById(request.getFlowerListingId())
                     .orElse(null);
 
             if (existingFlowerListing == null)
                 return new ResponseEntity<>(new BaseResponseDTO(
-                        "Error", "Flower listing not found", HttpStatus.BAD_REQUEST.value(), null),
+                        ErrorCode.FLOWER_NOT_FOUND.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
 
             if (!existingFlowerListing.getStatus().equals(FlowerListingStatusEnum.APPROVED))
                 return new ResponseEntity<>(new BaseResponseDTO(
-                        "Error", "Flower listing is not approved", HttpStatus.BAD_REQUEST.value(), null),
+                        ErrorCode.FLOWER_NOT_APPROVED.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
 
             if (existingFlowerListing.getStockBalance() < request.getQuantity())
                 return new ResponseEntity<>(new BaseResponseDTO(
-                        "Error", "Flowers are out of stock", HttpStatus.BAD_REQUEST.value(), null),
+                        ErrorCode.FLOWER_OUT_OF_STOCK.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
 
             CartItem existingCartItem = cartItemRepository.findByUserAndFlower(currentAccount, existingFlowerListing);
@@ -81,7 +81,7 @@ public class CartItemServiceImpl implements CartItemService {
             if (existingCartItem == null) {
                 if (request.getQuantity() < 0)
                 return new ResponseEntity<>(new BaseResponseDTO(
-                        "Error", "Quantity must be greater than 0", HttpStatus.BAD_REQUEST.value(), null),
+                        ErrorCode.QUANTITY_INVALID.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
 
                 CartItem newCartItem = CartItem.builder()
@@ -94,7 +94,7 @@ public class CartItemServiceImpl implements CartItemService {
                 cartItemRepository.save(newCartItem);
 
                 CartItemResponseDTO response = new CartItemResponseDTO(newCartItem);
-                return new ResponseEntity<>(new BaseResponseDTO("OK", null, HttpStatus.OK.value(),
+                return new ResponseEntity<>(new BaseResponseDTO("OK", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);
 
             }else {
@@ -102,17 +102,17 @@ public class CartItemServiceImpl implements CartItemService {
                 existingCartItem.setUpdatedAt(LocalDateTime.now());
                 if (existingCartItem.getQuantity() <= 0) {
                     cartItemRepository.delete(existingCartItem);
-                    return new ResponseEntity<>(new BaseResponseDTO("Ok", null, HttpStatus.OK.value(), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new BaseResponseDTO("Ok", true, HttpStatus.OK.value(), null), HttpStatus.OK);
                 }
                 cartItemRepository.save(existingCartItem);
                 CartItemResponseDTO response = new CartItemResponseDTO(existingCartItem);
 
-                return new ResponseEntity<>(new BaseResponseDTO("Ok", null, HttpStatus.OK.value(),
+                return new ResponseEntity<>(new BaseResponseDTO("Ok", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);
             }
 
         }catch (Exception e){
-            return new ResponseEntity<>(new BaseResponseDTO("Error", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new BaseResponseDTO(e.getMessage(), false, HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,16 +121,16 @@ public class CartItemServiceImpl implements CartItemService {
     public ResponseEntity<BaseResponseDTO> removeFlowerFromCart(Integer id) throws Exception {
         Account currentAccount = AccountUtils.getCurrentAccount();
         if (currentAccount == null)
-            return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), "Unauthorized", HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
 
         if (id == null)
-            return new ResponseEntity<>(new BaseResponseDTO("Error", "Id is required", HttpStatus.BAD_REQUEST.value(), null), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BaseResponseDTO("Id is required", false, HttpStatus.BAD_REQUEST.value(), null), HttpStatus.BAD_REQUEST);
 
         CartItem existingCartItem = cartItemRepository.findById(id)
                 .orElse(null);
 
         if (existingCartItem == null)
-            return new ResponseEntity<>(new BaseResponseDTO("Error", "Cart item not found", HttpStatus.NOT_FOUND.value(), null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponseDTO("Cart item not found", false, HttpStatus.NOT_FOUND.value(), null), HttpStatus.NOT_FOUND);
 
         cartItemRepository.delete(existingCartItem);
         return new ResponseEntity<>(new BaseResponseDTO("Ok", null, HttpStatus.OK.value(), null), HttpStatus.OK);
@@ -141,7 +141,7 @@ public class CartItemServiceImpl implements CartItemService {
     public ResponseEntity<BaseResponseDTO> clearCart() throws Exception {
         Account currentAccount = AccountUtils.getCurrentAccount();
         if (currentAccount == null)
-            return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), "Unauthorized", HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
 
         cartItemRepository.deleteAllByUser(currentAccount);
         return new ResponseEntity<>(new BaseResponseDTO("Ok", null, HttpStatus.OK.value(), null), HttpStatus.OK);
