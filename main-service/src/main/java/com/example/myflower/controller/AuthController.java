@@ -1,5 +1,6 @@
 package com.example.myflower.controller;
 
+import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.service.impl.AuthServiceImpl;
@@ -60,5 +61,25 @@ public class AuthController {
     public ResponseEntity<ChangePasswordResponseDTO> changePassword(@RequestHeader("Authorization") String token,
                                                                     @RequestBody ChangePasswordRequestDTO changePasswordRequest) {
         return authService.changePassword(changePasswordRequest);
+    }
+
+    @PostMapping("/renew-access-token")
+    public ResponseEntity<BaseResponseDTO> renewAccessToken(@RequestHeader("x-refresh-token") String refreshToken) {
+        try {
+            final String message = "Renew access token successfully";
+            AccountResponseDTO renewAccessToken = authService.renewAccessToken(refreshToken);
+            AccountResponseDTO response = AccountResponseDTO.builder()
+                    .accessToken(renewAccessToken.getAccessToken())
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
+                    .message(message)
+                    .data(response)
+                    .build());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build());
+        }
     }
 }

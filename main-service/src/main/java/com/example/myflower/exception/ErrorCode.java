@@ -22,8 +22,10 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(1013,"Account not found", HttpStatus.NOT_FOUND),
     ACCOUNT_NOT_INSTRUCTOR(1014,"Account not instructor", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_STUDENT(1015,"Account not student", HttpStatus.BAD_REQUEST),
-    ADD_BALANCE_INVALID(1016, "Add balance amount must be greater than 20.000", HttpStatus.BAD_REQUEST),
+    ADD_BALANCE_INVALID(1016, "Add balance amount must be greater than 20.000 VNĐ", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND(1017,"Email not found, please register account.", HttpStatus.NOT_FOUND),
+    UNAUTHORIZED(1018, "Unauthorized", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_NOT_MATCH(3002, "Account not match.", HttpStatus.BAD_REQUEST),
 
     //    Accounts | Emails | CODE: 15XX
     EMAIL_WAIT_VERIFY(1501, "This email has been registered and is not verified, please verify and login", HttpStatus.BAD_REQUEST),
@@ -38,6 +40,14 @@ public enum ErrorCode {
     PRICE_INVALID(6000, "Price must be greater than 0", HttpStatus.BAD_REQUEST),
     BALANCE_INVALID(6001, "Amount must be greater than 0 and less than the remaining balance.", HttpStatus.BAD_REQUEST),
     BALANCE_NOT_ENOUGH(6002, "Doesn't have enough balance", HttpStatus.BAD_REQUEST),
+
+    //    FLOWERS | CODE: 3XXX
+    FLOWER_NOT_FOUND(3000, "Flower not found", HttpStatus.NOT_FOUND),
+    FLOWER_CATEGORY_NOT_FOUND(3101, "Flower category not found", HttpStatus.NOT_FOUND),
+    INVALID_IMAGE(3102, "Invalid image file", HttpStatus.BAD_REQUEST),
+    FLOWER_NOT_APPROVED(3103, "Flower listing is not approved", HttpStatus.BAD_REQUEST),
+    FLOWER_OUT_OF_STOCK(3104, "Flower listing is out of stock", HttpStatus.BAD_REQUEST),
+    QUANTITY_INVALID(3105, "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
     ;
     @Getter
     private final Integer code;

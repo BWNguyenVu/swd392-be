@@ -22,6 +22,9 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId",referencedColumnName = "id", nullable = false)
     private Account user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
+    private FlowerListing flowerListing;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
     @Column(nullable = false)

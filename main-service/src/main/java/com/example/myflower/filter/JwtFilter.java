@@ -5,7 +5,7 @@ import com.example.myflower.entity.Account;
 import com.example.myflower.exception.token.ErrorResponse;
 import com.example.myflower.exception.token.InvalidToken;
 import com.example.myflower.service.impl.AuthServiceImpl;
-import com.example.myflower.service.JWTService;
+import com.example.myflower.service.impl.JWTServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     @Autowired
-    private JWTService jwtService;
+    private JWTServiceImpl jwtServiceImpl;
     @Autowired
     @Lazy
     private AuthServiceImpl authService;
@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
-                email = jwtService.extractEmail(token);
+                email = jwtServiceImpl.extractEmail(token);
             } catch (TokenExpiredException e) {
                 // Handle expired token
                 ResponseEntity<String> responseEntity = ErrorResponse.createErrorResponse(HttpStatus.UNAUTHORIZED, "Token has expired");
@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(email !=null && SecurityContextHolder.getContext().getAuthentication()==null){
             Account account = authService.getAccountByEmail(email);
-            if(jwtService.validateToken(token, account)){
+            if(jwtServiceImpl.validateToken(token, account)){
                 UsernamePasswordAuthenticationToken authToken =  new UsernamePasswordAuthenticationToken(account,null, account.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

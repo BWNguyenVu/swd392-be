@@ -20,9 +20,6 @@ public class OrderSummary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
-    private FlowerListing flowerListing;
     @OneToOne(fetch = FetchType.LAZY)
     private Transaction transaction;
     @Column(nullable = false, length = 100)
@@ -33,6 +30,8 @@ public class OrderSummary {
     private String buyerEmail;
     @Column(nullable = false)
     private String buyerAddress;
+    @Column(nullable = false)
+    private String note;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
     @Column(nullable = false)

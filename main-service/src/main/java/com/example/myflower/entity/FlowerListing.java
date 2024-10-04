@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,15 +28,17 @@ public class FlowerListing {
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
-    @Column(nullable = false)
-    private String flowerType;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String eventType;
+    @ManyToMany
+    @JoinTable(name = "flower_listing_categories", joinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+    private Set<FlowerCategory> categories = new HashSet<>();
     @Column(nullable = false)
     private Integer stockBalance;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
+    private String imageUrl;
     @Enumerated(EnumType.STRING)
     private FlowerListingStatusEnum status;
     @Column(name = "created_at")
@@ -43,4 +47,6 @@ public class FlowerListing {
     private LocalDateTime updatedAt;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+    @Column(name ="reject_reason")
+    private String rejectReason;
 }

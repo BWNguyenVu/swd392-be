@@ -60,6 +60,10 @@ public class Account implements UserDetails {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal balance;
 
+    @Column(nullable = true, precision = 10, scale = 2)
+    private BigDecimal feeService;
+
+
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
@@ -136,6 +140,10 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<FlowerListing> flowerListings;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Payment> payments;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
