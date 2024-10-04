@@ -3,7 +3,7 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.responses.OrderByWalletResponseDTO;
 import com.example.myflower.exception.order.OrderAppException;
-import com.example.myflower.service.impl.OrderServiceImpl;
+import com.example.myflower.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class OrderController {
     @Autowired
-    private OrderServiceImpl orderServiceImpl;
+    private OrderService orderService;
 
 
     @PostMapping("/by-wallet")
-    public ResponseEntity<OrderByWalletResponseDTO> createWallet(@RequestBody CreateOrderRequestDTO order) {
+    public ResponseEntity<OrderByWalletResponseDTO> orderByWallet(@RequestBody CreateOrderRequestDTO order) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderServiceImpl.orderByWallet(order));
+            return ResponseEntity.status(HttpStatus.CREATED).body(orderService.orderByWallet(order));
         } catch (OrderAppException e) {
             return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(
                     OrderByWalletResponseDTO.builder()

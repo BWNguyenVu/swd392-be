@@ -8,6 +8,7 @@ import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogActorEnum;
+import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.order.OrderAppException;
@@ -80,18 +81,18 @@ public class OrderServiceImpl implements OrderService {
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary) {
         Account accountAdmin = adminServiceImpl.getAccountAdmin();
         // subtract balance for buyer
-        accountService.handleBalanceByOrder(accountBuyer, totalPrice, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.BUYER, orderSummary, null);
+        accountService.handleBalanceByOrder(accountBuyer, totalPrice, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.BUYER, orderSummary, null, WalletLogStatusEnum.SUCCESS);
         for (Map.Entry<Account, BigDecimal> entry : sellerBalanceMap.entrySet()) {
             Account accountSeller = entry.getKey();
             BigDecimal amountInitial = entry.getValue();
             // handle calculator
             BigDecimal calculatorAmountForSeller = amountInitial.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getFeeService()));
             // add balance for seller
-            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER, orderSummary, null);
+            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER, orderSummary, null, WalletLogStatusEnum.SUCCESS);
         }
 
         // add balance for admin
-        accountService.handleBalanceByOrder(accountAdmin, totalPrice.multiply(accountAdmin.getFeeService()), WalletLogTypeEnum.ADD, WalletLogActorEnum.ADMIN ,orderSummary, null);
+        accountService.handleBalanceByOrder(accountAdmin, totalPrice.multiply(accountAdmin.getFeeService()), WalletLogTypeEnum.ADD, WalletLogActorEnum.ADMIN ,orderSummary, null, WalletLogStatusEnum.SUCCESS);
         sellerBalanceMap.clear();
     }
 

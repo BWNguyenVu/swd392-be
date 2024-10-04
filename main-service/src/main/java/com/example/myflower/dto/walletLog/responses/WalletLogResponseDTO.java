@@ -1,5 +1,6 @@
 package com.example.myflower.dto.walletLog.responses;
 
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WalletLogResponseDTO {
     private Integer id;
-    private Integer userId;
+    private AccountResponseDTO account;
     private WalletLogTypeEnum type;
     private WalletLogActorEnum actor;
     private BigDecimal amount;
