@@ -1,6 +1,7 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.consts.Constants;
+import com.example.myflower.dto.auth.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.entity.Account;
@@ -8,8 +9,10 @@ import com.example.myflower.entity.enumType.AccountProviderEnum;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.example.myflower.exception.ErrorCode;
+import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.repository.AccountRepository;
+import com.example.myflower.service.AuthService;
 import com.example.myflower.service.JWTService;
 import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.utils.AccountUtils;
@@ -33,7 +36,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class AuthServiceImpl implements UserDetailsService {
+public class AuthServiceImpl implements UserDetailsService, AuthService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -54,9 +57,6 @@ public class AuthServiceImpl implements UserDetailsService {
 
     @Autowired
     private KafkaTemplate<String, Account> kafkaTemplate;
-
-    @Autowired
-    private AccountUtils accountUtils;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -237,7 +237,7 @@ public class AuthServiceImpl implements UserDetailsService {
     public ResponseEntity<ChangePasswordResponseDTO> changePassword(ChangePasswordRequestDTO changePasswordRequest) {
         try {
             // GET ACCOUNT FROM TOKEN IN HEADER || FUNCTION REQUIRED: ENSURE USER'S LOGIN AND REMEMBER OLD PASSWORD
-            Account account = accountUtils.getCurrentAccount();
+            Account account = AccountUtils.getCurrentAccount();
             // CHECK OLD PASSWORD
             if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), account.getPassword())) {
                 throw new AuthAppException(ErrorCode.OLD_PASSWORD_INCORRECT);
@@ -270,6 +270,15 @@ public class AuthServiceImpl implements UserDetailsService {
         } catch (Exception e) {
             throw new RuntimeException("Invalid or expired token!", e);
         }
+    }
+
+    public AccountResponseDTO renewAccessToken(String token) {
+        String email = jwtService.extractEmail(token);
+        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND));
+        String accessToken = jwtService.generateToken(account.getEmail());
+        return AccountResponseDTO.builder()
+                .accessToken(accessToken)
+                .build();
     }
 
 }
