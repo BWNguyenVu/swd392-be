@@ -17,6 +17,7 @@ import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.FlowerCategoryRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.FlowerListingService;
+import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
@@ -37,6 +38,9 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FlowerListingServiceImpl implements FlowerListingService {
+    @NonNull
+    private RedisCommandService redisCommandService;
+
     @NonNull
     private StorageService storageService;
 
@@ -79,10 +83,16 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public FlowerListingResponseDTO getFlowerListingByID(Integer id) {
+        FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
+        if (cacheResponseDTO != null) {
+            return cacheResponseDTO;
+        }
         FlowerListing result = flowerListingRepository
                 .findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
-        return FlowerListingMapper.toFlowerListingResponseDTO(result);
+        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
+        redisCommandService.setFlowerById(responseDTO);
+        return responseDTO;
     }
 
     @Override
@@ -117,7 +127,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             FlowerListing result = flowerListingRepository.save(flowerListing);
 
             result.setImageUrl(storageService.getFileUrl(fileName));
-            return FlowerListingMapper.toFlowerListingResponseDTO(result);
+            FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
+            redisCommandService.setFlowerById(responseDTO);
+            return responseDTO;
         }
         catch (IOException e) {
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -147,6 +159,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
 
         updatedFlowerListing.setImageUrl(storageService.getFileUrl(updatedFlowerListing.getImageUrl()));
-        return FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
+        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
+        redisCommandService.setFlowerById(responseDTO);
+        return responseDTO;
     }
 }
