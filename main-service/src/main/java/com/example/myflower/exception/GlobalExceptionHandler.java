@@ -4,6 +4,8 @@ import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.exception.order.OrderAppException;
+import com.example.myflower.exception.transaction.TransactionAppException;
+import com.example.myflower.exception.walletLog.WalletLogAppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -72,5 +74,25 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
     }
+    @ExceptionHandler(value = TransactionAppException.class)
+    public ResponseEntity<ApiResponse> handlingTransactionException(TransactionAppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
 
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler(value = WalletLogAppException.class)
+    public ResponseEntity<ApiResponse> handlingWalletLogException(WalletLogAppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
+    }
 }

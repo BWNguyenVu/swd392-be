@@ -13,26 +13,22 @@ import org.springframework.web.bind.annotation.*;
 public class CartItemController {
     private final CartItemService cartItemService;
 
-    // them moi hoac cap nhat flower trong gio hang
-    @PostMapping("insert-update")
+    @PostMapping("/insert-update")
     public ResponseEntity<BaseResponseDTO> insertUpdateFlowerToCart(@RequestBody InsertUpdateFlowerToCartRequestDTO request) throws Exception {
         return cartItemService.insertUpdateFlowerToCart(request);
     }
 
-    // lay tat ca cac flower trong gio hang cua user
-    @GetMapping("get-by-user")
+    @GetMapping("/get-by-user")
     public ResponseEntity<BaseResponseDTO> getCartItemsByUser() throws Exception {
         return cartItemService.getCartItemsByUser();
     }
 
-    // xoa flower khoi gio hang
-    @DeleteMapping("remove/{id}")
+    @DeleteMapping("/remove/{id}")
     public ResponseEntity<BaseResponseDTO> removeFlowerFromCart(@PathVariable Integer id) throws Exception {
         return cartItemService.removeFlowerFromCart(id);
     }
 
-    // xoa toan bo gio hang
-    @DeleteMapping("clear")
+    @DeleteMapping("/clear")
     public ResponseEntity<BaseResponseDTO> clearCart() throws Exception {
         return cartItemService.clearCart();
     }
