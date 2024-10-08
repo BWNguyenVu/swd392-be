@@ -1,9 +1,10 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.requests.OrderDetailRequestDTO;
-import com.example.myflower.dto.order.responses.OrderByWalletResponseDTO;
+import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
@@ -47,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
 
     @Override
-    public OrderByWalletResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
+    public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
         // Get the current user account
         Account account = AccountUtils.getCurrentAccount();
 
@@ -136,8 +137,8 @@ public class OrderServiceImpl implements OrderService {
         return orderDetails;
     }
 
-    private OrderByWalletResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
-        return OrderByWalletResponseDTO.builder()
+    private OrderResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
+        return OrderResponseDTO.builder()
                 .message("Order by wallet successfully!")
                 .error(false)
                 .id(orderSummary.getId())
@@ -167,6 +168,32 @@ public class OrderServiceImpl implements OrderService {
                 .flowerListing(flowerListingResponseDTO)
                 .price(orderDetail.getPrice())
                 .quantity(orderDetail.getQuantity())
+                .build();
+    }
+
+    public List<OrderDetailResponseDTO> getAllOrderDetailsByOrderSummaryId(Integer orderSummaryId) {
+        List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailByOrderSummaryId(orderSummaryId);
+        return convertOrderDetailDTO(orderDetails);
+    }
+
+    public BaseResponseDTO getAllOrderByAccount() {
+        Account account = AccountUtils.getCurrentAccount();
+        List<OrderSummary> orderSummarys = orderSummaryRepository.findOrderSummariesByUser(account);
+        orderSummarys.stream().map(
+                orderSummary -> OrderResponseDTO.builder()
+                        .id(orderSummary.getId())
+                        .balance(account.getBalance())
+                        .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
+                        .note(orderSummary.getNote())
+                        .status(orderSummary.getStatus())
+                        .createdAt(orderSummary.getCreatedAt())
+                        .totalAmount(orderSummary.getTotalPrice())
+                        .build()
+        ).toList();
+        return BaseResponseDTO.builder()
+                .data(orderSummarys)
+                .message("Get Orders successfully!")
+                .success(true)
                 .build();
     }
 }

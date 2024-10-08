@@ -12,4 +12,6 @@ public interface WalletLogService {
     WalletLog createWalletLog(WalletLog walletLog, Account account);
     WalletLog updateWalletLogByPayment(Payment payment, WalletLogStatusEnum status);
     List<WalletLogResponseDTO> getAllWalletLogByAccount();
+    WalletLogResponseDTO getWalletLogById(Integer id);
+    void softDeleteWalletLog(Integer id);
 }
