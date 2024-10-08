@@ -20,6 +20,7 @@ public class FlowerCategoryResponseDTO implements Serializable {
     private Integer id;
     private String name;
     private CategoryParentEnum categoryParent;
+    private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isDeleted;

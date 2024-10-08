@@ -11,6 +11,7 @@ public class FlowerCategoryMapper {
                 .id(flowerCategory.getId())
                 .name(flowerCategory.getName())
                 .categoryParent(flowerCategory.getCategoryParent())
+                .imageUrl(flowerCategory.getImageUrl())
                 .createdAt(flowerCategory.getCreatedAt())
                 .updatedAt(flowerCategory.getUpdatedAt())
                 .build();

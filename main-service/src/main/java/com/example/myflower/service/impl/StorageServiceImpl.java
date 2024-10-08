@@ -2,6 +2,7 @@ package com.example.myflower.service.impl;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.myflower.service.StorageService;
@@ -34,6 +35,13 @@ public class StorageServiceImpl implements StorageService {
             return fileName;
         }
         return "";
+    }
+
+    @Override
+    public void deleteFile(String fileName) {
+        if (Boolean.TRUE.equals(isUsingS3)) {
+            s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        }
     }
 
     @Override

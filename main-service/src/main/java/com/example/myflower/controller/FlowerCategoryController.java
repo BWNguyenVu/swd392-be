@@ -4,8 +4,10 @@ import com.example.myflower.dto.flowercategogy.request.CreateFlowerCategoryReque
 import com.example.myflower.dto.flowercategogy.request.UpdateFlowerCategoryRequestDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.service.FlowerCategoryService;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,8 @@ public class FlowerCategoryController {
     @NonNull
     private FlowerCategoryService flowerCategoryService;
 
-    @PostMapping
-    public ResponseEntity<FlowerCategoryResponseDTO> createCategory(@RequestBody CreateFlowerCategoryRequestDTO requestDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FlowerCategoryResponseDTO> createCategory(@Valid @ModelAttribute CreateFlowerCategoryRequestDTO requestDTO) {
         return ResponseEntity.ok().body(flowerCategoryService.createFlowerCategory(requestDTO));
     }
 
@@ -34,8 +36,8 @@ public class FlowerCategoryController {
         return ResponseEntity.ok().body(flowerCategoryService.getFlowerCategoryById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FlowerCategoryResponseDTO> updateCategoryById(@PathVariable Integer id, @RequestBody UpdateFlowerCategoryRequestDTO requestDTO) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FlowerCategoryResponseDTO> updateCategoryById(@PathVariable Integer id, @Valid @ModelAttribute UpdateFlowerCategoryRequestDTO requestDTO) {
         return ResponseEntity.ok().body(flowerCategoryService.updateFlowerCategoryById(id, requestDTO));
     }
 
