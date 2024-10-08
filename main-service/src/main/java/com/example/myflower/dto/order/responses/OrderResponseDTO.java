@@ -1,7 +1,5 @@
 package com.example.myflower.dto.order.responses;
 
-import com.example.myflower.entity.FlowerListing;
-import com.example.myflower.entity.OrderDetail;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.EnumType;
@@ -20,7 +18,7 @@ import java.util.List;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderByWalletResponseDTO {
+public class OrderResponseDTO {
     private String message;
     private Boolean error;
     private Integer id;

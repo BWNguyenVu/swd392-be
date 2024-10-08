@@ -169,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
             default:
                 throw new IllegalArgumentException("Unsupported WalletLogTypeEnum: " + type);
         }
-
+        account.setUpdateAt(LocalDateTime.now());
         return saveAccount(account);
     }
 

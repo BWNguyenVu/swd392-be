@@ -4,6 +4,7 @@ import com.example.myflower.service.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @PostMapping(path = "/confirm-webhook")
     public ObjectNode payosTransferHandler(@RequestBody ObjectNode body)
     {

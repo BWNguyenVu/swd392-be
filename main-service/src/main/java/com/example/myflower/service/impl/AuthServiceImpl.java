@@ -14,6 +14,7 @@ import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.AuthService;
 import com.example.myflower.service.JWTService;
+import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.utils.AccountUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private RedisCommandService redisCommandService;
 
     @Autowired
     @Lazy
@@ -90,8 +94,13 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
             Account returnAccount = (Account) authentication.getPrincipal();
             // CALL FUNC || GENERATE TOKEN (1DAY) AND REFRESH TOKEN (7DAYS)
+            String refreshToken = redisCommandService.getValidRefreshTokenByUserId(account.getId());
+            if (refreshToken == null) {
+                refreshToken = jwtService.generateRefreshToken(account.getEmail());
+                redisCommandService.storeRefreshToken(account.getId(), refreshToken);
+            }
             account.setTokens(jwtService.generateToken(account.getEmail()));
-            account.setRefreshToken(jwtService.generateRefreshToken(account.getEmail()));
+            account.setRefreshToken(refreshToken);
 
             String responseString = "Login successful";
             LoginResponseDTO loginResponseDTO = new LoginResponseDTO(
@@ -211,6 +220,9 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
                 Account account = accountOptional.get();
                 account.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
                 accountRepository.save(account);
+
+                //Revoked all refresh tokens associated with this account
+                redisCommandService.revokeRefreshToken(account.getId());
             }
 
             ResetPasswordResponseDTO resetPasswordResponse = new ResetPasswordResponseDTO("Password reset token generated successfully.", null, 200);
