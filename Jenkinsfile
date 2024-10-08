@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub'
-        DOCKER_IMAGE_MAIN = 'bwnguyenvu/swd392-be'
-        DOCKER_IMAGE_NOTIFICATION = 'bwnguyenvu/notification-service'
     }
 
     stages {
@@ -15,6 +13,9 @@ pipeline {
         }
 
         stage('Build with Maven') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh 'mvn clean package'
@@ -23,34 +24,43 @@ pipeline {
         }
 
         stage('Build Docker Images') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     // Build Docker images
-                    sh 'docker build -t $DOCKER_IMAGE_MAIN ./main-service'
-                    sh 'docker build -t $DOCKER_IMAGE_NOTIFICATION ./notification-service'
+                    sh 'docker build -t bwnguyenvu/swd392-be ./main-service'
+                    sh 'docker build -t bwnguyenvu/notification-service ./notification-service'
                 }
             }
         }
 
         stage('Push to Docker Hub') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        sh 'docker push $DOCKER_IMAGE_MAIN'
-                        sh 'docker push $DOCKER_IMAGE_NOTIFICATION'
+                    docker.withRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                        sh 'docker push bwnguyenvu/swd392-be'
+                        sh 'docker push bwnguyenvu/notification-service'
                     }
                 }
             }
         }
 
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     echo 'Deploying the application'
-                    sh "docker pull $DOCKER_IMAGE_MAIN"
-                    sh "docker pull $DOCKER_IMAGE_NOTIFICATION"
-                    sh 'docker run -d -p 6868:6868 --name swd392-container --env-file ./env.list $DOCKER_IMAGE_MAIN'
-                    sh 'docker run -d -p 8082:8082 --name notification-service-container --env-file ./env.list $DOCKER_IMAGE_NOTIFICATION'
+                    sh 'docker pull bwnguyenvu/swd392-be'
+                    sh 'docker pull bwnguyenvu/notification-service'
+                    sh 'docker run -d -p 6868:6868 --name swd392-container --env-file ./env.list bwnguyenvu/swd392-be'
+                    sh 'docker run -d -p 8082:8082 --name notification-service-container --env-file ./env.list bwnguyenvu/notification-service'
                 }
             }
         }
@@ -58,8 +68,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker rmi $DOCKER_IMAGE_MAIN || true'
-            sh 'docker rmi $DOCKER_IMAGE_NOTIFICATION || true'
+            sh 'docker rmi bwnguyenvu/swd392-be || true'
+            sh 'docker rmi bwnguyenvu/notification-service || true'
             cleanWs()
         }
         success {
