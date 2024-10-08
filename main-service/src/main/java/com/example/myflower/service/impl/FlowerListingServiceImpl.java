@@ -72,6 +72,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         //Construct pagination and sort parameters
         Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), sort);
+        //Set null to bypass filter if request filter is empty
+        if (requestDTO.getCategoryIds() != null && requestDTO.getCategoryIds().isEmpty()) {
+            requestDTO.setCategoryIds(null);
+        }
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(requestDTO.getSearchString(), requestDTO.getCategoryIds(), Boolean.FALSE, pageable);
         //Map file name to storage url
