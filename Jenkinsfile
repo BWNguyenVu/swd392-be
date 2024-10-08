@@ -35,9 +35,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    // Log in to Docker Hub
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        // Push images to Docker Hub
                         sh 'docker push $DOCKER_IMAGE_MAIN'
                         sh 'docker push $DOCKER_IMAGE_NOTIFICATION'
                     }
@@ -52,8 +50,7 @@ pipeline {
                     sh "docker pull $DOCKER_IMAGE_MAIN"
                     sh "docker pull $DOCKER_IMAGE_NOTIFICATION"
                     sh 'docker run -d -p 6868:6868 --name swd392-container --env-file ./env.list $DOCKER_IMAGE_MAIN'
-                    sh 'docker run -d -p 8082:8082 --name notification-service-container --env-file ./env.list $DOCKER_IMAGE_NOTIFICATION
-'
+                    sh 'docker run -d -p 8082:8082 --name notification-service-container --env-file ./env.list $DOCKER_IMAGE_NOTIFICATION'
                 }
             }
         }
