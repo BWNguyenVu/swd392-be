@@ -80,7 +80,7 @@ public class EmailService {
             emailDetail.setRecipient(accountDTO.getEmail());
             emailDetail.setSubject("Forgot Password Request");
 
-            String link = "http://isolutions.top:8000/auth/reset-password?token=" + token;
+            String link = "http://103.250.78.50:6868/auth/reset-password?token=" + token;
             emailDetail.setMsgBody(link);
 
             sendEmailWithTemplate(emailDetail, "ForgotPasswordEmailTemplate");
@@ -134,7 +134,7 @@ public class EmailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setFrom("contact.us.nicetrip@gmail.com");
+            mimeMessageHelper.setFrom("isolutions.top.contact@gmail.com");
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setSubject(emailDetail.getSubject());
             mimeMessageHelper.setText(emailDetail.getMsgBody(), false);
@@ -151,7 +151,7 @@ public class EmailService {
             context.setVariable("name", emailDetail.getName());
 
             String token = account.getTokens();
-            String link = "http://isolutions.top:8000/auth/verify/" + token;
+            String link = "http://103.250.78.50:6868/auth/verify/" + token;
             context.setVariable("link", link);
 
             String text = templateEngine.process("sendVerifyEmail", context);
@@ -159,7 +159,7 @@ public class EmailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 
-            mimeMessageHelper.setFrom("nguyenleminhdung2912@gmail.com");
+            mimeMessageHelper.setFrom("isolutions.top.contact@gmail.com");
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setSubject(emailDetail.getSubject());
             mimeMessageHelper.setText(text, true);
@@ -182,7 +182,7 @@ public class EmailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setFrom("contact.us.nicetrip@gmail.com");
+            mimeMessageHelper.setFrom("isolutions.top.contact@gmail.com");
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setSubject(emailDetail.getSubject());
             mimeMessageHelper.setText(text, true);
