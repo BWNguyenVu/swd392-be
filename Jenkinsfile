@@ -32,6 +32,7 @@ pipeline {
                         string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
                         string(credentialsId: 'PUBLIC_API', variable: 'PUBLIC_API')
                     ]) {
+                        // This block sets up the environment variables
                         env.AWS_ACCESS_KEY = AWS_ACCESS_KEY
                         env.AWS_PRIVATE_KEY = AWS_PRIVATE_KEY
                         env.AWS_REGION = AWS_REGION
@@ -58,7 +59,8 @@ pipeline {
                 }
             }
         }
-        stage('Build Maven') {
+
+        stage('Build Maven for Main Service') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/BWNguyenVu/swd392-be.git']])
 
@@ -85,14 +87,38 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Build Maven for Notification Service') {
+            steps {
+                dir('./notification-service') {
+                    sh '''
+                        mvn clean install -X \
+                        -Dspring.mail.username=${EMAIL_USERNAME} \
+                        -Dspring.mail.password="${EMAIL_PASSWORD}" \
+                        -Dspring.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVER} \
+                        -Dpublic.api.url=${PUBLIC_API}
+                    '''
+                }
+            }
+        }
+
+        stage('Build Docker Image for Main Service') {
             steps {
                 script {
                     sh 'sudo docker build -t bwnguyenvu/swd392-be ./main-service'
                 }
             }
         }
-        stage('Push Image to Docker Hub') {
+
+        stage('Build Docker Image for Notification Service') {
+            steps {
+                script {
+                    sh 'sudo docker build -t bwnguyenvu/swd392-notification ./notification-service'
+                }
+            }
+        }
+
+        stage('Push Image to Docker Hub for Main Service') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
@@ -102,14 +128,32 @@ pipeline {
                 }
             }
         }
-        stage('Pull Docker Image') {
+
+        stage('Push Image to Docker Hub for Notification Service') {
+            steps {
+                script {
+                    sh 'docker push bwnguyenvu/swd392-notification'
+                }
+            }
+        }
+
+        stage('Pull Docker Image for Main Service') {
             steps {
                 script {
                     sh 'sudo docker pull bwnguyenvu/swd392-be:latest'
                 }
             }
         }
-        stage('Run Docker Container') {
+
+        stage('Pull Docker Image for Notification Service') {
+            steps {
+                script {
+                    sh 'sudo docker pull bwnguyenvu/swd392-notification:latest'
+                }
+            }
+        }
+
+        stage('Run Docker Container for Main Service') {
             steps {
                 script {
                     sh 'sudo docker stop swd392-container || true'
@@ -141,6 +185,25 @@ pipeline {
                         -e JWT_SECRET=${JWT_SECRET} \
                         -e PUBLIC_API=${PUBLIC_API} \
                         bwnguyenvu/swd392-be:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Run Docker Container for Notification Service') {
+            steps {
+                script {
+                    sh 'sudo docker stop swd392-notification-container || true'
+                    sh 'sudo docker rm swd392-notification-container || true'
+
+                    sh '''
+                        sudo docker run -d -p 8082:8082 \
+                        --name swd392-notification-container \
+                        -e EMAIL_USERNAME=${EMAIL_USERNAME} \
+                        -e EMAIL_PASSWORD="${EMAIL_PASSWORD}" \
+                        -e KAFKA_BOOTSTRAP_SERVER=${KAFKA_BOOTSTRAP_SERVER} \
+                        -e PUBLIC_API=${PUBLIC_API} \
+                        bwnguyenvu/swd392-notification:latest
                     '''
                 }
             }

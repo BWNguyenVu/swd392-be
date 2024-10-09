@@ -80,7 +80,7 @@ public class EmailService {
             emailDetail.setRecipient(accountDTO.getEmail());
             emailDetail.setSubject("Forgot Password Request");
 
-            String link = "http://103.250.78.50:6868/auth/reset-password?token=" + token;
+            String link = "http://103.250.78.50:6868/api/v1/auth/reset-password?token=" + token;
             emailDetail.setMsgBody(link);
 
             sendEmailWithTemplate(emailDetail, "ForgotPasswordEmailTemplate");
@@ -151,7 +151,7 @@ public class EmailService {
             context.setVariable("name", emailDetail.getName());
 
             String token = account.getTokens();
-            String link = "http://103.250.78.50:6868/auth/verify/" + token;
+            String link = "http://103.250.78.50:6868/api/v1/auth/verify/" + token;
             context.setVariable("link", link);
 
             String text = templateEngine.process("sendVerifyEmail", context);

@@ -17,9 +17,6 @@ import java.net.URI;
 @CrossOrigin("*")
 public class AuthController {
     @Autowired
-    private AccountUtils accountUtils;
-
-    @Autowired
     private AuthServiceImpl authService;
 
     @GetMapping("/welcome")
@@ -40,7 +37,7 @@ public class AuthController {
     @GetMapping("/verify/{token}")
     public ResponseEntity<Void> activateAccount(@PathVariable String token) throws Exception {
         if (authService.verifyAccount(token)) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:8080/auth/welcome")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://103.250.78.50:6868/api/v1/auth/welcome")).build();
         }
         return null;
     }
@@ -58,8 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<ChangePasswordResponseDTO> changePassword(@RequestHeader("Authorization") String token,
-                                                                    @RequestBody ChangePasswordRequestDTO changePasswordRequest) {
+    public ResponseEntity<ChangePasswordResponseDTO> changePassword(@RequestBody ChangePasswordRequestDTO changePasswordRequest) {
         return authService.changePassword(changePasswordRequest);
     }
 

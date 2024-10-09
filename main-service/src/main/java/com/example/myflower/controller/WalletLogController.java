@@ -24,12 +24,14 @@ public class WalletLogController {
         List<WalletLogResponseDTO> walletLogs = walletLogService.getAllWalletLogByAccount();
         return ResponseEntity.ok(walletLogs);
     }
+
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/{walletLogId}")
     public ResponseEntity<WalletLogResponseDTO> getWalletLogById(@PathVariable Integer walletLogId) {
         WalletLogResponseDTO walletLog = walletLogService.getWalletLogById(walletLogId);
         return ResponseEntity.ok(walletLog);
     }
+
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @DeleteMapping("/{walletLogId}")
     public ResponseEntity<BaseResponseDTO> softDeleteWalletLog(@PathVariable Integer walletLogId) {

@@ -50,7 +50,16 @@ public class WalletLogServiceImpl implements WalletLogService {
     @Override
     public List<WalletLogResponseDTO> getAllWalletLogByAccount() {
         Account account = AccountUtils.getCurrentAccount();
-        List<WalletLog> walletLogs = walletLogRepository.findWalletLogByUser(account);
+        if (account == null || account.getRole() == null) {
+            throw new WalletLogAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        List<WalletLog> walletLogs = switch (account.getRole()) {
+            case ADMIN -> walletLogRepository.findAll();
+            case USER -> walletLogRepository.findWalletLogByUser(account);
+            default ->
+                throw new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND);
+        };
+
         return walletLogs.stream()
                 .map(WalletLogMapper::buildWalletLogResponseDTO)
                 .toList();
@@ -58,7 +67,8 @@ public class WalletLogServiceImpl implements WalletLogService {
 
     @Override
     public WalletLogResponseDTO getWalletLogById(Integer walletLogId) {
-        WalletLog walletLog = walletLogRepository.findById(walletLogId)
+        Account account = AccountUtils.getCurrentAccount();
+        WalletLog walletLog = walletLogRepository.findByIdAndUser(walletLogId, account)
                 .orElseThrow(() -> new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND));
 
         return WalletLogMapper.buildWalletLogResponseDTO(walletLog);

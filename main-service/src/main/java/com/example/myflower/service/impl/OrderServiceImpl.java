@@ -15,6 +15,7 @@ import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.order.OrderAppException;
 import com.example.myflower.repository.*;
 import com.example.myflower.service.AccountService;
+import com.example.myflower.service.AdminService;
 import com.example.myflower.service.OrderService;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     private final Map<Account, BigDecimal> sellerBalanceMap = new HashMap<>();
 
     @Autowired
-    private AdminServiceImpl adminServiceImpl;
+    private AdminService adminService;
 
     @Autowired
     private AccountService accountService;
@@ -55,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
+        Map<Account, BigDecimal> sellerBalanceMap = new HashMap<>();
 
         BigDecimal totalPrice = orderDTO.getOrderDetails().stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -70,17 +72,17 @@ public class OrderServiceImpl implements OrderService {
 
 
         // Create order details
-        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account);
+        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap);
 
-        distributeBalance(account, totalPrice, orderSummary);
+        distributeBalance(account, totalPrice, orderSummary, sellerBalanceMap);
 
         List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
         // Return response with order details
         return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
     }
 
-    private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary) {
-        Account accountAdmin = adminServiceImpl.getAccountAdmin();
+    private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary, Map<Account, BigDecimal> sellerBalanceMap) {
+        Account accountAdmin = adminService.getAccountAdmin();
         // subtract balance for buyer
         accountService.handleBalanceByOrder(accountBuyer, totalPrice, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.BUYER, orderSummary, null, WalletLogStatusEnum.SUCCESS);
         for (Map.Entry<Account, BigDecimal> entry : sellerBalanceMap.entrySet()) {
@@ -112,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    private List<OrderDetail> createOrderDetails(CreateOrderRequestDTO orderDTO, OrderSummary orderSummary, Account account) throws OrderAppException {
+    private List<OrderDetail> createOrderDetails(CreateOrderRequestDTO orderDTO, OrderSummary orderSummary, Account account, Map<Account, BigDecimal> sellerBalanceMap) throws OrderAppException {
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailRequestDTO item : orderDTO.getOrderDetails()) {
 
