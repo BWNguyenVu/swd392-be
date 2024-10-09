@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
@@ -31,9 +32,10 @@ import java.util.Date;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    final String returnUrl = "http://localhost:3000/";
-    final String cancelUrl = "http://localhost:3000/";
-
+    @Value("http://" + "${public.api.url}" + ":6868/")
+    private String returnUrl;
+    @Value("http://" + "${public.api.url}" + ":6868/")
+    private String cancelUrl;
     @Autowired
     private PayOS payOS;
     @Autowired
@@ -58,7 +60,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .returnUrl(returnUrl)
                 .cancelUrl(cancelUrl)
                 .build();
-
         CheckoutResponseData data;
 
         try {
