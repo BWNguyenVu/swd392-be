@@ -60,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .returnUrl(returnUrl)
                 .cancelUrl(cancelUrl)
                 .build();
-        CheckoutResponseData data;
+            CheckoutResponseData data;
 
         try {
             data = payOS.createPaymentLink(paymentData);
