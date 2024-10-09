@@ -14,10 +14,11 @@ import com.example.myflower.service.AdminService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class AdminServiceImpl implements AdminService {
 
     @NonNull
     private final FlowerListingRepository flowerListingRepository;
-    private final AccountRepository accountRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public FlowerListingResponseDTO approveFlowerListing(Integer id) {
@@ -67,6 +69,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Account getAccountAdmin (){
-        return accountRepository.findAccountsByRole(AccountRoleEnum.ADMIN);
+        List<Account> accounts = accountRepository.findAccountsByRole(AccountRoleEnum.ADMIN);
+        return accounts.get(0);
     }
 }

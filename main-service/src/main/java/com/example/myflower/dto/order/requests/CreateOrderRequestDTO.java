@@ -17,6 +17,5 @@ public class CreateOrderRequestDTO {
     private String buyerPhone;
     private PaymentMethodEnum paymentMethod;
     private String note;
-    @Enumerated(EnumType.STRING)
     private List<OrderDetailRequestDTO> orderDetails;
 }
