@@ -17,9 +17,6 @@ import java.net.URI;
 @CrossOrigin("*")
 public class AuthController {
     @Autowired
-    private AccountUtils accountUtils;
-
-    @Autowired
     private AuthServiceImpl authService;
 
     @GetMapping("/welcome")
@@ -58,8 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<ChangePasswordResponseDTO> changePassword(@RequestHeader("Authorization") String token,
-                                                                    @RequestBody ChangePasswordRequestDTO changePasswordRequest) {
+    public ResponseEntity<ChangePasswordResponseDTO> changePassword(@RequestBody ChangePasswordRequestDTO changePasswordRequest) {
         return authService.changePassword(changePasswordRequest);
     }
 

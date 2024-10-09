@@ -52,7 +52,7 @@ public enum ErrorCode {
     // TRANSACTIONS | CODE: 4XXX
     TRANSACTION_NOT_FOUND(4000, "Transaction not found", HttpStatus.NOT_FOUND),
     // WALLET LOG | 7XXX
-    WALLET_NOT_FOUND(7000, "Wallet not found", HttpStatus.NOT_FOUND),
+    WALLET_NOT_FOUND(7000, "Wallet log not found", HttpStatus.NOT_FOUND),
     ;
     @Getter
     private final Integer code;
