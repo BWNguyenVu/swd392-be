@@ -19,6 +19,7 @@ import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
+import com.example.myflower.utils.AccountUtils;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +105,22 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
         redisCommandService.setFlowerById(responseDTO);
         LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
+        return responseDTO;
+    }
+
+    @Override
+    public List<FlowerListingResponseDTO> getFlowerListingsByUserID(Integer userId) {
+        LOG.info("[getFlowerListingByUserID] Start get flower listing by userID {}", userId);
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        if (!(currentAccount != null && (AccountRoleEnum.ADMIN.equals(currentAccount.getRole()) || userId.equals(currentAccount.getId())))) {
+            LOG.error("[getFlowerListingByUserID] Current user is unauthorized to access this resource");
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+        List<FlowerListing> result = flowerListingRepository.findByUserId(userId);
+        List<FlowerListingResponseDTO> responseDTO = result.stream()
+                .map(FlowerListingMapper::toFlowerListingResponseDTO)
+                .toList();
+        LOG.info("[getFlowerListingsByUserID] End with response data: {}", responseDTO);
         return responseDTO;
     }
 
