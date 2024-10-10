@@ -20,9 +20,13 @@ public class WalletLogController {
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-account")
-    public ResponseEntity<List<WalletLogResponseDTO>> getAllWalletLogByAccount() {
+    public ResponseEntity<BaseResponseDTO> getAllWalletLogByAccount() {
         List<WalletLogResponseDTO> walletLogs = walletLogService.getAllWalletLogByAccount();
-        return ResponseEntity.ok(walletLogs);
+        return ResponseEntity.ok(BaseResponseDTO.builder()
+                .message("Get all wallet logs successfully")
+                .success(true)
+                .data(walletLogs)
+                .build());
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")

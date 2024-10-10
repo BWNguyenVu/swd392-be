@@ -1,6 +1,7 @@
 package com.example.myflower.dto.walletLog.responses;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
+import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
@@ -13,6 +14,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +28,7 @@ public class WalletLogResponseDTO {
     private WalletLogActorEnum actor;
     private BigDecimal amount;
     private PaymentMethodEnum paymentMethod;
+    private PaymentResponseDTO payment;
     private WalletLogStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
