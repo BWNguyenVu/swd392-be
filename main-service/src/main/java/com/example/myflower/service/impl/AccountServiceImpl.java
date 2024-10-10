@@ -1,21 +1,17 @@
 package com.example.myflower.service.impl;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
-import com.example.myflower.dto.account.responses.ReturnAddBalanceResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
-import com.example.myflower.dto.payment.responses.CreatePaymentResponseDTO;
+import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
-import com.example.myflower.exception.account.AccountAppException;
-import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.AccountService;
@@ -27,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.payos.type.ItemData;
 
 import java.math.BigDecimal;
@@ -66,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
             CreatePaymentRequestDTO createPaymentRequestDTO = buildPaymentRequest(addBalanceTitle, amount);
 
             // Process payment
-            CreatePaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentRequestDTO, account);
+            PaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentRequestDTO, account);
 
             Payment payment = Payment.builder()
                     .id(paymentResponse.getId())
@@ -118,7 +115,7 @@ public class AccountServiceImpl implements AccountService {
         return walletLog;
     }
 
-    private AddBalanceResponseDTO buildSuccessResponse(CreatePaymentResponseDTO paymentResponse, Account account, WalletLog walletLog) {
+    private AddBalanceResponseDTO buildSuccessResponse(PaymentResponseDTO paymentResponse, Account account, WalletLog walletLog) {
         return AddBalanceResponseDTO.builder()
                 .id(paymentResponse.getId())
                 .orderCode(paymentResponse.getOrderCode())
@@ -150,6 +147,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status) {
         adjustAccountBalance(account, amount, type);
 

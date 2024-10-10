@@ -15,10 +15,12 @@ import java.util.Optional;
 public interface WalletLogRepository extends JpaRepository<WalletLog, Integer> {
 
     WalletLog findWalletLogByPayment(Payment payment);
+
     @Query("SELECT wl FROM WalletLog wl WHERE wl.user = :user AND wl.isDeleted = false")
     List<WalletLog> findWalletLogByUser(Account user);
+
     @NonNull
-    @Query("SELECT wl FROM WalletLog wl WHERE wl.id = :id AND wl.isDeleted = false")
-    Optional<WalletLog> findById(Integer id);
+    @Query("SELECT wl FROM WalletLog wl WHERE wl.id = :id AND wl.user = :user AND wl.isDeleted = false")
+    Optional<WalletLog> findByIdAndUser(Integer id, Account user);
 
 }

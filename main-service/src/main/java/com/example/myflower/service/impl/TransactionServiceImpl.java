@@ -8,6 +8,7 @@ import com.example.myflower.entity.OrderSummary;
 import com.example.myflower.entity.Transaction;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.transaction.TransactionAppException;
+import com.example.myflower.exception.walletLog.WalletLogAppException;
 import com.example.myflower.mapper.WalletLogMapper;
 import com.example.myflower.repository.TransactionRepository;
 import com.example.myflower.service.OrderService;
@@ -33,13 +34,21 @@ public class TransactionServiceImpl implements TransactionService {
     public BaseResponseDTO getTransactionByAccount() {
         final String message = "Get transaction by account successfully";
         Account user = AccountUtils.getCurrentAccount();
-        List<Transaction> transactions = transactionRepository.findTransactionByUser(user);
+        if (user == null || user.getBalance() == null) {
+            throw new WalletLogAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+
+        List<Transaction> transactions = switch (user.getRole()) {
+            case ADMIN -> transactionRepository.findAll();
+            case USER -> transactionRepository.findTransactionByUser(user);
+            default -> throw new TransactionAppException(ErrorCode.TRANSACTION_NOT_FOUND);
+        };
 
         List<TransactionResponseDTO> transactionResponseDTOs = transactions.stream().map(
                 transaction -> TransactionResponseDTO.builder()
                         .id(transaction.getId())
                         .order(buildOrderResponseDTO(transaction.getOrderSummary(), user))
-                        .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog()))
+                        .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
                         .createAt(transaction.getCreatedAt())
                         .updateAt(transaction.getUpdatedAt())
                         .build()).toList();
@@ -82,7 +91,7 @@ public class TransactionServiceImpl implements TransactionService {
         TransactionResponseDTO transactionResponseDTO = TransactionResponseDTO.builder()
                 .id(transaction.getId())
                 .order(buildOrderResponseDTO(transaction.getOrderSummary(), transaction.getUser()))
-                .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog()))
+                .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
                 .createAt(transaction.getCreatedAt())
                 .updateAt(transaction.getUpdatedAt())
                 .build();

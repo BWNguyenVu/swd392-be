@@ -1,10 +1,13 @@
 package com.example.myflower.entity;
 
+import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
+import com.example.myflower.entity.enumType.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,8 +23,8 @@ public class OrderDetail {
     @JoinColumn(name = "orderSummaryId",referencedColumnName = "id", nullable = false)
     private OrderSummary orderSummary;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId",referencedColumnName = "id", nullable = false)
-    private Account user;
+    @JoinColumn(name = "sellerId",referencedColumnName = "id", nullable = false)
+    private Account seller;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
     private FlowerListing flowerListing;
@@ -29,6 +32,9 @@ public class OrderDetail {
     private BigDecimal price;
     @Column(nullable = false)
     private Integer quantity;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderDetailsStatusEnum status;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

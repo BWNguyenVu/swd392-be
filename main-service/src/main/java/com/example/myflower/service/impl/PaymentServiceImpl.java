@@ -1,13 +1,12 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
-import com.example.myflower.dto.payment.responses.CreatePaymentResponseDTO;
+import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.Payment;
-import com.example.myflower.entity.WalletLog;
-import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
+import com.example.myflower.mapper.PaymentMapper;
 import com.example.myflower.repository.PaymentRepository;
 import com.example.myflower.service.AccountService;
 import com.example.myflower.service.PaymentService;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
@@ -28,12 +28,14 @@ import vn.payos.type.WebhookData;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    final String returnUrl = "http://localhost:3000/";
-    final String cancelUrl = "http://localhost:3000/";
-
+    @Value("http://" + "${public.api.url}" + ":6868/")
+    private String returnUrl;
+    @Value("http://" + "${public.api.url}" + ":6868/")
+    private String cancelUrl;
     @Autowired
     private PayOS payOS;
     @Autowired
@@ -46,7 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private ObjectMapper objectMapper;
     @Override
-    public CreatePaymentResponseDTO createPayment(CreatePaymentRequestDTO createPaymentRequestDTO, Account account) {
+    public PaymentResponseDTO createPayment(CreatePaymentRequestDTO createPaymentRequestDTO, Account account) {
         String currentTimeString = String.valueOf(new Date().getTime());
         long orderCode = Long.parseLong(currentTimeString.substring(currentTimeString.length() - 6));
 
@@ -58,8 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .returnUrl(returnUrl)
                 .cancelUrl(cancelUrl)
                 .build();
-
-        CheckoutResponseData data;
+            CheckoutResponseData data;
 
         try {
             data = payOS.createPaymentLink(paymentData);
@@ -68,22 +69,13 @@ public class PaymentServiceImpl implements PaymentService {
                     .checkoutUrl(data.getCheckoutUrl())
                     .currency(data.getCurrency())
                     .user(account)
+                    .note(data.getDescription())
                     .amount(BigDecimal.valueOf(data.getAmount()))
                     .orderCode(data.getOrderCode())
                     .createdAt(LocalDateTime.now())
                     .build();
             paymentRepository.save(payment);
-            return new CreatePaymentResponseDTO(
-                    payment.getId(),
-                    BigDecimal.valueOf(data.getAmount()),
-                    data.getCurrency(),
-                    data.getDescription(),
-                    paymentData.getOrderCode().intValue(),
-                    data.getCheckoutUrl(),
-                    data.getQrCode(),
-                    data.getPaymentLinkId(),
-                    payment.getCreatedAt()
-            );
+            return PaymentMapper.buildPaymentResponseDTO(payment);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to create payment link: " + e.getMessage());
@@ -118,5 +110,10 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to verify payment webhook data: " + e.getMessage());
         }
+    }
+
+    public PaymentResponseDTO getPaymentById(Integer id) {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        return PaymentMapper.buildPaymentResponseDTO(payment.get());
     }
 }
