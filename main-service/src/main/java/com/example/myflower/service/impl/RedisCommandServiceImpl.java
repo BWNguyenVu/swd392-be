@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.auth.requests.ChangeEmailRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.exception.ErrorCode;
@@ -215,6 +216,31 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         catch (Exception e) {
             LOG.error("[isRevokedTokenExist] Has exception: ", e);
             return false;
+        }
+    }
+
+    @Override
+    public void storeOtpChangeEmail(Integer userId, String newEmail, String changeEmail) {
+        String key = String.format("otp:%s:%s", userId, changeEmail);
+        redisService.setStringValueByKeyExpire(key, newEmail, 300);
+    }
+
+    @Override
+    public String getOtpChangeEmail(Integer userId, String changeEmail) {
+        String key = String.format("otp:%s:%s", userId, changeEmail);
+        String email = redisService.getStringValueByKey(key);
+        return email.isEmpty() ? null : email;
+    }
+
+    @Override
+    public void deleteOtp(Integer userId, String newEmail, String changeEmail) {
+        try {
+            String key = String.format("otp:%s:%s", userId, changeEmail);
+            redisService.deleteStringValueByKey(key);
+            String secondKey = String.format("otp:%s:%s", userId, newEmail);
+            redisService.deleteStringValueByKey(secondKey);
+        } catch (Exception e) {
+
         }
     }
 }

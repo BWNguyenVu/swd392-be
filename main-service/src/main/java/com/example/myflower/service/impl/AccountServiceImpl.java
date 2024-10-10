@@ -1,6 +1,7 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
+import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
@@ -12,20 +13,21 @@ import com.example.myflower.entity.enumType.WalletLogActorEnum;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import com.example.myflower.exception.ErrorCode;
+import com.example.myflower.exception.account.AccountAppException;
+import com.example.myflower.exception.auth.AuthAppException;
 import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.repository.AccountRepository;
-import com.example.myflower.service.AccountService;
-import com.example.myflower.service.PaymentService;
-import com.example.myflower.service.TransactionService;
-import com.example.myflower.service.WalletLogService;
+import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import vn.payos.type.ItemData;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -42,6 +44,9 @@ public class AccountServiceImpl implements AccountService {
         this.paymentService = paymentService;
         this.walletLogService = walletLogService;
     }
+
+    @Autowired
+    private StorageService storageService;
 
     @Autowired
     private TransactionService transactionService;
@@ -212,7 +217,34 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponseDTO getProfile() {
         Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
         return AccountMapper.mapToAccountResponseDTO(account);
     }
 
+    @Override
+    public AccountResponseDTO uploadAvatar(MultipartFile file) throws IOException {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        account.setAvatar(storageService.uploadFile(file));
+        accountRepository.save(account);
+        return AccountMapper.mapToAccountResponseDTO(account);
+    }
+
+    @Override
+    public AccountResponseDTO updateProfile(UpdateAccountRequestDTO updateAccountRequestDTO){
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        account.setName(updateAccountRequestDTO.getName());
+        account.setGender(updateAccountRequestDTO.getGender());
+        account.setPhone(updateAccountRequestDTO.getPhone());
+        account.setUpdateAt(LocalDateTime.now());
+        accountRepository.save(account);
+        return AccountMapper.mapToAccountResponseDTO(account);
+    }
 }

@@ -31,7 +31,9 @@ public enum ErrorCode {
     EMAIL_WAIT_VERIFY(1501, "This email has been registered and is not verified, please verify and login", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1502, "This email has been registered, please log in!", HttpStatus.BAD_REQUEST),
     SUCCESS(200, "Success",HttpStatus.OK),
-
+    EMAIL_DUPLICATE(1502, "New email is not duplicate of the current email", HttpStatus.BAD_REQUEST),
+    INVALID_OTP(1504, "Invalid OTP", HttpStatus.BAD_REQUEST),
+    OTP_NOT_FOUND(1505, "OTP not found", HttpStatus.NOT_FOUND),
     //    ORDERS | CODE: 5XXX
     ORDER_NOT_FOUND(5000, "Order not found", HttpStatus.NOT_FOUND),
     ORDER_INVALID_FUNDS(5001, "Insufficient funds: Please top up your balance to complete this transaction", HttpStatus.BAD_REQUEST),

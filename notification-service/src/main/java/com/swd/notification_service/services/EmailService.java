@@ -70,6 +70,24 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+    public void changeEmail(String account) {
+        try {
+            Account accountDTO = objectMapper.readValue(account, Account.class);
+
+            EmailDetail emailDetail = new EmailDetail();
+            emailDetail.setName(accountDTO.getName());
+            emailDetail.setRecipient(accountDTO.getEmail());
+            emailDetail.setSubject("Change Email Request");
+
+            String otp = accountDTO.getOtp();
+            emailDetail.setMsgBody(otp);
+            sendEmailWithTemplate(emailDetail, "ChangePasswordEmailTemplate");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle specific exceptions or log appropriately
+        }
+    }
     public void sendForgotPasswordEmail(String account) {
         try {
             Account accountDTO = objectMapper.readValue(account, Account.class);
@@ -82,7 +100,6 @@ public class EmailService {
 
             String link = "http://103.250.78.50:6868/api/v1/auth/reset-password?token=" + token;
             emailDetail.setMsgBody(link);
-
             sendEmailWithTemplate(emailDetail, "ForgotPasswordEmailTemplate");
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,6 +193,7 @@ public class EmailService {
             Context context = new Context();
             context.setVariable("name", emailDetail.getName());
             context.setVariable("link", emailDetail.getMsgBody());
+            context.setVariable("otp", emailDetail.getMsgBody());
 
             String text = templateEngine.process(templateName, context);
 

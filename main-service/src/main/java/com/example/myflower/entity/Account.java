@@ -81,6 +81,9 @@ public class Account implements UserDetails {
     private String refreshToken;
 
     @Transient
+    private String otp;
+
+    @Transient
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();

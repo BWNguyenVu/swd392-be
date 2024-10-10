@@ -23,6 +23,7 @@ public class JWTServiceImpl implements JWTService {
     private static final String SECRET = "CRAZY@IWASC";
     private final long EXPIRATION = 1 * 24 * 60 * 60 * 1000;
     private final long EXPIRATION_REFRESHTOKEN = 7 * 24 * 60 * 60 * 1000;
+    private final long EXPIRATION_OTP = 5 * 60 * 1000;
     @Override
     public String generateToken(String email) {
         Date now = new Date(); // get current time
@@ -46,6 +47,19 @@ public class JWTServiceImpl implements JWTService {
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, SECRET)
+                .compact();
+    }
+
+    @Override
+    public String generateTokenByOtp(String otp) {
+        Date now = new Date(); // get current time
+        Date expirationDate = new Date(now.getTime() + EXPIRATION_OTP);
+
+        return Jwts.builder()
+                .setSubject(otp)
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
     }
 
