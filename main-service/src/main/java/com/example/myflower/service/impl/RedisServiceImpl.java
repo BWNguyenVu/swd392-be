@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,10 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void setStringValueByKey(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
+    }
+    @Override
+    public void setStringValueByKeyExpire(String key, String value, long expirationTime) {
+        redisTemplate.opsForValue().set(key, value, expirationTime, TimeUnit.SECONDS);
     }
 
     @Override

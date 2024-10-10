@@ -1,5 +1,6 @@
 package com.example.myflower.service;
 
+import com.example.myflower.dto.auth.requests.ChangeEmailRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 
@@ -34,4 +35,10 @@ public interface RedisCommandService {
     void revokeRefreshToken(Integer userId);
 
     boolean isRevokedTokenExist(Integer userId, String refreshToken);
+
+    void storeOtpChangeEmail(Integer userId, String newEmail, String changeEmail);
+
+    String getOtpChangeEmail(Integer userId, String changeEmail);
+
+    void deleteOtp(Integer userId, String newEmail, String changeEmail);
 }

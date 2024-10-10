@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="CLR">{FATAL=bright red, ERROR=red, WARN=yellow, INFO=Normal, DEBUG=white, TRACE=black}</Property>
+        <Property name="LOG_PATTERN">%highlight{%5p- %d{yyyy-MM-dd HH:mm:ss.SSS}}${CLR} %clr{${sys:PID}}{magenta}%clr{-}{faint}%clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan}  %highlight{: %m%n%xwEx}${CLR}</Property>
+        <Property name="FILE_LOG_PATTERN">%5p- %d{yyyy-MM-dd HH:mm:ss.SSS} ${sys:PID}-[%15.15t] %-40.40c{1.}: %c{1} - %m%n%xwEx</Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false"/>
+        </Console>
+
+        <RollingFile name="TextFileAppender" fileName="logs/app.log" filePattern="logs/app-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="JsonFileAppender" fileName="logs/app.json" filePattern="logs/app-%d{yyyy-MM-dd}.json">
+            <JsonLayout complete="false" compact="true" eventEol="true" properties="true"  >
+                <KeyValuePair key="appName" value="BlossomMainService" />
+                <KeyValuePair key="version" value="beta_sprint3" />
+                <KeyValuePair key="accountNo" value="${ctx:accountNo}"/>
+            </JsonLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="TextFileAppender" />
+            <AppenderRef ref="JsonFileAppender" />
+        </Root>
+    </Loggers>
+</Configuration>

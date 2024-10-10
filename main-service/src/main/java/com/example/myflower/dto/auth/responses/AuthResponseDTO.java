@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountResponseDTO implements Serializable {
+public class AuthResponseDTO implements Serializable {
     private Integer id;
     private String name;
     private String email;

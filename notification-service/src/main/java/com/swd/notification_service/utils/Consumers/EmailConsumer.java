@@ -40,5 +40,15 @@ public class EmailConsumer {
         }
     }
 
+    @KafkaListener(topics = "email_change-topic", groupId = "emailMessageTopic")
+    public void changeEmail(String account) {
+        try {
+            System.out.println("Received account: " + account);
+            emailService.changeEmail(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

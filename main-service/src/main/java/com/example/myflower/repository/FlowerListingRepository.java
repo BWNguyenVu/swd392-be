@@ -2,6 +2,7 @@ package com.example.myflower.repository;
 
 import com.example.myflower.entity.FlowerListing;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +39,11 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
             "AND (fc.isDeleted IS NULL OR fc.isDeleted = false)"
     )
     Optional<FlowerListing> findByIdAndDeleteStatus(@NotNull Integer id, Boolean isDeleted);
+
+    @Query("SELECT fl FROM FlowerListing fl " +
+            "JOIN FETCH fl.user u " +
+            "LEFT JOIN FETCH fl.categories fc " +
+            "WHERE u.id = :userId " +
+            "AND (fc.isDeleted IS NULL OR fc.isDeleted = false)")
+    List<FlowerListing> findByUserId(@Param("userId") Integer userId);
 }

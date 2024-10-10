@@ -8,6 +8,8 @@ public interface RedisService {
 
     void setStringValueByKey(String key, String value);
 
+    void setStringValueByKeyExpire(String key, String value, long expirationTime);
+
     List<String> getListStringValueByKey(String key);
 
     void deleteStringValueByKey(String key);

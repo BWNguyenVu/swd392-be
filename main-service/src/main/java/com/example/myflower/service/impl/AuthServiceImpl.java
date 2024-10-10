@@ -1,7 +1,8 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.consts.Constants;
-import com.example.myflower.dto.auth.responses.AccountResponseDTO;
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
+import com.example.myflower.dto.auth.responses.AuthResponseDTO;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.entity.Account;
@@ -11,10 +12,12 @@ import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
+import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.AuthService;
 import com.example.myflower.service.JWTService;
 import com.example.myflower.service.RedisCommandService;
+import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +34,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService, AuthService {
@@ -57,6 +62,9 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
     @Autowired
     private KafkaTemplate<String, Account> kafkaTemplate;
+
+    @Autowired
+    private StorageService storageService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -272,13 +280,68 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         }
     }
 
-    public AccountResponseDTO renewAccessToken(String token) {
+    @Override
+    public AuthResponseDTO renewAccessToken(String token) {
         String email = jwtService.extractEmail(token);
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND));
         String accessToken = jwtService.generateToken(account.getEmail());
-        return AccountResponseDTO.builder()
+        return AuthResponseDTO.builder()
                 .accessToken(accessToken)
                 .build();
     }
 
+    @Override
+    public AccountResponseDTO changeEmail(ChangeEmailRequestDTO changeEmailRequestDTO){
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        if(account.getEmail().equals(changeEmailRequestDTO.getEmail())){
+            throw new AuthAppException(ErrorCode.EMAIL_EXISTED);
+        }
+        account.setEmail(changeEmailRequestDTO.getEmail());
+        account.setOtp(generateRandomOtp());
+        String encodeOtp = jwtService.generateTokenByOtp(account.getOtp()) ;
+        redisCommandService.storeOtpChangeEmail(account.getId(), encodeOtp, changeEmailRequestDTO.getEmail());
+        redisCommandService.storeOtpChangeEmail(account.getId(), changeEmailRequestDTO.getEmail(), "change-email");
+
+        kafkaTemplate.send("email_change-topic", account);
+        return AccountMapper.mapToAccountResponseDTO(account);
+    }
+
+    private String generateRandomOtp() {
+        int otpLength = 6;
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < otpLength; i++) {
+            otp.append(random.nextInt(10));
+        }
+        return otp.toString();
+    }
+
+    @Override
+    public AccountResponseDTO confirmChangeEmail(String otp) {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        // Fetch OTP from Redis
+        String changeEmail = redisCommandService.getOtpChangeEmail(account.getId(),"change-email");
+        String storedOtp = redisCommandService.getOtpChangeEmail(account.getId(), changeEmail);
+
+        if (storedOtp == null) {
+            throw new AuthAppException(ErrorCode.OTP_NOT_FOUND);
+        }
+        String encodeOtp = jwtService.extractEmail(storedOtp);
+
+        if (!encodeOtp.equals(otp)) {
+            throw new AuthAppException(ErrorCode.INVALID_OTP);
+        }
+        redisCommandService.deleteOtp(account.getId(), changeEmail, "change-email");
+        account.setEmail(changeEmail);
+        account.setUpdateAt(LocalDateTime.now());
+        accountRepository.save(account);
+    return AccountMapper.mapToAccountResponseDTO(account);
+
+    }
 }

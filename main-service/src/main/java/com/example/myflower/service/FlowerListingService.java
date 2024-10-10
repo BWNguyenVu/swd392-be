@@ -7,9 +7,14 @@ import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
 
+import java.util.List;
+
 public interface FlowerListingService {
     FlowerListingListResponseDTO getFlowerListings(GetFlowerListingsRequestDTO requestDTO);
     FlowerListingResponseDTO getFlowerListingByID(Integer id);
+
+    List<FlowerListingResponseDTO> getFlowerListingsByUserID(Integer userId);
+
     FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account);
     FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO);
 }

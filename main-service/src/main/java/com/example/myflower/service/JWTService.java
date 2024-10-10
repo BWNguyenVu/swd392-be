@@ -25,4 +25,6 @@ public interface JWTService {
     Boolean validateToken(String token, Account userDetails);
 
     Map<String, Object> getPayload(String token) throws IOException;
+
+    String generateTokenByOtp(String otp);
 }
