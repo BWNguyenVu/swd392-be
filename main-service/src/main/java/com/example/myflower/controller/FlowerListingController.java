@@ -56,11 +56,16 @@ public class FlowerListingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FlowerListingResponseDTO> updateFlowerListingByID(
+    public ResponseEntity<FlowerListingResponseDTO> updateFlowerListingById(
             @PathVariable Integer id,
             @AuthenticationPrincipal Account account,
             @RequestBody UpdateFlowerListingRequestDTO flowerListingRequestDTO
     ) {
         return ResponseEntity.ok().body(flowerListingService.updateFlowerListing(id, account, flowerListingRequestDTO));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FlowerListingResponseDTO>> getFlowerListingByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok().body(flowerListingService.getFlowerListingsByUserID(userId));
     }
 }
