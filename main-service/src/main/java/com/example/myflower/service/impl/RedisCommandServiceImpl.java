@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.auth.requests.ChangeEmailRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.exception.ErrorCode;
@@ -35,8 +36,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                     .map(key -> redisService.getStringValueByKey(key))
                     .map(value -> objectMapper.convertValue(value, FlowerCategoryResponseDTO.class))
                     .toList();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
@@ -47,8 +47,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String key = String.format("flowerCategory:%s", id);
             String value = redisService.getStringValueByKey(key);
             return objectMapper.convertValue(value, FlowerCategoryResponseDTO.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -61,11 +60,9 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                 String value = objectMapper.writeValueAsString(flowerCategoryResponseDTO);
                 redisService.setStringValueByKey(key, value);
             }
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new FlowerCategoryException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -76,11 +73,9 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String key = String.format("flowerCategory:%s", responseDTO.getId());
             String value = objectMapper.writeValueAsString(responseDTO);
             redisService.setStringValueByKey(key, value);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new FlowerCategoryException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -90,8 +85,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         try {
             String key = String.format("flowerCategory:%s", id);
             redisService.deleteStringValueByKey(key);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -102,8 +96,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String key = String.format("flowers:%s", id);
             String value = redisService.getStringValueByKey(key);
             return objectMapper.readValue(value, FlowerListingResponseDTO.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -116,8 +109,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             redisService.setStringValueByKey(key, value);
         } catch (JsonProcessingException e) {
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -127,8 +119,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         try {
             String key = String.format("flowers:%s", id);
             redisService.deleteStringValueByKey(key);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -139,8 +130,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String checkSumRefreshToken = DigestUtils.md5Hex(refreshToken);
             String key = String.format("refreshTokens:%s:%s", userId, checkSumRefreshToken);
             redisService.setStringValueByKey(key, refreshToken);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -152,8 +142,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String pattern = String.format("refreshTokens:%s:%s", userId, checkSumRefreshToken);
             Set<String> keySet = redisService.getKeysByPattern(pattern);
             return !keySet.isEmpty();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -170,8 +159,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                     .map(key -> redisService.getStringValueByKey(key))
                     .findFirst()
                     .orElse(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -190,8 +178,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                 String key = String.format("revokedRefreshTokens:%s:%s", userId, checkSumRefreshToken);
                 redisService.setStringValueByKey(key, refreshToken);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -203,9 +190,33 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String pattern = String.format("revokedRefreshTokens:%s:%s", userId, checkSumRefreshToken);
             Set<String> keySet = redisService.getKeysByPattern(pattern);
             return !keySet.isEmpty();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public void storeOtpChangeEmail(Integer userId, String newEmail, String changeEmail) {
+        String key = String.format("otp:%s:%s", userId, changeEmail);
+        redisService.setStringValueByKeyExpire(key, newEmail, 300);
+    }
+
+    @Override
+    public String getOtpChangeEmail(Integer userId, String changeEmail) {
+        String key = String.format("otp:%s:%s", userId, changeEmail);
+        String email = redisService.getStringValueByKey(key);
+        return email.isEmpty() ? null : email;
+    }
+
+    @Override
+    public void deleteOtp(Integer userId, String newEmail, String changeEmail) {
+        try {
+            String key = String.format("otp:%s:%s", userId, changeEmail);
+            redisService.deleteStringValueByKey(key);
+            String secondKey = String.format("otp:%s:%s", userId, newEmail);
+            redisService.deleteStringValueByKey(secondKey);
+        } catch (Exception e) {
+
         }
     }
 }

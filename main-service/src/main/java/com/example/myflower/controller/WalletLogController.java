@@ -17,7 +17,6 @@ public class WalletLogController {
     @Autowired
     private WalletLogService walletLogService;
 
-
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-account")
     public ResponseEntity<BaseResponseDTO> getAllWalletLogByAccount() {
@@ -45,5 +44,4 @@ public class WalletLogController {
                 .success(true)
                 .build());
     }
-
 }
