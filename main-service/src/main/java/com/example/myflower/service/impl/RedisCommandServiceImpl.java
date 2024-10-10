@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class RedisCommandServiceImpl implements RedisCommandService {
+    private static final Logger LOG = LogManager.getLogger(RedisCommandServiceImpl.class);
     @NonNull
     private RedisService redisService;
     @NonNull
@@ -37,6 +40,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                     .toList();
         }
         catch (Exception e) {
+            LOG.error("[getAllFlowerCategoriesWithDeleteStatusFalse] Has exception: ", e);
             return new ArrayList<>();
         }
     }
@@ -49,6 +53,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             return objectMapper.convertValue(value, FlowerCategoryResponseDTO.class);
         }
         catch (Exception e) {
+            LOG.error("[getFlowerCategoryById] Has exception: ", e);
             return null;
         }
     }
@@ -66,7 +71,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             throw new FlowerCategoryException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e) {
-
+            LOG.error("[setAllFlowerCategoriesWithDeleteStatusFalse] Has exception: ", e);
         }
     }
 
@@ -81,7 +86,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             throw new FlowerCategoryException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e) {
-
+            LOG.error("[setFlowerCategoryById] Has exception: ", e);
         }
     }
 
@@ -92,7 +97,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             redisService.deleteStringValueByKey(key);
         }
         catch (Exception e) {
-
+            LOG.error("[deleteFlowerCategoryById] Has exception: ", e);
         }
     }
 
@@ -104,6 +109,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             return objectMapper.readValue(value, FlowerListingResponseDTO.class);
         }
         catch (Exception e) {
+            LOG.error("[getFlowerById] Has exception: ", e);
             return null;
         }
     }
@@ -118,7 +124,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e) {
-
+            LOG.error("[setFlowerById] Has exception: ", e);
         }
     }
 
@@ -129,7 +135,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             redisService.deleteStringValueByKey(key);
         }
         catch (Exception e) {
-
+            LOG.error("[deleteFlowerById] Has exception: ", e);
         }
     }
 
@@ -141,7 +147,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             redisService.setStringValueByKey(key, refreshToken);
         }
         catch (Exception e) {
-
+            LOG.error("[storeRefreshToken] Has exception: ", e);
         }
     }
 
@@ -154,6 +160,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             return !keySet.isEmpty();
         }
         catch (Exception e) {
+            LOG.error("[isRefreshTokenExisted] Has exception: ", e);
             return false;
         }
     }
@@ -172,6 +179,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
                     .orElse(null);
         }
         catch (Exception e) {
+            LOG.error("[getValidRefreshTokenByUserId] Has exception: ", e);
             return null;
         }
     }
@@ -192,7 +200,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             }
         }
         catch (Exception e) {
-
+            LOG.error("[revokeRefreshToken] Has exception: ", e);
         }
     }
 
@@ -205,6 +213,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             return !keySet.isEmpty();
         }
         catch (Exception e) {
+            LOG.error("[isRevokedTokenExist] Has exception: ", e);
             return false;
         }
     }
