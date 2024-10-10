@@ -23,6 +23,8 @@ public class FlowerCategory {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CategoryParentEnum categoryParent;
+    @Column(nullable = false, length = 1000)
+    private String imageUrl;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

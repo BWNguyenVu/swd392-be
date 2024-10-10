@@ -2,6 +2,7 @@ package com.example.myflower.dto.auth.requests;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Builder

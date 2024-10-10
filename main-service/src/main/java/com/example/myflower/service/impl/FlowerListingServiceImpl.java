@@ -22,11 +22,14 @@ import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,6 +41,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FlowerListingServiceImpl implements FlowerListingService {
+    private static final Logger LOG = LogManager.getLogger(FlowerListingServiceImpl.class);
     @NonNull
     private RedisCommandService redisCommandService;
 
@@ -53,6 +57,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Override
     public FlowerListingListResponseDTO getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
     {
+        LOG.info("[getFlowerListings] Start get flower listing by parameters with request {}", requestDTO);
         //Construct sort by field parameters
         Sort sort;
         switch (requestDTO.getSortBy()) {
@@ -78,6 +83,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(requestDTO.getSearchString(), requestDTO.getCategoryIds(), Boolean.FALSE, pageable);
+        LOG.info("[getFlowerListings] Result from database: {}", flowerListingsPage);
         //Map file name to storage url
         flowerListingsPage.stream()
                 .forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
@@ -87,6 +93,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public FlowerListingResponseDTO getFlowerListingByID(Integer id) {
+        LOG.info("[getFlowerListingByID] Start get flower listing by ID: {}", id);
         FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
         if (cacheResponseDTO != null) {
             return cacheResponseDTO;
@@ -96,14 +103,18 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
         redisCommandService.setFlowerById(responseDTO);
+        LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
         return responseDTO;
     }
 
     @Override
+    @Transactional
     public FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account) {
         try {
+            LOG.info("[createFlowerListing] Start create new flower listing with data: {}", flowerListingRequestDTO);
             // Fetch categories by their IDs
             List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
+            LOG.info("[createFlowerListing] Found flower categories: {}", categories);
             MultipartFile imageFile = flowerListingRequestDTO.getImage();
 
             if (!ValidationUtils.validateImage(imageFile)) {
@@ -133,15 +144,18 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             result.setImageUrl(storageService.getFileUrl(fileName));
             FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
             redisCommandService.setFlowerById(responseDTO);
+            LOG.info("[createFlowerListing] End with result: {}", responseDTO);
             return responseDTO;
         }
         catch (IOException e) {
+            LOG.error("[createFlowerListing] Has exception: ", e);
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO) {
+        LOG.info("[createFlowerListing] Start update flower listing by ID {} and payload: {}", id, flowerListingRequestDTO);
         FlowerListing flowerListing = flowerListingRepository
                 .findById(id)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
@@ -165,6 +179,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         updatedFlowerListing.setImageUrl(storageService.getFileUrl(updatedFlowerListing.getImageUrl()));
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
         redisCommandService.setFlowerById(responseDTO);
+        LOG.info("[createFlowerListing] End with new data: {}", responseDTO);
         return responseDTO;
     }
 }
