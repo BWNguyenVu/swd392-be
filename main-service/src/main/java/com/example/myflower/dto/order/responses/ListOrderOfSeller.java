@@ -1,7 +1,6 @@
 package com.example.myflower.dto.order.responses;
 
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.entity.OrderSummary;
 import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -17,10 +16,9 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderDetailResponseDTO {
+public class ListOrderOfSeller {
     private Integer id;
     private FlowerListingResponseDTO flowerListing;
-    private OrderResponseDTO orderSummary;
     private Integer quantity;
     private BigDecimal price;
     private OrderDetailsStatusEnum status;

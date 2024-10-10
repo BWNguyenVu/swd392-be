@@ -1,18 +1,18 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.BaseResponseDTO;
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.requests.OrderDetailRequestDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.entity.*;
-import com.example.myflower.entity.enumType.OrderStatusEnum;
-import com.example.myflower.entity.enumType.WalletLogActorEnum;
-import com.example.myflower.entity.enumType.WalletLogStatusEnum;
-import com.example.myflower.entity.enumType.WalletLogTypeEnum;
+import com.example.myflower.entity.enumType.*;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.order.OrderAppException;
+import com.example.myflower.mapper.AccountMapper;
+import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.*;
 import com.example.myflower.service.AccountService;
 import com.example.myflower.service.AdminService;
@@ -20,6 +20,7 @@ import com.example.myflower.service.OrderService;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -49,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
 
     @Override
+    @Transactional
     public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
         // Get the current user account
         Account account = AccountUtils.getCurrentAccount();
@@ -126,10 +128,11 @@ public class OrderServiceImpl implements OrderService {
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .orderSummary(orderSummary)
-                    .user(account)
+                    .seller(flowerListing.getUser())
                     .flowerListing(flowerListing)
                     .price(item.getPrice())
                     .quantity(item.getQuantity())
+                    .status(OrderDetailsStatusEnum.PENDING)
                     .createdAt(LocalDateTime.now())
                     .build();
 
@@ -158,18 +161,28 @@ public class OrderServiceImpl implements OrderService {
                 this::convertOrderDetailDTO
         ).toList();
     }
-
+    private AccountResponseDTO convertAccountDTO(Account account) {
+        return AccountResponseDTO.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .email(account.getEmail())
+                .phone(account.getPhone())
+                .build();
+    }
     private OrderDetailResponseDTO convertOrderDetailDTO(OrderDetail orderDetail) {
         FlowerListingResponseDTO flowerListingResponseDTO = FlowerListingResponseDTO.builder()
                 .id(orderDetail.getId())
                 .name(orderDetail.getFlowerListing().getName())
+                .user(convertAccountDTO(orderDetail.getFlowerListing().getUser()))
                 .imageUrl(orderDetail.getFlowerListing().getImageUrl())
                 .description(orderDetail.getFlowerListing().getDescription())
                 .build();
         return OrderDetailResponseDTO.builder()
                 .flowerListing(flowerListingResponseDTO)
+                .status(orderDetail.getStatus())
                 .price(orderDetail.getPrice())
                 .quantity(orderDetail.getQuantity())
+                .createAt(orderDetail.getCreatedAt())
                 .build();
     }
 
@@ -180,22 +193,68 @@ public class OrderServiceImpl implements OrderService {
 
     public BaseResponseDTO getAllOrderByAccount() {
         Account account = AccountUtils.getCurrentAccount();
-        List<OrderSummary> orderSummarys = orderSummaryRepository.findOrderSummariesByUser(account);
-        orderSummarys.stream().map(
-                orderSummary -> OrderResponseDTO.builder()
-                        .id(orderSummary.getId())
-                        .balance(account.getBalance())
-                        .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
-                        .note(orderSummary.getNote())
-                        .status(orderSummary.getStatus())
-                        .createdAt(orderSummary.getCreatedAt())
-                        .totalAmount(orderSummary.getTotalPrice())
-                        .build()
-        ).toList();
+        if (account == null || account.getBalance() == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        List<OrderSummary> orderSummarys = switch (account.getRole()) {
+            case ADMIN -> orderSummaryRepository.findAll();
+            case USER -> orderSummaryRepository.findOrderSummariesByUser(account);
+            default -> throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
+        };
+
         return BaseResponseDTO.builder()
-                .data(orderSummarys)
+                .data(orderSummarys.stream().map(
+                        orderSummary -> OrderResponseDTO.builder()
+                                .id(orderSummary.getId())
+                                .buyerName(orderSummary.getBuyerName())
+                                .buyerEmail(orderSummary.getBuyerEmail())
+                                .buyerPhone(orderSummary.getBuyerPhone())
+                                .buyerAddress(orderSummary.getBuyerAddress())
+                                .balance(account.getBalance())
+                                .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
+                                .note(orderSummary.getNote())
+                                .status(orderSummary.getStatus())
+                                .createdAt(orderSummary.getCreatedAt())
+                                .totalAmount(orderSummary.getTotalPrice())
+                                .build()
+                ).toList())
                 .message("Get Orders successfully!")
                 .success(true)
+                .build();
+    }
+
+    @Override
+    public BaseResponseDTO getOrdersBySeller() {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null || account.getBalance() == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllBySeller(account);
+        return BaseResponseDTO.builder()
+                .data(orderDetails.stream().map(
+                        orderDetail -> OrderDetailResponseDTO.builder()
+                                .id(orderDetail.getId())
+                                .price(orderDetail.getPrice())
+                                .quantity(orderDetail.getQuantity())
+                                .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                                .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                                .createAt(orderDetail.getCreatedAt())
+                                .status(orderDetail.getStatus())
+                                .build()
+                ))
+                .build();
+    }
+
+    public OrderResponseDTO buildOrderResponseDTO(OrderSummary orderSummary) {
+        return OrderResponseDTO.builder()
+                .id(orderSummary.getId())
+                .buyerName(orderSummary.getBuyerName())
+                .buyerEmail(orderSummary.getBuyerEmail())
+                .buyerPhone(orderSummary.getBuyerPhone())
+                .buyerAddress(orderSummary.getBuyerAddress())
+                .note(orderSummary.getNote())
+                .status(orderSummary.getStatus())
                 .build();
     }
 }

@@ -25,6 +25,10 @@ public class OrderResponseDTO {
     private BigDecimal totalAmount;
     private String note;
     private BigDecimal balance;
+    private String buyerName;
+    private String buyerPhone;
+    private String buyerEmail;
+    private String buyerAddress;
     private List<OrderDetailResponseDTO> orderDetails;
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;

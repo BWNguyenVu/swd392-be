@@ -60,8 +60,8 @@ public class WalletLogServiceImpl implements WalletLogService {
                 throw new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND);
         };
 
-        return walletLogs.stream()
-                .map(WalletLogMapper::buildWalletLogResponseDTO)
+        return walletLogs.stream().map(
+                walletLog ->  WalletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment()))
                 .toList();
     }
 
@@ -71,7 +71,7 @@ public class WalletLogServiceImpl implements WalletLogService {
         WalletLog walletLog = walletLogRepository.findByIdAndUser(walletLogId, account)
                 .orElseThrow(() -> new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND));
 
-        return WalletLogMapper.buildWalletLogResponseDTO(walletLog);
+        return WalletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment());
     }
 
     @Override
