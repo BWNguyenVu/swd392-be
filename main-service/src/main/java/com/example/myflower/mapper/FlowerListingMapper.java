@@ -1,6 +1,6 @@
 package com.example.myflower.mapper;
 
-import com.example.myflower.dto.auth.responses.AccountResponseDTO;
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;

@@ -5,4 +5,5 @@ public enum OrderStatusEnum {
     SUCCESS,
     FAILED,
     REFUNDED,
+    PARTIALLY_DELIVERED
 }

@@ -43,6 +43,29 @@ public class OrderController {
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-account")
     public ResponseEntity<BaseResponseDTO> getOrderByAccount() {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderByAccount());
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderByAccount());
+        } catch (OrderAppException e) {
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponseDTO.builder()
+                            .success(false)
+                            .message(e.getErrorCode().getMessage())
+                            .code(e.getErrorCode().getCode())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDTO.builder()
+                    .success(false)
+                    .message(e.getMessage())
+                    .build());
+        }
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @GetMapping("/seller")
+    public ResponseEntity<BaseResponseDTO> getOrdersBySeller() {
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
+                .message("Get orders of seller successfully")
+                .success(true)
+                .data(orderService.getOrdersBySeller())
+                .build());
     }
 }

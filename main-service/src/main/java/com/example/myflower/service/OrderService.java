@@ -12,4 +12,5 @@ public interface OrderService {
     OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException;
     List<OrderDetailResponseDTO> getAllOrderDetailsByOrderSummaryId(Integer orderSummaryId) throws OrderAppException;
     BaseResponseDTO getAllOrderByAccount();
+    BaseResponseDTO getOrdersBySeller() throws OrderAppException;
 }
