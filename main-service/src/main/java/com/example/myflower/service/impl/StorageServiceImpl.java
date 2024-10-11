@@ -28,11 +28,16 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public String uploadFile(MultipartFile uploadedFile) throws IOException {
-        if (Boolean.TRUE.equals(isUsingS3)) {
-            File file = FileUtils.convertMultiPartFileToFile(uploadedFile);
-            String fileName = System.currentTimeMillis() + "_" + uploadedFile.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
-            return fileName;
+        File file = FileUtils.convertMultiPartFileToFile(uploadedFile);
+        try {
+            if (Boolean.TRUE.equals(isUsingS3)) {
+                String fileName = System.currentTimeMillis() + "_" + uploadedFile.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
+                return fileName;
+            }
+        }
+        finally {
+            file.delete();
         }
         return "";
     }

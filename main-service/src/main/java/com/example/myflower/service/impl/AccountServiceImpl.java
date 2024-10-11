@@ -230,8 +230,11 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        account.setAvatar(storageService.uploadFile(uploadFileRequestDTO.getFile()));
+        String imageUrl = storageService.uploadFile(uploadFileRequestDTO.getFile());
+        account.setAvatar(imageUrl);
         accountRepository.save(account);
+        account.setAvatar(storageService.getFileUrl(imageUrl));
+
         return AccountMapper.mapToAccountResponseDTO(account);
     }
 
