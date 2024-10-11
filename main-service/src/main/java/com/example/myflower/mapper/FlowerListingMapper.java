@@ -34,6 +34,7 @@ public class FlowerListingMapper {
                 .stockBalance(flowerListing.getStockBalance())
                 .categories(flowerCategories)
                 .imageUrl(flowerListing.getImageUrl())
+                .status(flowerListing.getStatus())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
                 .build();
