@@ -2,6 +2,7 @@ package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
+import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
@@ -224,12 +225,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseDTO uploadAvatar(MultipartFile file) throws IOException {
+    public AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
             throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        account.setAvatar(storageService.uploadFile(file));
+        account.setAvatar(storageService.uploadFile(uploadFileRequestDTO.getFile()));
         accountRepository.save(account);
         return AccountMapper.mapToAccountResponseDTO(account);
     }

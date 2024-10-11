@@ -2,6 +2,7 @@ package com.example.myflower.service;
 
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
+import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
@@ -22,6 +23,6 @@ public interface AccountService {
     ResponseEntity<GetBalanceResponseDTO> getBalance();
     Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status);
     AccountResponseDTO getProfile();
-    AccountResponseDTO uploadAvatar(MultipartFile file) throws IOException;
+    AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException;
     AccountResponseDTO updateProfile(UpdateAccountRequestDTO accountRequestDTO);
 }
