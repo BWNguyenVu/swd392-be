@@ -3,6 +3,7 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
+import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -58,9 +58,9 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @PostMapping("/upload-avatar")
-    public ResponseEntity<BaseResponseDTO> uploadAvatar(@RequestParam("file") MultipartFile file) throws IOException {
-        AccountResponseDTO accountResponseDTO = accountService.uploadAvatar(file);
+    @PostMapping(value = "/upload-avatar", consumes = "multipart/form-data")
+    public ResponseEntity<BaseResponseDTO> uploadAvatar(@ModelAttribute UploadFileRequestDTO uploadFileRequestDTO) throws IOException {
+        AccountResponseDTO accountResponseDTO = accountService.uploadAvatar(uploadFileRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponseDTO.builder()
                         .message("Upload avatar successful")
