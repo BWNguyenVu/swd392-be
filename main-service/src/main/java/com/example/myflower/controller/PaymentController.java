@@ -16,7 +16,6 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @PostMapping(path = "/confirm-webhook")
     public ObjectNode payosTransferHandler(@RequestBody ObjectNode body)
     {
