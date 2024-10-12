@@ -152,7 +152,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                     .user(account)
                     .address(flowerListingRequestDTO.getAddress())
                     .price(flowerListingRequestDTO.getPrice())
-                    .stockBalance(flowerListingRequestDTO.getStockBalance())
+                    .stockQuantity(flowerListingRequestDTO.getStockQuantity())
                     .categories(new HashSet<>(categories))
                     .imageUrl(fileName)
                     .createdAt(LocalDateTime.now())
@@ -198,7 +198,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             flowerListing.setDescription(flowerListingRequestDTO.getDescription());
             flowerListing.setAddress(flowerListingRequestDTO.getAddress());
             flowerListing.setPrice(flowerListingRequestDTO.getPrice());
-            flowerListing.setStockBalance(flowerListingRequestDTO.getStockBalance());
+            flowerListing.setStockQuantity(flowerListingRequestDTO.getStockQuantity());
             flowerListing.setImageUrl(fileName);
             flowerListing.setUpdatedAt(LocalDateTime.now());
             flowerListing.setStatus(FlowerListingStatusEnum.PENDING);

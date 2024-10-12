@@ -12,6 +12,7 @@ import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.repository.CartItemRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.CartItemService;
+import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final FlowerListingRepository flowerListingRepository;
     private final AccountRepository accountRepository;
+    private final StorageService storageService;
 
     @Override
     public ResponseEntity<BaseResponseDTO> getCartItemsByUser() throws Exception {
@@ -41,6 +43,7 @@ public class CartItemServiceImpl implements CartItemService {
             List<CartItemResponseDTO> cartItemResponse = cartItems.stream()
                     .map(CartItemResponseDTO::new)
                     .toList();
+            cartItemResponse.forEach(cartItemResponseDTO -> cartItemResponseDTO.setFlowerImageUrl(storageService.getFileUrl(cartItemResponseDTO.getFlowerImageUrl())));
 
             return new ResponseEntity<>(new BaseResponseDTO("OK", null, HttpStatus.OK.value(),
                     cartItemResponse), HttpStatus.OK);
@@ -71,7 +74,7 @@ public class CartItemServiceImpl implements CartItemService {
                         ErrorCode.FLOWER_NOT_APPROVED.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
 
-            if (existingFlowerListing.getStockBalance() < request.getQuantity())
+            if (existingFlowerListing.getStockQuantity() < request.getQuantity())
                 return new ResponseEntity<>(new BaseResponseDTO(
                         ErrorCode.FLOWER_OUT_OF_STOCK.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
@@ -94,6 +97,7 @@ public class CartItemServiceImpl implements CartItemService {
                 cartItemRepository.save(newCartItem);
 
                 CartItemResponseDTO response = new CartItemResponseDTO(newCartItem);
+                response.setFlowerImageUrl(storageService.getFileUrl(response.getFlowerImageUrl()));
                 return new ResponseEntity<>(new BaseResponseDTO("OK", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);
 
@@ -106,6 +110,7 @@ public class CartItemServiceImpl implements CartItemService {
                 }
                 cartItemRepository.save(existingCartItem);
                 CartItemResponseDTO response = new CartItemResponseDTO(existingCartItem);
+                response.setFlowerImageUrl(storageService.getFileUrl(response.getFlowerImageUrl()));
 
                 return new ResponseEntity<>(new BaseResponseDTO("Ok", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);

@@ -26,8 +26,8 @@ public class UpdateFlowerListingRequestDTO {
     @NotNull(message = "Price is required")
     private BigDecimal price;
     @NotNull(message = "Stock balance is required")
-    @Min(value = 0, message = "Stock balance must not be negative number")
-    private Integer stockBalance;
+    @Min(value = 0, message = "Stock quantity must not be negative number")
+    private Integer stockQuantity;
     @NotBlank(message = "Address is required")
     private String address;
     private List<Integer> categories;
