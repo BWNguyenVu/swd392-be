@@ -24,7 +24,7 @@ public class FlowerListingResponseDTO implements Serializable {
     private String description;
     private BigDecimal price;
     private String eventType;
-    private Integer stockBalance;
+    private Integer stockQuantity;
     private String address;
     private List<FlowerCategoryResponseDTO> categories;
     private String imageUrl;

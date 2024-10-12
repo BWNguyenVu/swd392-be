@@ -18,7 +18,7 @@ public class CartItemResponseDTO {
     private BigDecimal flowerPrice;
     private String flowerImageUrl;
     private String eventType;
-    private Integer stockBalance;
+    private Integer stockQuantity;
     private String address;
     private FlowerListingStatusEnum status;
 
@@ -34,7 +34,7 @@ public class CartItemResponseDTO {
             this.flowerPrice = flower.getPrice();
             this.flowerImageUrl = flower.getImageUrl();
             this.eventType = flower.getEventType();
-            this.stockBalance = flower.getStockBalance();
+            this.stockQuantity = flower.getStockQuantity();
             this.address = flower.getAddress();
             this.status = flower.getStatus();
         }
