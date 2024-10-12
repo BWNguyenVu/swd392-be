@@ -34,7 +34,7 @@ public class FlowerListing {
     @JoinTable(name = "flower_listing_categories", joinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
     private Set<FlowerCategory> categories = new HashSet<>();
     @Column(nullable = false)
-    private Integer stockBalance;
+    private Integer stockQuantity;
     @Column(nullable = false)
     private String address;
     @Column(nullable = false, length = 1000)
