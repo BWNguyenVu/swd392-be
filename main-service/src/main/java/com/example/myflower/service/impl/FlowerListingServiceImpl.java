@@ -84,12 +84,13 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(requestDTO.getSearchString(), requestDTO.getCategoryIds(), Boolean.FALSE, pageable);
-        LOG.info("[getFlowerListings] Result from database: {}", flowerListingsPage);
-        //Map file name to storage url
-        flowerListingsPage.stream()
-                .forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
 
-        return FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
+        FlowerListingListResponseDTO responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
+        //Map file name to storage url
+        responseDTO.getContent()
+                .forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
+        LOG.info("[getFlowerListings] End with result: {}", responseDTO);
+        return responseDTO;
     }
 
     @Override
@@ -103,6 +104,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
+        responseDTO.setImageUrl(storageService.getFileUrl(result.getImageUrl()));
         redisCommandService.setFlowerById(responseDTO);
         LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
         return responseDTO;
@@ -120,6 +122,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         List<FlowerListingResponseDTO> responseDTO = result.stream()
                 .map(FlowerListingMapper::toFlowerListingResponseDTO)
                 .toList();
+        //Map file name to storage url
+        responseDTO.forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
         LOG.info("[getFlowerListingsByUserID] End with response data: {}", responseDTO);
         return responseDTO;
     }
@@ -158,8 +162,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                     .build();
             FlowerListing result = flowerListingRepository.save(flowerListing);
 
-            result.setImageUrl(storageService.getFileUrl(fileName));
             FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
+            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
             redisCommandService.setFlowerById(responseDTO);
             LOG.info("[createFlowerListing] End with result: {}", responseDTO);
             return responseDTO;
@@ -172,31 +176,43 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO) {
-        LOG.info("[createFlowerListing] Start update flower listing by ID {} and payload: {}", id, flowerListingRequestDTO);
-        FlowerListing flowerListing = flowerListingRepository
-                .findById(id)
-                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+        try {
+            LOG.info("[updateFlowerListing] Start update flower listing by ID {} and payload: {}", id, flowerListingRequestDTO);
+            FlowerListing flowerListing = flowerListingRepository
+                    .findById(id)
+                    .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
-        //If request user is not owner of flower listing or not admin then throw error
-        if (!account.getRole().equals(AccountRoleEnum.ADMIN) && !Objects.equals(flowerListing.getUser().getId(), account.getId())) {
-            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+            //If request user is not owner of flower listing or not admin then throw error
+            if (!account.getRole().equals(AccountRoleEnum.ADMIN) && !Objects.equals(flowerListing.getUser().getId(), account.getId())) {
+                throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+            }
+
+            MultipartFile imageFile = flowerListingRequestDTO.getImage();
+            if (!ValidationUtils.validateImage(imageFile)) {
+                throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
+            }
+            //Store image at file storage
+            String fileName = storageService.uploadFile(imageFile);
+
+            flowerListing.setName(flowerListingRequestDTO.getName());
+            flowerListing.setDescription(flowerListingRequestDTO.getDescription());
+            flowerListing.setAddress(flowerListingRequestDTO.getAddress());
+            flowerListing.setPrice(flowerListingRequestDTO.getPrice());
+            flowerListing.setStockBalance(flowerListingRequestDTO.getStockBalance());
+            flowerListing.setImageUrl(fileName);
+            flowerListing.setUpdatedAt(LocalDateTime.now());
+            flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
+
+            FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
+
+            FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
+            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
+            redisCommandService.setFlowerById(responseDTO);
+            LOG.info("[updateFlowerListing] End with new data: {}", responseDTO);
+            return responseDTO;
         }
-
-        flowerListing.setName(flowerListingRequestDTO.getName());
-        flowerListing.setDescription(flowerListingRequestDTO.getDescription());
-        flowerListing.setAddress(flowerListingRequestDTO.getAddress());
-        flowerListing.setPrice(flowerListingRequestDTO.getPrice());
-        flowerListing.setStockBalance(flowerListingRequestDTO.getStockBalance());
-
-        flowerListing.setUpdatedAt(LocalDateTime.now());
-        flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
-
-        FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
-
-        updatedFlowerListing.setImageUrl(storageService.getFileUrl(updatedFlowerListing.getImageUrl()));
-        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
-        redisCommandService.setFlowerById(responseDTO);
-        LOG.info("[createFlowerListing] End with new data: {}", responseDTO);
-        return responseDTO;
+        catch (IOException e) {
+            throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }
