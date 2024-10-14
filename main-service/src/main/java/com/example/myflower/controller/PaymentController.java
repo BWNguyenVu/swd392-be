@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payments")
-@CrossOrigin("*")
+@CrossOrigin("**")
 public class PaymentController {
     @Autowired
     private ObjectMapper objectMapper;
