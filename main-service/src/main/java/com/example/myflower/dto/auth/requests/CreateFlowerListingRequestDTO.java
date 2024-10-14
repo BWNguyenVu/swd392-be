@@ -22,7 +22,7 @@ public class CreateFlowerListingRequestDTO {
     @Size(min = 5, message = "Flower name must be at least 5 characters long")
     private String name;
     @NotBlank(message = "Description is required")
-    @Size(max = 1000, message = "Flower name cannot exceed 1000 characters long")
+    @Size(max = 1000, message = "Flower description cannot exceed 1000 characters long")
     private String description;
     @NotNull(message = "Price is required")
     private BigDecimal price;
