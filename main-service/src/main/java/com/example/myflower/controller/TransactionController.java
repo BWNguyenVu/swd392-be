@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/transactions")
-@CrossOrigin("*")
+@CrossOrigin("**")
 public class TransactionController {
     @Autowired
     private TransactionService  transactionService;
