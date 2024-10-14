@@ -51,15 +51,18 @@ public class FlowerListingController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FlowerListingResponseDTO> createFlowerListing(@AuthenticationPrincipal Account account, @Valid @ModelAttribute CreateFlowerListingRequestDTO flowerListingRequestDTO) {
+    public ResponseEntity<FlowerListingResponseDTO> createFlowerListing(
+            @AuthenticationPrincipal Account account,
+            @Valid @ModelAttribute CreateFlowerListingRequestDTO flowerListingRequestDTO
+    ) {
         return ResponseEntity.ok().body(flowerListingService.createFlowerListing(flowerListingRequestDTO, account));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FlowerListingResponseDTO> updateFlowerListingById(
             @PathVariable Integer id,
             @AuthenticationPrincipal Account account,
-            @RequestBody UpdateFlowerListingRequestDTO flowerListingRequestDTO
+            @Valid @ModelAttribute UpdateFlowerListingRequestDTO flowerListingRequestDTO
     ) {
         return ResponseEntity.ok().body(flowerListingService.updateFlowerListing(id, account, flowerListingRequestDTO));
     }

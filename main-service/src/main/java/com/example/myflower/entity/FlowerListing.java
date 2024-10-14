@@ -24,7 +24,7 @@ public class FlowerListing {
     private Account user;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
