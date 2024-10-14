@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/account")
-@CrossOrigin("*")
+@CrossOrigin("**")
 public class AccountController {
     @Autowired
     private AccountService accountService;
