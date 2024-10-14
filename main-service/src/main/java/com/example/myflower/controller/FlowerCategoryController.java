@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/flower-categories")
 @RequiredArgsConstructor
+@CrossOrigin("**")
 public class FlowerCategoryController {
     @NonNull
     private FlowerCategoryService flowerCategoryService;

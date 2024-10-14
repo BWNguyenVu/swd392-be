@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/flowers")
-@CrossOrigin("*")
+@CrossOrigin("**")
 @RequiredArgsConstructor
 public class FlowerListingController {
     @NonNull

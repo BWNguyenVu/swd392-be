@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
-@CrossOrigin("*")
+@CrossOrigin("**")
 public class OrderController {
     @Autowired
     private OrderService orderService;
