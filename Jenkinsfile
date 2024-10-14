@@ -60,6 +60,38 @@ pipeline {
             }
         }
 
+        stage('Start Redis and Postgres Containers') {
+            steps {
+                script {
+                    // Start Redis if not running
+                    sh '''
+                    if [ $(docker inspect -f '{{.State.Running}}' 03157b32e3f3) = "false" ]; then
+                      docker start 03157b32e3f3;
+                    fi
+                    '''
+
+                    // Start Postgres if not running
+                    sh '''
+                    if [ $(docker inspect -f '{{.State.Running}}' e311c112c83b) = "false" ]; then
+                      docker start e311c112c83b;
+                    fi
+                    '''
+                }
+            }
+        }
+
+        stage('Start Zookeeper') {
+            steps {
+                script {
+                    sh '''
+                    if [ $(docker inspect -f '{{.State.Running}}' 4a53c8e9239e) = "false" ]; then
+                      docker start 4a53c8e9239e;
+                    fi
+                    '''
+                }
+            }
+        }
+
         stage('Build Maven for Main Service') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/BWNguyenVu/swd392-be.git']])
