@@ -18,4 +18,5 @@ public interface FlowerListingService {
     FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account);
     FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO);
     void clearFlowerListingCache();
+    Integer countProductBySeller(Integer sellerId);
 }

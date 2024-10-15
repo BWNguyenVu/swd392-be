@@ -3,6 +3,7 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.requests.GetOrderDetailsBySellerRequestDTO;
+import com.example.myflower.dto.order.requests.UpdateOrderDetailRequestDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
@@ -120,9 +121,19 @@ public class OrderController {
                 .build());
     }
 
-//    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-//    @PatchMapping("/confirm-preparing/{orderId}")
-//    public ResponseEntity<BaseResponseDTO> confirmPreparing(@PathVariable Integer orderId) {
-//
-//    }
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @PatchMapping("/update/{orderDetailId}")
+    public ResponseEntity<BaseResponseDTO> updateOrderDetailById(
+            @PathVariable Integer orderDetailId,
+            @RequestBody UpdateOrderDetailRequestDTO requestDTO) {
+
+        OrderDetailResponseDTO responseDTO = orderService.updateOrder(requestDTO, orderDetailId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponseDTO.builder()
+                        .message("Update order detail successfully")
+                        .success(true)
+                        .data(responseDTO)
+                        .build()
+        );
+    }
 }
