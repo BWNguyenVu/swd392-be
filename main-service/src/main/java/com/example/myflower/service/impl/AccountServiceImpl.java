@@ -54,6 +54,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private FlowerListingService flowerListingService;
+
     @Override
     public ResponseEntity<AddBalanceResponseDTO> addBalance(AddBalanceRequestDTO addBalanceRequestDTO) {
         final String addBalanceTitle = "Add balance";
@@ -156,17 +159,29 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status) {
+    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
         adjustAccountBalance(account, amount, type);
-
         switch (type) {
             case ADD:
-                createWalletLog(account, amount, type, actorEnum, payment, status);
+                WalletLog walletLogAdd = createWalletLog(account, amount, type, actorEnum, payment, status, isRefund);
+                if(isRefund) {
+                    if (actorEnum == WalletLogActorEnum.BUYER) {
+                        createTransaction(account, orderSummary, walletLogAdd);
+                    }
+                }
                 break;
             case SUBTRACT:
-                WalletLog walletLog = createWalletLog(account, amount, type, actorEnum, payment, status);
+                WalletLog walletLogSubtract = createWalletLog(account, amount, type, actorEnum, payment, status, isRefund);
                 if (actorEnum == WalletLogActorEnum.BUYER) {
-                    createTransaction(account, orderSummary, walletLog);
+                    createTransaction(account, orderSummary, walletLogSubtract);
+                }
+                if(isRefund) {
+                    if (actorEnum == WalletLogActorEnum.ADMIN) {
+                        createTransaction(account, orderSummary, walletLogSubtract);
+                    }
+                    if (actorEnum == WalletLogActorEnum.SELLER) {
+                        createTransaction(account, orderSummary, walletLogSubtract);
+                    }
                 }
                 break;
             case DEPOSIT:
@@ -191,7 +206,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
-    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status) {
+    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
         WalletLog walletLog = WalletLog.builder()
                 .user(account)
                 .amount(amount)
@@ -201,6 +216,7 @@ public class AccountServiceImpl implements AccountService {
                 .actorEnum(actorEnum)
                 .payment(payment)
                 .createdAt(LocalDateTime.now())
+                .isRefund(isRefund)
                 .build();
         walletLogService.createWalletLog(walletLog, account);
         return walletLog;
@@ -229,6 +245,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public SellerResponseDTO getSellerById(Integer sellerId){
         Optional<Account> account = accountRepository.findById(sellerId);
+        Integer countProduct = flowerListingService.countProductBySeller(sellerId);
         return SellerResponseDTO.builder()
                 .id(account.get().getId())
                 .name(account.get().getName())
@@ -236,8 +253,8 @@ public class AccountServiceImpl implements AccountService {
                 .phone(account.get().getPhone())
                 .avatar(account.get().getAvatar())
                 .gender(account.get().getGender())
+                .productCount(countProduct)
                 .build();
-
     }
 
 

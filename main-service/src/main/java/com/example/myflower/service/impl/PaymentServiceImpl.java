@@ -104,7 +104,8 @@ public class PaymentServiceImpl implements PaymentService {
                         null,
                         null,
                         payment,
-                        WalletLogStatusEnum.SUCCESS
+                        WalletLogStatusEnum.SUCCESS,
+                        false
                 );
             }
         } catch (Exception e) {
