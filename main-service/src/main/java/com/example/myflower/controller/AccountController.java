@@ -7,6 +7,7 @@ import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
+import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.service.AccountService;
 import jakarta.validation.Valid;
@@ -79,5 +80,24 @@ public class AccountController {
                         .success(true)
                         .data(accountResponseDTO)
                         .build());
+    }
+
+    @GetMapping("/profile/{profileId}")
+    public ResponseEntity<BaseResponseDTO> getSellerById(@PathVariable("profileId") Integer profileId) {
+        try {
+            final String message = "Get profile successful";
+            SellerResponseDTO accountResponse = accountService.getSellerById(profileId);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    BaseResponseDTO.builder()
+                            .message(message)
+                            .data(accountResponse)
+                            .build()
+            );
+        } catch (AccountAppException e) {
+            BaseResponseDTO errorResponse = BaseResponseDTO.builder()
+                    .message(e.getErrorCode().getMessage())
+                    .build();
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
+        }
     }
 }

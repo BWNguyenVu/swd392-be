@@ -22,12 +22,13 @@ public class CreateFlowerListingRequestDTO {
     @Size(min = 5, message = "Flower name must be at least 5 characters long")
     private String name;
     @NotBlank(message = "Description is required")
+    @Size(max = 1000, message = "Flower description cannot exceed 1000 characters long")
     private String description;
     @NotNull(message = "Price is required")
     private BigDecimal price;
-    @NotNull(message = "Stock balance is required")
-    @Min(value = 0, message = "Stock balance must not be negative number")
-    private Integer stockBalance;
+    @NotNull(message = "Stock quantity is required")
+    @Min(value = 0, message = "Stock quantity must not be negative number")
+    private Integer stockQuantity;
     @NotBlank(message = "Address is required")
     private String address;
     private List<Integer> categories;

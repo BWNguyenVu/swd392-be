@@ -55,8 +55,8 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
-            result.setImageUrl(storageService.getFileUrl(fileName));
             FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
+            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
             redisCommandService.setFlowerCategoryById(responseDTO);
             return responseDTO;
         }
@@ -94,8 +94,8 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
         }
         FlowerCategory result = flowerCategoryRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerCategoryException(ErrorCode.FLOWER_CATEGORY_NOT_FOUND));
-        result.setImageUrl(storageService.getFileUrl(result.getImageUrl()));
         FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
+        responseDTO.setImageUrl(storageService.getFileUrl(responseDTO.getImageUrl()));
         //Save to cache
         redisCommandService.setFlowerCategoryById(responseDTO);
         return responseDTO;
@@ -122,10 +122,10 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
             flowerCategory.setUpdatedAt(LocalDateTime.now());
             //Save to database
             FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
+            FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
             //Delete old image
             storageService.deleteFile(fileName);
-            result.setImageUrl(storageService.getFileUrl(fileName));
-            FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
+            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
             //Save to cache
             redisCommandService.setFlowerCategoryById(responseDTO);
             return responseDTO;

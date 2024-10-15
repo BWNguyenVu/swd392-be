@@ -5,6 +5,7 @@ import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
 import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
+import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
@@ -31,6 +32,7 @@ import vn.payos.type.ItemData;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -223,6 +225,21 @@ public class AccountServiceImpl implements AccountService {
         }
         return AccountMapper.mapToAccountResponseDTO(account);
     }
+
+    @Override
+    public SellerResponseDTO getSellerById(Integer sellerId){
+        Optional<Account> account = accountRepository.findById(sellerId);
+        return SellerResponseDTO.builder()
+                .id(account.get().getId())
+                .name(account.get().getName())
+                .email(account.get().getEmail())
+                .phone(account.get().getPhone())
+                .avatar(account.get().getAvatar())
+                .gender(account.get().getGender())
+                .build();
+
+    }
+
 
     @Override
     public AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException {

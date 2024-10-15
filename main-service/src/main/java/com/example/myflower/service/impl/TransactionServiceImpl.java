@@ -67,7 +67,6 @@ public class TransactionServiceImpl implements TransactionService {
                 .note(order.getNote())
                 .balance(user.getBalance())
                 .orderDetails(orderService.getAllOrderDetailsByOrderSummaryId(order.getId()))
-                .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
                 .build();
     }
