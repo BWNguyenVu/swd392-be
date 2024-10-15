@@ -6,6 +6,7 @@ import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
+import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.OrderSummary;
 import com.example.myflower.entity.Payment;
@@ -25,4 +26,5 @@ public interface AccountService {
     AccountResponseDTO getProfile();
     AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException;
     AccountResponseDTO updateProfile(UpdateAccountRequestDTO accountRequestDTO);
+    SellerResponseDTO getSellerById(Integer sellerId);
 }
