@@ -10,4 +10,6 @@ public class Constants {
     public static final String SORT_FLOWER_LISTING_BY_NAME = "name";
     public static final String SORT_FLOWER_LISTING_BY_PRICE = "price";
     public static final String SORT_FLOWER_LISTING_BY_CREATE_DATE = "createdAt";
+
+    public static final Integer S3_PRESIGNED_URL_EXPIRATION_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
 }

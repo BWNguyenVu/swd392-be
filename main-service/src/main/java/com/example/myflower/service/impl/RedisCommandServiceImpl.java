@@ -1,6 +1,5 @@
 package com.example.myflower.service.impl;
 
-import com.example.myflower.dto.auth.requests.ChangeEmailRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.exception.ErrorCode;
@@ -240,7 +239,19 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String secondKey = String.format("otp:%s:%s", userId, newEmail);
             redisService.deleteStringValueByKey(secondKey);
         } catch (Exception e) {
+            LOG.error("[deleteOtp] Has exception: ", e);
+        }
+    }
 
+    @Override
+    public void clearFlowerCache() {
+        try {
+            String pattern = "flowers:*";
+            Set<String> keySet = redisService.getKeysByPattern(pattern);
+            redisService.deleteListStringValueByKey(keySet);
+        }
+        catch (Exception e) {
+            LOG.error("[clearFlowerCache] Has exception: ", e);
         }
     }
 }
