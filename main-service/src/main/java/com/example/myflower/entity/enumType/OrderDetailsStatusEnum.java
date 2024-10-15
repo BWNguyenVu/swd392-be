@@ -5,6 +5,7 @@ public enum OrderDetailsStatusEnum {
     PREPARING,
     SHIPPED,
     DELIVERED,
-    CANCELED,
+    BUYER_CANCELED,
+    SELLER_CANCELED,
     REFUNDED
 }

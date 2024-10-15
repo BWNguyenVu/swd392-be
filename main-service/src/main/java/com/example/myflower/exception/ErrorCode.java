@@ -55,6 +55,10 @@ public enum ErrorCode {
     TRANSACTION_NOT_FOUND(4000, "Transaction not found", HttpStatus.NOT_FOUND),
     // WALLET LOG | 7XXX
     WALLET_NOT_FOUND(7000, "Wallet log not found", HttpStatus.NOT_FOUND),
+
+    // ORDERS | 8XXX
+    ORDER_NOT_CANCELED_BY_BUYER( 8001,"Order can't cancel", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_CANCELED_BY_SELLER( 8001,"Order can't cancel", HttpStatus.BAD_REQUEST),
     ;
     @Getter
     private final Integer code;

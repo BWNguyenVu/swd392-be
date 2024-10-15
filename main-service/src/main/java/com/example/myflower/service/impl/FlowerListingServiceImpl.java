@@ -223,6 +223,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     }
 
     @Override
+    public Integer countProductBySeller(Integer sellerId){
+        Integer productCount = flowerListingRepository.countFlowerListingByUserIdAndStatusNotIn(sellerId, List.of(FlowerListingStatusEnum.PENDING, FlowerListingStatusEnum.REJECTED) );
+        return productCount;
+    }
+
+    @Override
     public void clearFlowerListingCache() {
         LOG.info("[clearFlowerListingCache] Start clear flower listing cache");
         redisCommandService.clearFlowerCache();

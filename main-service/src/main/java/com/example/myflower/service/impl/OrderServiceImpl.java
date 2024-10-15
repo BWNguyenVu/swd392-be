@@ -3,10 +3,8 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
-import com.example.myflower.dto.order.requests.GetOrderByAccountRequestDTO;
-import com.example.myflower.dto.order.requests.GetOrderDetailsBySellerRequestDTO;
-import com.example.myflower.dto.order.requests.OrderDetailRequestDTO;
+import com.example.myflower.dto.flowercategogy.request.UpdateFlowerCategoryRequestDTO;
+import com.example.myflower.dto.order.requests.*;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.entity.*;
@@ -31,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -55,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private AccountService accountService;
+
 
     @Override
     @Transactional
@@ -93,18 +89,18 @@ public class OrderServiceImpl implements OrderService {
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary, Map<Account, BigDecimal> sellerBalanceMap) {
         Account accountAdmin = adminService.getAccountAdmin();
         // subtract balance for buyer
-        accountService.handleBalanceByOrder(accountBuyer, totalPrice, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.BUYER, orderSummary, null, WalletLogStatusEnum.SUCCESS);
+        accountService.handleBalanceByOrder(accountBuyer, totalPrice, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.BUYER, orderSummary, null, WalletLogStatusEnum.SUCCESS, false);
         for (Map.Entry<Account, BigDecimal> entry : sellerBalanceMap.entrySet()) {
             Account accountSeller = entry.getKey();
             BigDecimal amountInitial = entry.getValue();
             // handle calculator
             BigDecimal calculatorAmountForSeller = amountInitial.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getFeeService()));
             // add balance for seller
-            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER, orderSummary, null, WalletLogStatusEnum.SUCCESS);
+            accountService.handleBalanceByOrder(accountSeller, calculatorAmountForSeller, WalletLogTypeEnum.ADD, WalletLogActorEnum.SELLER, orderSummary, null, WalletLogStatusEnum.SUCCESS, false);
         }
 
         // add balance for admin
-        accountService.handleBalanceByOrder(accountAdmin, totalPrice.multiply(accountAdmin.getFeeService()), WalletLogTypeEnum.ADD, WalletLogActorEnum.ADMIN ,orderSummary, null, WalletLogStatusEnum.SUCCESS);
+        accountService.handleBalanceByOrder(accountAdmin, totalPrice.multiply(accountAdmin.getFeeService()), WalletLogTypeEnum.ADD, WalletLogActorEnum.ADMIN ,orderSummary, null, WalletLogStatusEnum.SUCCESS, false);
         sellerBalanceMap.clear();
     }
 
@@ -258,7 +254,8 @@ public class OrderServiceImpl implements OrderService {
         }
         List<OrderDetailsStatusEnum> defaultStatusList = List.of(
                 OrderDetailsStatusEnum.PENDING,
-                OrderDetailsStatusEnum.CANCELED,
+                OrderDetailsStatusEnum.SELLER_CANCELED,
+                OrderDetailsStatusEnum.BUYER_CANCELED,
                 OrderDetailsStatusEnum.DELIVERED,
                 OrderDetailsStatusEnum.SHIPPED,
                 OrderDetailsStatusEnum.PREPARING
@@ -308,5 +305,90 @@ public class OrderServiceImpl implements OrderService {
                 .buyerAddress(orderSummary.getBuyerAddress())
                 .note(orderSummary.getNote())
                 .build();
+    }
+
+    public OrderDetailResponseDTO updateOrder(UpdateOrderDetailRequestDTO requestDTO, Integer orderDetailId){
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null || account.getBalance() == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+
+        Optional<OrderDetail> orderDetail = orderDetailRepository.findById(orderDetailId);
+        if (!orderDetail.isPresent()) {
+            throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        switch (requestDTO.getStatus()) {
+            case PREPARING -> {
+                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PENDING)){
+                    orderDetail.get().setStatus(OrderDetailsStatusEnum.PREPARING);
+                    // send notification for user
+                }
+            }
+            case SHIPPED -> {
+                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PREPARING)){
+                    orderDetail.get().setStatus(OrderDetailsStatusEnum.SHIPPED);
+                }
+            }
+//            case REFUNDED -> {
+//                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+//                    orderDetail.get().setStatus(OrderDetailsStatusEnum.REFUNDED);
+//                    // another function
+//                }
+//            }
+            case DELIVERED -> {
+                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                    orderDetail.get().setStatus(OrderDetailsStatusEnum.DELIVERED);
+                    //send notification for seller & buyer
+                }
+            }
+            case BUYER_CANCELED -> {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
+                    throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
+                }
+                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                    orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
+                    orderDetail.get().setCancelReason(requestDTO.getReason());
+                    handleBalanceRefund(orderDetail);
+                }
+            }
+            case SELLER_CANCELED -> {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
+                    throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
+                }
+
+                if(account.equals(orderDetail.get().getSeller())){
+                    orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
+                    orderDetail.get().setCancelReason(requestDTO.getReason());
+
+                    handleBalanceRefund(orderDetail);
+                }
+            }
+        }
+
+        OrderDetail orderResponse = orderDetailRepository.save(orderDetail.get());
+        return OrderDetailResponseDTO.builder()
+                .id(orderResponse.getId())
+                .price(orderResponse.getPrice())
+                .quantity(orderResponse.getQuantity())
+                .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderResponse.getFlowerListing()))
+                .orderSummary(buildOrderResponseDTO(orderResponse.getOrderSummary()))
+                .createAt(orderResponse.getCreatedAt())
+                .status(orderResponse.getStatus())
+                .build();
+    }
+
+    private void handleBalanceRefund(Optional<OrderDetail> orderDetail) {
+        Account accountAdmin = adminService.getAccountAdmin();
+        BigDecimal refundBuyer = orderDetail.get().getPrice();
+        BigDecimal refundSeller = refundBuyer.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getBalance()));
+        BigDecimal refundAdmin = refundBuyer.subtract(refundSeller);
+        // refund buyer
+        accountService.handleBalanceByOrder(orderDetail.get().getOrderSummary().getUser(), refundBuyer, WalletLogTypeEnum.ADD, WalletLogActorEnum.BUYER, orderDetail.get().getOrderSummary(), null, WalletLogStatusEnum.SUCCESS, true);
+        // seller refund function
+        accountService.handleBalanceByOrder(orderDetail.get().getSeller(), refundSeller, WalletLogTypeEnum.SUBTRACT, WalletLogActorEnum.SELLER, orderDetail.get().getOrderSummary(), null, WalletLogStatusEnum.SUCCESS, true);
+        // admin refund function
+        accountService.handleBalanceByOrder(accountAdmin, refundAdmin, WalletLogTypeEnum.SUBTRACT,WalletLogActorEnum.ADMIN, orderDetail.get().getOrderSummary(), null, WalletLogStatusEnum.SUCCESS, true);
+
+        orderDetail.get().setRefund(true);
     }
 }
