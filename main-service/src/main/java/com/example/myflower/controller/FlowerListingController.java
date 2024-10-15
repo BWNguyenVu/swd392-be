@@ -71,4 +71,10 @@ public class FlowerListingController {
     public ResponseEntity<List<FlowerListingResponseDTO>> getFlowerListingByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok().body(flowerListingService.getFlowerListingsByUserID(userId));
     }
+
+    @PostMapping("/clear-cache")
+    public ResponseEntity<Void> clearFlowerListingCache() {
+        flowerListingService.clearFlowerListingCache();
+        return ResponseEntity.noContent().build();
+    }
 }

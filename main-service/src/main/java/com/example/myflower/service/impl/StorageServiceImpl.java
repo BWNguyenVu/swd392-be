@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.myflower.consts.Constants;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,7 @@ public class StorageServiceImpl implements StorageService {
     private Date generatePresignedUrlExpiration() {
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 60;
+        expTimeMillis += Constants.S3_PRESIGNED_URL_EXPIRATION_MILISECONDS;
         expiration.setTime(expTimeMillis);
         return expiration;
     }

@@ -83,7 +83,13 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             requestDTO.setCategoryIds(null);
         }
         //Get from database
-        Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(requestDTO.getSearchString(), requestDTO.getCategoryIds(), Boolean.FALSE, pageable);
+        Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(
+                requestDTO.getSearchString(),
+                requestDTO.getCategoryIds(),
+                FlowerListingStatusEnum.APPROVED,
+                Boolean.FALSE,
+                pageable
+        );
 
         FlowerListingListResponseDTO responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
         //Map file name to storage url
@@ -214,5 +220,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         catch (IOException e) {
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public void clearFlowerListingCache() {
+        LOG.info("[clearFlowerListingCache] Start clear flower listing cache");
+        redisCommandService.clearFlowerCache();
+        LOG.info("[clearFlowerListingCache] Finished clear cache");
     }
 }
