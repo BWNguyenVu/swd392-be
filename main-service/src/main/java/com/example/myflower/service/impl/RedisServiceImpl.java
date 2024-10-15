@@ -41,6 +41,11 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public void deleteListStringValueByKey(Set<String> keys) {
+        redisTemplate.delete(keys);
+    }
+
+    @Override
     public Set<String> getKeysByPattern(String pattern) {
         return redisTemplate.keys(pattern);
     }

@@ -34,9 +34,9 @@ public class OrderSummary {
     private String note;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private OrderStatusEnum status;
+//    @Column(nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private OrderStatusEnum status;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

@@ -4,6 +4,8 @@ import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
+import com.example.myflower.dto.order.requests.GetOrderByAccountRequestDTO;
+import com.example.myflower.dto.order.requests.GetOrderDetailsBySellerRequestDTO;
 import com.example.myflower.dto.order.requests.OrderDetailRequestDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
@@ -19,10 +21,15 @@ import com.example.myflower.service.AdminService;
 import com.example.myflower.service.OrderService;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +117,6 @@ public class OrderServiceImpl implements OrderService {
                 .buyerPhone(orderDTO.getBuyerPhone())
                 .buyerEmail(account.getEmail())
                 .totalPrice(totalPrice)
-                .status(OrderStatusEnum.PENDING)
                 .note(orderDTO.getNote())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -149,7 +155,6 @@ public class OrderServiceImpl implements OrderService {
                 .id(orderSummary.getId())
                 .totalAmount(orderSummary.getTotalPrice())
                 .balance(account.getBalance())
-                .status(OrderStatusEnum.SUCCESS)
                 .note(orderSummary.getNote())
                 .orderDetails(orderDetailsResponseDTO)
                 .createdAt(orderSummary.getCreatedAt())
@@ -190,49 +195,98 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailByOrderSummaryId(orderSummaryId);
         return convertOrderDetailDTO(orderDetails);
     }
-
-    public BaseResponseDTO getAllOrderByAccount() {
-        Account account = AccountUtils.getCurrentAccount();
-        if (account == null || account.getBalance() == null) {
-            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-        List<OrderSummary> orderSummarys = switch (account.getRole()) {
-            case ADMIN -> orderSummaryRepository.findAll();
-            case USER -> orderSummaryRepository.findOrderSummariesByUser(account);
-            default -> throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
-        };
-
-        return BaseResponseDTO.builder()
-                .data(orderSummarys.stream().map(
-                        orderSummary -> OrderResponseDTO.builder()
-                                .id(orderSummary.getId())
-                                .buyerName(orderSummary.getBuyerName())
-                                .buyerEmail(orderSummary.getBuyerEmail())
-                                .buyerPhone(orderSummary.getBuyerPhone())
-                                .buyerAddress(orderSummary.getBuyerAddress())
-                                .balance(account.getBalance())
-                                .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
-                                .note(orderSummary.getNote())
-                                .status(orderSummary.getStatus())
-                                .createdAt(orderSummary.getCreatedAt())
-                                .totalAmount(orderSummary.getTotalPrice())
-                                .build()
-                ).toList())
-                .message("Get Orders successfully!")
-                .success(true)
-                .build();
-    }
+//    @Override
+//    public Page<OrderResponseDTO> getAllOrderByAccount(GetOrderByAccountRequestDTO requestDTO) {
+//        Account account = AccountUtils.getCurrentAccount();
+//        if (account == null || account.getBalance() == null) {
+//            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+//        }
+//        List<OrderDetailsStatusEnum> defaultStatusList = List.of(
+//                OrderDetailsStatusEnum.PENDING,
+//                OrderDetailsStatusEnum.CANCELED,
+//                OrderDetailsStatusEnum.DELIVERED,
+//                OrderDetailsStatusEnum.SHIPPED,
+//                OrderDetailsStatusEnum.PREPARING
+//        );
+//
+//        if (requestDTO.getStatus() == null || requestDTO.getStatus().isEmpty()) {
+//            requestDTO.setStatus(defaultStatusList);
+//        }
+//
+//        if(requestDTO.getStartDate() == null ){
+//            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
+//        }
+//
+//        if(requestDTO.getEndDate() == null ){
+//            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
+//        }
+//
+//        Sort.Direction sortDirection = "desc".equalsIgnoreCase(requestDTO.getOrder()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+//        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), Sort.by(sortDirection, requestDTO.getSortBy()));
+//
+//        Page<OrderSummary> orderSummarys = switch (account.getRole()) {
+//            case ADMIN -> orderSummaryRepository.findAll(pageable);
+//            case USER -> orderSummaryRepository.findOrderSummariesByUserAndStatusInAndAndCreatedAtBetween(account, requestDTO.getStatus(),
+//                    requestDTO.getStartDate().atStartOfDay(),
+//                    requestDTO.getEndDate().plusDays(1).atStartOfDay(),
+//                    pageable);
+//            default -> throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
+//        };
+//
+//        return orderSummarys.map(
+//                        orderSummary -> OrderResponseDTO.builder()
+//                                .id(orderSummary.getId())
+//                                .buyerName(orderSummary.getBuyerName())
+//                                .buyerEmail(orderSummary.getBuyerEmail())
+//                                .buyerPhone(orderSummary.getBuyerPhone())
+//                                .buyerAddress(orderSummary.getBuyerAddress())
+//                                .balance(account.getBalance())
+//                                .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
+//                                .note(orderSummary.getNote())
+//                                .status(orderSummary.getStatus())
+//                                .createdAt(orderSummary.getCreatedAt())
+//                                .totalAmount(orderSummary.getTotalPrice())
+//                                .build()
+//                );
+//    }
 
     @Override
-    public BaseResponseDTO getOrdersBySeller() {
+    public Page<OrderDetailResponseDTO> getOrdersBySeller(GetOrderDetailsBySellerRequestDTO requestDTO) {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null || account.getBalance() == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
+        List<OrderDetailsStatusEnum> defaultStatusList = List.of(
+                OrderDetailsStatusEnum.PENDING,
+                OrderDetailsStatusEnum.CANCELED,
+                OrderDetailsStatusEnum.DELIVERED,
+                OrderDetailsStatusEnum.SHIPPED,
+                OrderDetailsStatusEnum.PREPARING
+        );
 
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllBySeller(account);
-        return BaseResponseDTO.builder()
-                .data(orderDetails.stream().map(
+        if (requestDTO.getStatus() == null || requestDTO.getStatus().isEmpty()) {
+            requestDTO.setStatus(defaultStatusList);
+        }
+
+        if(requestDTO.getStartDate() == null ){
+            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
+        }
+
+        if(requestDTO.getEndDate() == null ){
+            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
+        }
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(requestDTO.getOrder()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), Sort.by(sortDirection, requestDTO.getSortBy()));
+
+        Page<OrderDetail> orderDetails = orderDetailRepository.findAllBySellerAndStatusInAndCreatedAtBetweenAndSearch(
+                account,
+                requestDTO.getStatus(),
+                requestDTO.getStartDate().atStartOfDay(),
+                requestDTO.getEndDate().plusDays(1).atStartOfDay(),
+                "%" + requestDTO.getSearch() + "%",
+                pageable);
+
+        return  orderDetails.map(
                         orderDetail -> OrderDetailResponseDTO.builder()
                                 .id(orderDetail.getId())
                                 .price(orderDetail.getPrice())
@@ -242,8 +296,7 @@ public class OrderServiceImpl implements OrderService {
                                 .createAt(orderDetail.getCreatedAt())
                                 .status(orderDetail.getStatus())
                                 .build()
-                ))
-                .build();
+                );
     }
 
     public OrderResponseDTO buildOrderResponseDTO(OrderSummary orderSummary) {
@@ -254,7 +307,6 @@ public class OrderServiceImpl implements OrderService {
                 .buyerPhone(orderSummary.getBuyerPhone())
                 .buyerAddress(orderSummary.getBuyerAddress())
                 .note(orderSummary.getNote())
-                .status(orderSummary.getStatus())
                 .build();
     }
 }

@@ -2,14 +2,21 @@ package com.example.myflower.controller;
 
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
+import com.example.myflower.dto.order.requests.GetOrderDetailsBySellerRequestDTO;
+import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
+import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
 import com.example.myflower.exception.order.OrderAppException;
 import com.example.myflower.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -40,34 +47,82 @@ public class OrderController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @GetMapping("/by-account")
-    public ResponseEntity<BaseResponseDTO> getOrderByAccount() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderByAccount());
-        } catch (OrderAppException e) {
-            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponseDTO.builder()
-                            .success(false)
-                            .message(e.getErrorCode().getMessage())
-                            .code(e.getErrorCode().getCode())
-                    .build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDTO.builder()
-                    .success(false)
-                    .message(e.getMessage())
-                    .build());
-        }
-    }
+//    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+//    @GetMapping("/by-account")
+//    public ResponseEntity<BaseResponseDTO> getOrderByAccount(
+//            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+//            @RequestParam(required = false, defaultValue = "20") Integer pageSize,
+//            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+//            @RequestParam(required = false, defaultValue = "asc") String order,
+//            @RequestParam(required = false) List<OrderDetailsStatusEnum> status,
+//            @RequestParam(required = false) LocalDate startDate,
+//            @RequestParam(required = false) LocalDate endDate) {
+//        try {
+//            GetOrderByAccountRequestDTO requestDTO = GetOrderByAccountRequestDTO.builder()
+//                    .pageNumber(pageNumber)
+//                    .pageSize(pageSize)
+//                    .sortBy(sortBy)
+//                    .order(order)
+//                    .status(status)
+//                    .startDate(startDate)
+//                    .endDate(endDate)
+//                    .build();
+//            Page<OrderResponseDTO> orderResponseDTOS = orderService.getAllOrderByAccount(requestDTO);
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    BaseResponseDTO.builder()
+//                            .message("Get orders successful")
+//                            .success(true)
+//                            .data(orderResponseDTOS)
+//                            .build()
+//            );
+//        } catch (OrderAppException e) {
+//            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponseDTO.builder()
+//                            .success(false)
+//                            .message(e.getErrorCode().getMessage())
+//                            .code(e.getErrorCode().getCode())
+//                    .build());
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponseDTO.builder()
+//                    .success(false)
+//                    .message(e.getMessage())
+//                    .build());
+//        }
+//    }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @GetMapping("/seller")
-    public ResponseEntity<BaseResponseDTO> getOrdersBySeller() {
+    @GetMapping("/by-account")
+    public ResponseEntity<BaseResponseDTO> getOrdersBySeller(
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "20") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String order,
+            @RequestParam(required = false) List<OrderDetailsStatusEnum> status,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate
+    ) {
+        GetOrderDetailsBySellerRequestDTO requestDTO = GetOrderDetailsBySellerRequestDTO.builder()
+                .search(search)
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .sortBy(sortBy)
+                .order(order)
+                .status(status)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+        Page<OrderDetailResponseDTO> responseDTOS = orderService.getOrdersBySeller(requestDTO);
+
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
                 .message("Get orders of seller successfully")
                 .success(true)
-                .data(orderService.getOrdersBySeller())
+                .data(responseDTOS)
                 .build());
     }
 
-
+//    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+//    @PatchMapping("/confirm-preparing/{orderId}")
+//    public ResponseEntity<BaseResponseDTO> confirmPreparing(@PathVariable Integer orderId) {
+//
+//    }
 }
