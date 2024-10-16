@@ -32,6 +32,7 @@ public class FlowerListingMapper {
                 .price(flowerListing.getPrice())
                 .user(accountResponseDTO)
                 .stockQuantity(flowerListing.getStockQuantity())
+                .address(flowerListing.getAddress())
                 .categories(flowerCategories)
                 .imageUrl(flowerListing.getImageUrl())
                 .status(flowerListing.getStatus())
