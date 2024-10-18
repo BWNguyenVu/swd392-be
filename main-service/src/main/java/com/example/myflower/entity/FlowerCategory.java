@@ -3,10 +3,13 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.CategoryParentEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Getter
@@ -14,6 +17,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited(targetAuditMode = NOT_AUDITED)
 public class FlowerCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited
 public class OrderSummary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

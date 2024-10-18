@@ -2,9 +2,10 @@ package com.example.myflower.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
-
+@Audited
 @Entity
 @Getter
 @Setter
