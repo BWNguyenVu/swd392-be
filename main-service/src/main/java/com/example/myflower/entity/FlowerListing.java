@@ -3,12 +3,14 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Audited
 @Entity
 @Getter
 @Setter

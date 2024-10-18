@@ -4,9 +4,11 @@ import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
+import com.example.myflower.filter.AccountEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,13 +19,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+@Audited
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
+@EntityListeners(AccountEntityListener.class)
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
