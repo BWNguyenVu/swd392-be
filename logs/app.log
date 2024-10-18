@@ -1,0 +1,455 @@
+ INFO- 2024-10-18 22:44:21.537 31740-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-10-18 22:44:21.575 31740-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 31740 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-10-18 22:44:21.609 31740-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-10-18 22:44:22.356 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 22:44:22.358 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-10-18 22:44:22.471 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 109 ms. Found 10 JPA repository interfaces.
+ INFO- 2024-10-18 22:44:22.485 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 22:44:22.486 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-10-18 22:44:22.498 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.500 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.501 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.501 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.501 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.501 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.502 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.502 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.503 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.505 31740-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 22:44:22.506 31740-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-10-18 22:44:23.035 31740-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-10-18 22:44:23.047 31740-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 22:44:23.049 31740-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-10-18 22:44:23.051 31740-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-10-18 22:44:23.105 31740-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-10-18 22:44:23.106 31740-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1461 ms
+ INFO- 2024-10-18 22:44:23.256 31740-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-10-18 22:44:23.324 31740-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-10-18 22:44:23.357 31740-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-10-18 22:44:23.576 31740-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-10-18 22:44:23.611 31740-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-10-18 22:44:23.940 31740-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@403cff1c
+ INFO- 2024-10-18 22:44:23.942 31740-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-10-18 22:44:24.005 31740-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-10-18 22:44:24.996 31740-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-10-18 22:44:26.773 31740-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 22:44:27.555 31740-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-10-18 22:44:28.362 31740-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-10-18 22:44:28.389 31740-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-10-18 22:44:28.390 31740-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-10-18 22:44:28.867 31740-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-10-18 22:44:29.174 31740-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 22:44:29.184 31740-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-10-18 22:44:29.186 31740-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-10-18 22:44:29.187 31740-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2c444359]]
+ INFO- 2024-10-18 22:44:29.187 31740-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-10-18 22:44:29.198 31740-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 7.893 seconds (process running for 10.277)
+ INFO- 2024-10-18 22:45:29.165 31740-[MessageBroker-2] o.s.w.s.c.WebSocketMessageBrokerStats   : WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 4, active threads = 1, queued tasks = 2, completed tasks = 1]
+ INFO- 2024-10-18 22:46:20.805 31740-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-10-18 22:46:20.806 31740-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2c444359]]
+ INFO- 2024-10-18 22:46:20.806 31740-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-10-18 22:46:21.137 31740-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 22:46:21.140 31740-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-10-18 22:46:21.143 31740-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.
+ INFO- 2024-10-18 23:32:01.743 20064-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-10-18 23:32:01.785 20064-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 20064 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-10-18 23:32:01.821 20064-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-10-18 23:32:02.532 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 23:32:02.533 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-10-18 23:32:02.645 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 106 ms. Found 10 JPA repository interfaces.
+ INFO- 2024-10-18 23:32:02.658 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 23:32:02.659 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-10-18 23:32:02.671 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.672 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.672 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.673 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.673 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.674 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.674 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.674 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.675 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.678 20064-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:32:02.678 20064-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 13 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-10-18 23:32:03.137 20064-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-10-18 23:32:03.147 20064-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 23:32:03.149 20064-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-10-18 23:32:03.150 20064-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-10-18 23:32:03.201 20064-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-10-18 23:32:03.202 20064-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1339 ms
+ INFO- 2024-10-18 23:32:03.338 20064-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-10-18 23:32:03.383 20064-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-10-18 23:32:03.409 20064-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-10-18 23:32:03.579 20064-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-10-18 23:32:03.599 20064-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-10-18 23:32:03.929 20064-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@61607ff0
+ INFO- 2024-10-18 23:32:03.930 20064-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-10-18 23:32:03.981 20064-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-10-18 23:32:04.815 20064-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-10-18 23:32:06.500 20064-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 23:32:07.372 20064-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-10-18 23:32:08.234 20064-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-10-18 23:32:08.262 20064-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-10-18 23:32:08.263 20064-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-10-18 23:32:08.805 20064-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-10-18 23:32:09.122 20064-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 23:32:09.131 20064-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-10-18 23:32:09.132 20064-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-10-18 23:32:09.133 20064-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6316b72f]]
+ INFO- 2024-10-18 23:32:09.134 20064-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-10-18 23:32:09.144 20064-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 7.636 seconds (process running for 8.451)
+ INFO- 2024-10-18 23:32:17.341 20064-[nio-6868-exec-3] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+ INFO- 2024-10-18 23:32:17.342 20064-[nio-6868-exec-3] o.s.w.s.DispatcherServlet               : DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+ INFO- 2024-10-18 23:32:17.343 20064-[nio-6868-exec-3] o.s.w.s.DispatcherServlet               : DispatcherServlet - Completed initialization in 1 ms
+ERROR- 2024-10-18 23:32:20.035 20064-[nio-6868-exec-4] o.a.c.c.C.[.[.[.[dispatcherServlet]     : [dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [/api/v1] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "com.example.myflower.service.StorageService.getFileUrl(String)" because "com.example.myflower.mapper.AccountMapper.storageService" is null] with root cause
+
+java.lang.NullPointerException: Cannot invoke "com.example.myflower.service.StorageService.getFileUrl(String)" because "com.example.myflower.mapper.AccountMapper.storageService" is null
+	at com.example.myflower.mapper.AccountMapper.mapToAccountResponseDTO(AccountMapper.java:24) ~[classes/:?]
+	at com.example.myflower.service.impl.AccountServiceImpl.getProfile(AccountServiceImpl.java:241) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:716) ~[spring-aop-6.1.12.jar:6.1.12]
+	at com.example.myflower.service.impl.AccountServiceImpl$$SpringCGLIB$$0.getProfile(<generated>) ~[classes/:?]
+	at com.example.myflower.controller.AccountController.getProfile(AccountController.java:46) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.proceed(AuthorizationManagerBeforeMethodInterceptor.java:269) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.attemptAuthorization(AuthorizationManagerBeforeMethodInterceptor.java:264) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.invoke(AuthorizationManagerBeforeMethodInterceptor.java:197) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.config.annotation.method.configuration.DeferringMethodInterceptor.invoke(DeferringMethodInterceptor.java:44) ~[spring-security-config-6.3.3.jar:6.3.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.12.jar:6.1.12]
+	at com.example.myflower.controller.AccountController$$SpringCGLIB$$0.getProfile(<generated>) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.28.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.28.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter.doFilterInternal(DefaultLogoutPageGeneratingFilter.java:58) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:189) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:175) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at com.example.myflower.filter.JwtFilter.doFilterInternal(JwtFilter.java:68) ~[classes/:?]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.doFilterInternal(OAuth2AuthorizationRequestRedirectFilter.java:198) ~[spring-security-oauth2-client-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at java.base/java.lang.Thread.run(Thread.java:842) [?:?]
+
+ERROR- 2024-10-18 23:32:51.959 20064-[nio-6868-exec-7] o.a.c.c.C.[.[.[.[dispatcherServlet]     : [dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [/api/v1] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "com.example.myflower.service.StorageService.getFileUrl(String)" because "com.example.myflower.mapper.AccountMapper.storageService" is null] with root cause
+
+java.lang.NullPointerException: Cannot invoke "com.example.myflower.service.StorageService.getFileUrl(String)" because "com.example.myflower.mapper.AccountMapper.storageService" is null
+	at com.example.myflower.mapper.AccountMapper.mapToAccountResponseDTO(AccountMapper.java:24) ~[classes/:?]
+	at com.example.myflower.service.impl.AccountServiceImpl.getProfile(AccountServiceImpl.java:241) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:716) ~[spring-aop-6.1.12.jar:6.1.12]
+	at com.example.myflower.service.impl.AccountServiceImpl$$SpringCGLIB$$0.getProfile(<generated>) ~[classes/:?]
+	at com.example.myflower.controller.AccountController.getProfile(AccountController.java:46) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.proceed(AuthorizationManagerBeforeMethodInterceptor.java:269) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.attemptAuthorization(AuthorizationManagerBeforeMethodInterceptor.java:264) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.invoke(AuthorizationManagerBeforeMethodInterceptor.java:197) ~[spring-security-core-6.3.3.jar:6.3.3]
+	at org.springframework.security.config.annotation.method.configuration.DeferringMethodInterceptor.invoke(DeferringMethodInterceptor.java:44) ~[spring-security-config-6.3.3.jar:6.3.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.12.jar:6.1.12]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.12.jar:6.1.12]
+	at com.example.myflower.controller.AccountController$$SpringCGLIB$$0.getProfile(<generated>) ~[classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.28.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.28.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter.doFilterInternal(DefaultLogoutPageGeneratingFilter.java:58) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:189) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:175) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at com.example.myflower.filter.JwtFilter.doFilterInternal(JwtFilter.java:68) ~[classes/:?]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.doFilterInternal(OAuth2AuthorizationRequestRedirectFilter.java:198) ~[spring-security-oauth2-client-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.3.3.jar:6.3.3]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.12.jar:6.1.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) [tomcat-embed-core-10.1.28.jar:10.1.28]
+	at java.base/java.lang.Thread.run(Thread.java:842) [?:?]
+
+ INFO- 2024-10-18 23:33:09.119 20064-[MessageBroker-2] o.s.w.s.c.WebSocketMessageBrokerStats   : WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 4, active threads = 1, queued tasks = 2, completed tasks = 1]
+ INFO- 2024-10-18 23:35:54.041 20064-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-10-18 23:35:54.041 20064-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6316b72f]]
+ INFO- 2024-10-18 23:35:54.041 20064-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-10-18 23:35:54.274 20064-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 23:35:54.276 20064-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-10-18 23:35:54.278 20064-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.
+ INFO- 2024-10-18 23:36:37.735 14356-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-10-18 23:36:37.773 14356-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 14356 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-10-18 23:36:37.811 14356-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-10-18 23:36:38.640 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 23:36:38.642 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-10-18 23:36:38.792 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 142 ms. Found 10 JPA repository interfaces.
+ INFO- 2024-10-18 23:36:38.813 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-10-18 23:36:38.815 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-10-18 23:36:38.833 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.833 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.834 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.834 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.835 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.835 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.835 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.835 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.836 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.839 14356-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-10-18 23:36:38.840 14356-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-10-18 23:36:39.404 14356-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-10-18 23:36:39.412 14356-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 23:36:39.415 14356-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-10-18 23:36:39.416 14356-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-10-18 23:36:39.501 14356-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-10-18 23:36:39.503 14356-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1650 ms
+ INFO- 2024-10-18 23:36:39.665 14356-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-10-18 23:36:39.704 14356-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-10-18 23:36:39.724 14356-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-10-18 23:36:39.902 14356-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-10-18 23:36:39.922 14356-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-10-18 23:36:40.217 14356-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5300694d
+ INFO- 2024-10-18 23:36:40.221 14356-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-10-18 23:36:40.287 14356-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-10-18 23:36:41.190 14356-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-10-18 23:36:42.722 14356-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 23:36:43.413 14356-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-10-18 23:36:44.154 14356-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-10-18 23:36:44.183 14356-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-10-18 23:36:44.184 14356-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-10-18 23:36:44.637 14356-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-10-18 23:36:44.895 14356-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-10-18 23:36:44.904 14356-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-10-18 23:36:44.907 14356-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-10-18 23:36:44.907 14356-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@279b3773]]
+ INFO- 2024-10-18 23:36:44.908 14356-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-10-18 23:36:44.919 14356-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 7.427 seconds (process running for 8.344)
+ INFO- 2024-10-18 23:37:01.448 14356-[nio-6868-exec-1] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+ INFO- 2024-10-18 23:37:01.449 14356-[nio-6868-exec-1] o.s.w.s.DispatcherServlet               : DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+ INFO- 2024-10-18 23:37:01.450 14356-[nio-6868-exec-1] o.s.w.s.DispatcherServlet               : DispatcherServlet - Completed initialization in 1 ms
+ INFO- 2024-10-18 23:37:44.895 14356-[MessageBroker-2] o.s.w.s.c.WebSocketMessageBrokerStats   : WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 4, active threads = 1, queued tasks = 2, completed tasks = 1]
+ INFO- 2024-10-18 23:38:51.267 14356-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-10-18 23:38:51.268 14356-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@279b3773]]
+ INFO- 2024-10-18 23:38:51.268 14356-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-10-18 23:38:51.513 14356-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-10-18 23:38:51.515 14356-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-10-18 23:38:51.517 14356-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.

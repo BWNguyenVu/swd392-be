@@ -1,15 +1,12 @@
 package com.example.myflower.dto.account.responses;
 
 import com.example.myflower.entity.enumType.AccountGenderEnum;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.LocalDateTime;
-@Getter
-@Setter
+
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class SellerResponseDTO {
     private Integer id;

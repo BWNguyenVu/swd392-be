@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -408,6 +409,14 @@ public class OrderServiceImpl implements OrderService {
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
+        if(requestDTO.getStartDate() == null ){
+            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
+        }
+
+        if(requestDTO.getEndDate() == null ){
+            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
+        }
+
         List<Object[]> result = orderDetailRepository.countAndSumPriceBySellerAndCreatedAtBetween(
                 account.getId(),
                 requestDTO.getStartDate().atStartOfDay(),
