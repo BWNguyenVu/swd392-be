@@ -3,6 +3,7 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.cart.requests.InsertUpdateFlowerToCartRequestDTO;
 import com.example.myflower.dto.cart.responses.CartItemResponseDTO;
+import com.example.myflower.dto.order.requests.GetReportRequestDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.CartItem;
 import com.example.myflower.entity.FlowerListing;
@@ -152,4 +153,12 @@ public class CartItemServiceImpl implements CartItemService {
         return new ResponseEntity<>(new BaseResponseDTO("Ok", null, HttpStatus.OK.value(), null), HttpStatus.OK);
     }
 
+    @Override
+    public Integer countCartByTime(GetReportRequestDTO requestDTO, Account seller) {
+        return cartItemRepository.countCartItemByFlower_UserAndCreatedAtBetween(
+                seller,
+                requestDTO.getStartDate().atStartOfDay(),
+                requestDTO.getEndDate().plusDays(1).atStartOfDay()
+        );
+    }
 }

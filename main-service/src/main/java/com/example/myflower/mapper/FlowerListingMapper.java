@@ -35,6 +35,7 @@ public class FlowerListingMapper {
                 .categories(flowerCategories)
                 .imageUrl(flowerListing.getImageUrl())
                 .status(flowerListing.getStatus())
+                .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
                 .build();

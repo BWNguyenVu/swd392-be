@@ -18,6 +18,7 @@ import com.example.myflower.repository.FlowerCategoryRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.RedisCommandService;
+import com.example.myflower.service.SchedulerService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import com.example.myflower.utils.ValidationUtils;
@@ -25,6 +26,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +57,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @NonNull
     private FlowerCategoryRepository flowerCategoryRepository;
+
+    @Autowired
+    private SchedulerService schedulerService;
 
     @Override
     public FlowerListingListResponseDTO getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
@@ -102,6 +108,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Override
     public FlowerListingResponseDTO getFlowerListingByID(Integer id) {
         LOG.info("[getFlowerListingByID] Start get flower listing by ID: {}", id);
+
+        schedulerService.updateFlowerViews(id, 1);
+
         FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
         if (cacheResponseDTO != null) {
             return cacheResponseDTO;
@@ -224,8 +233,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public Integer countProductBySeller(Integer sellerId){
-        Integer productCount = flowerListingRepository.countFlowerListingByUserIdAndStatusNotIn(sellerId, List.of(FlowerListingStatusEnum.PENDING, FlowerListingStatusEnum.REJECTED) );
-        return productCount;
+        return flowerListingRepository.countFlowerListingByUserIdAndStatusNotIn(sellerId, List.of(FlowerListingStatusEnum.PENDING, FlowerListingStatusEnum.REJECTED) );
     }
 
     @Override
@@ -233,5 +241,16 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         LOG.info("[clearFlowerListingCache] Start clear flower listing cache");
         redisCommandService.clearFlowerCache();
         LOG.info("[clearFlowerListingCache] Finished clear cache");
+    }
+
+    @Override
+    public void updateViewsFlowerListing(Integer flowerListingId, Integer views) {
+        Optional<FlowerListing> flowerListing = flowerListingRepository.findById(flowerListingId);
+        if (flowerListing.isPresent()) {
+            flowerListing.get().setViews(flowerListing.get().getViews() + views);
+        } else {
+            throw new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND);
+        }
+        flowerListingRepository.save(flowerListing.get());
     }
 }

@@ -6,6 +6,7 @@ import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
+import com.example.myflower.entity.FlowerListing;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface FlowerListingService {
     FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO);
     void clearFlowerListingCache();
     Integer countProductBySeller(Integer sellerId);
+    void updateViewsFlowerListing(Integer flowerListingId, Integer views);
 }
