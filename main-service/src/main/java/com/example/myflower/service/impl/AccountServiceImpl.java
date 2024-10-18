@@ -6,7 +6,7 @@ import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
-import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
+import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.*;
@@ -26,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import vn.payos.type.ItemData;
 
 import java.io.IOException;
@@ -71,10 +70,10 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             // Create payment request
-            CreatePaymentRequestDTO createPaymentRequestDTO = buildPaymentRequest(addBalanceTitle, amount);
+            CreatePaymentResponseDTO createPaymentResponseDTO = buildPaymentRequest(addBalanceTitle, amount);
 
             // Process payment
-            PaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentRequestDTO, account);
+            PaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentResponseDTO, account);
 
             Payment payment = Payment.builder()
                     .id(paymentResponse.getId())
@@ -98,14 +97,14 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    private CreatePaymentRequestDTO buildPaymentRequest(String title, BigDecimal amount) {
+    private CreatePaymentResponseDTO buildPaymentRequest(String title, BigDecimal amount) {
         ItemData item = ItemData.builder()
                 .name(title)
                 .price(amount.intValue())
                 .quantity(1)
                 .build();
 
-        return CreatePaymentRequestDTO.builder()
+        return CreatePaymentResponseDTO.builder()
                 .item(item)
                 .totalAmount(amount)
                 .note(title)

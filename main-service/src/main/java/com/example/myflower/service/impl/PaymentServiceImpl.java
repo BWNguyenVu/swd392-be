@@ -1,6 +1,6 @@
 package com.example.myflower.service.impl;
 
-import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
+import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.Payment;
@@ -48,15 +48,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private ObjectMapper objectMapper;
     @Override
-    public PaymentResponseDTO createPayment(CreatePaymentRequestDTO createPaymentRequestDTO, Account account) {
+    public PaymentResponseDTO createPayment(CreatePaymentResponseDTO createPaymentResponseDTO, Account account) {
         String currentTimeString = String.valueOf(new Date().getTime());
         long orderCode = Long.parseLong(currentTimeString.substring(currentTimeString.length() - 6));
 
         PaymentData paymentData = PaymentData.builder()
                 .orderCode(orderCode)
-                .description(createPaymentRequestDTO.getNote())
-                .amount(createPaymentRequestDTO.getTotalAmount().intValue())
-                .item(createPaymentRequestDTO.getItem())
+                .description(createPaymentResponseDTO.getNote())
+                .amount(createPaymentResponseDTO.getTotalAmount().intValue())
+                .item(createPaymentResponseDTO.getItem())
                 .returnUrl(returnUrl)
                 .cancelUrl(cancelUrl)
                 .build();
