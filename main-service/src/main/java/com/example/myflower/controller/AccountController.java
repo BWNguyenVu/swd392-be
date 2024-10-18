@@ -3,9 +3,11 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
+import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
+import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.service.AccountService;
 import jakarta.validation.Valid;
@@ -14,13 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/account")
-@CrossOrigin("*")
+@CrossOrigin("**")
 public class AccountController {
     @Autowired
     private AccountService accountService;
@@ -58,9 +59,9 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @PostMapping("/upload-avatar")
-    public ResponseEntity<BaseResponseDTO> uploadAvatar(@RequestParam("file") MultipartFile file) throws IOException {
-        AccountResponseDTO accountResponseDTO = accountService.uploadAvatar(file);
+    @PostMapping(value = "/upload-avatar", consumes = "multipart/form-data")
+    public ResponseEntity<BaseResponseDTO> uploadAvatar(@ModelAttribute UploadFileRequestDTO uploadFileRequestDTO) throws IOException {
+        AccountResponseDTO accountResponseDTO = accountService.uploadAvatar(uploadFileRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(
                 BaseResponseDTO.builder()
                         .message("Upload avatar successful")
@@ -79,5 +80,24 @@ public class AccountController {
                         .success(true)
                         .data(accountResponseDTO)
                         .build());
+    }
+
+    @GetMapping("/profile/{profileId}")
+    public ResponseEntity<BaseResponseDTO> getSellerById(@PathVariable("profileId") Integer profileId) {
+        try {
+            final String message = "Get profile successful";
+            SellerResponseDTO accountResponse = accountService.getSellerById(profileId);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    BaseResponseDTO.builder()
+                            .message(message)
+                            .data(accountResponse)
+                            .build()
+            );
+        } catch (AccountAppException e) {
+            BaseResponseDTO errorResponse = BaseResponseDTO.builder()
+                    .message(e.getErrorCode().getMessage())
+                    .build();
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
+        }
     }
 }

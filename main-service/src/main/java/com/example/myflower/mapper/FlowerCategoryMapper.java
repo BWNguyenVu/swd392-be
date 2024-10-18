@@ -14,6 +14,7 @@ public class FlowerCategoryMapper {
                 .imageUrl(flowerCategory.getImageUrl())
                 .createdAt(flowerCategory.getCreatedAt())
                 .updatedAt(flowerCategory.getUpdatedAt())
+                .isDeleted(flowerCategory.isDeleted())
                 .build();
     }
 }

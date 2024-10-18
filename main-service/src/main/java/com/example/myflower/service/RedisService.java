@@ -14,5 +14,7 @@ public interface RedisService {
 
     void deleteStringValueByKey(String key);
 
+    void deleteListStringValueByKey(Set<String> keys);
+
     Set<String> getKeysByPattern(String pattern);
 }

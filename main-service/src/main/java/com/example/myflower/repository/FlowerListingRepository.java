@@ -1,6 +1,7 @@
 package com.example.myflower.repository;
 
 import com.example.myflower.entity.FlowerListing;
+import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +20,7 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
             "JOIN FETCH fl.user " +
             "LEFT JOIN FETCH fl.categories fc " +
             "WHERE fl.name IS NULL OR fl.name ILIKE %:name% " +
+            "AND (:status IS NULL OR fl.status = :status) " +
             "AND (:isDeleted IS NULL OR fl.isDeleted = :isDeleted) " +
             "AND (:categoryIds IS NULL OR fl.id IN (" +
                 "SELECT DISTINCT fl.id FROM FlowerListing fl " +
@@ -28,6 +30,7 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     )
     Page<FlowerListing> findAllByParameters(@Param("name") String name,
                                             @Param("categoryIds") List<Integer> categoryIds,
+                                            @Param("status") FlowerListingStatusEnum status,
                                             @Param("isDeleted") Boolean isDeleted,
                                             Pageable pageable);
 
@@ -46,4 +49,6 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
             "WHERE u.id = :userId " +
             "AND (fc.isDeleted IS NULL OR fc.isDeleted = false)")
     List<FlowerListing> findByUserId(@Param("userId") Integer userId);
+
+    Integer countFlowerListingByUserIdAndStatusNotIn(Integer userId, List<FlowerListingStatusEnum> statusList);
 }

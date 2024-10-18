@@ -2,8 +2,10 @@ package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
+import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
+import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
@@ -30,6 +32,7 @@ import vn.payos.type.ItemData;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -50,6 +53,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private FlowerListingService flowerListingService;
 
     @Override
     public ResponseEntity<AddBalanceResponseDTO> addBalance(AddBalanceRequestDTO addBalanceRequestDTO) {
@@ -153,17 +159,29 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status) {
+    public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
         adjustAccountBalance(account, amount, type);
-
         switch (type) {
             case ADD:
-                createWalletLog(account, amount, type, actorEnum, payment, status);
+                WalletLog walletLogAdd = createWalletLog(account, amount, type, actorEnum, payment, status, isRefund);
+                if(isRefund) {
+                    if (actorEnum == WalletLogActorEnum.BUYER) {
+                        createTransaction(account, orderSummary, walletLogAdd);
+                    }
+                }
                 break;
             case SUBTRACT:
-                WalletLog walletLog = createWalletLog(account, amount, type, actorEnum, payment, status);
+                WalletLog walletLogSubtract = createWalletLog(account, amount, type, actorEnum, payment, status, isRefund);
                 if (actorEnum == WalletLogActorEnum.BUYER) {
-                    createTransaction(account, orderSummary, walletLog);
+                    createTransaction(account, orderSummary, walletLogSubtract);
+                }
+                if(isRefund) {
+                    if (actorEnum == WalletLogActorEnum.ADMIN) {
+                        createTransaction(account, orderSummary, walletLogSubtract);
+                    }
+                    if (actorEnum == WalletLogActorEnum.SELLER) {
+                        createTransaction(account, orderSummary, walletLogSubtract);
+                    }
                 }
                 break;
             case DEPOSIT:
@@ -188,7 +206,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
-    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status) {
+    private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
         WalletLog walletLog = WalletLog.builder()
                 .user(account)
                 .amount(amount)
@@ -198,6 +216,7 @@ public class AccountServiceImpl implements AccountService {
                 .actorEnum(actorEnum)
                 .payment(payment)
                 .createdAt(LocalDateTime.now())
+                .isRefund(isRefund)
                 .build();
         walletLogService.createWalletLog(walletLog, account);
         return walletLog;
@@ -224,13 +243,32 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseDTO uploadAvatar(MultipartFile file) throws IOException {
+    public SellerResponseDTO getSellerById(Integer sellerId){
+        Optional<Account> account = accountRepository.findById(sellerId);
+        Integer countProduct = flowerListingService.countProductBySeller(sellerId);
+        return SellerResponseDTO.builder()
+                .id(account.get().getId())
+                .name(account.get().getName())
+                .email(account.get().getEmail())
+                .phone(account.get().getPhone())
+                .avatar(account.get().getAvatar())
+                .gender(account.get().getGender())
+                .productCount(countProduct)
+                .build();
+    }
+
+
+    @Override
+    public AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
             throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        account.setAvatar(storageService.uploadFile(file));
+        String imageUrl = storageService.uploadFile(uploadFileRequestDTO.getFile());
+        account.setAvatar(imageUrl);
         accountRepository.save(account);
+        account.setAvatar(storageService.getFileUrl(imageUrl));
+
         return AccountMapper.mapToAccountResponseDTO(account);
     }
 

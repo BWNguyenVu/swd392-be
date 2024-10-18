@@ -30,7 +30,5 @@ public class OrderResponseDTO {
     private String buyerEmail;
     private String buyerAddress;
     private List<OrderDetailResponseDTO> orderDetails;
-    @Enumerated(EnumType.STRING)
-    private OrderStatusEnum status;
     private LocalDateTime createdAt;
 }

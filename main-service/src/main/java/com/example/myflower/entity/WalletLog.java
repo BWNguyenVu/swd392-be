@@ -40,6 +40,8 @@ public class WalletLog {
     private WalletLogStatusEnum status;
     @Column(nullable = false)
     private boolean isClosed;
+    @Column(nullable = true)
+    private boolean isRefund;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

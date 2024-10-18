@@ -35,6 +35,10 @@ public class OrderDetail {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderDetailsStatusEnum status;
+    @Column(nullable = true)
+    private String cancelReason;
+    @Column(nullable = true)
+    private boolean isRefund;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

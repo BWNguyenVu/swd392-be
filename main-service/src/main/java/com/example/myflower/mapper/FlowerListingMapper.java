@@ -31,9 +31,11 @@ public class FlowerListingMapper {
                 .description(flowerListing.getDescription())
                 .price(flowerListing.getPrice())
                 .user(accountResponseDTO)
-                .stockBalance(flowerListing.getStockBalance())
+                .stockQuantity(flowerListing.getStockQuantity())
+                .address(flowerListing.getAddress())
                 .categories(flowerCategories)
                 .imageUrl(flowerListing.getImageUrl())
+                .status(flowerListing.getStatus())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
                 .build();
