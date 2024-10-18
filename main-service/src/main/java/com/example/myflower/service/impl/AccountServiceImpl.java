@@ -235,6 +235,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponseDTO getProfile() {
         Account account = AccountUtils.getCurrentAccount();
+        account.setAvatar(storageService.getFileUrl(account.getAvatar()));
         if (account == null) {
             throw new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
@@ -250,7 +251,7 @@ public class AccountServiceImpl implements AccountService {
                 .name(account.get().getName())
                 .email(account.get().getEmail())
                 .phone(account.get().getPhone())
-                .avatar(account.get().getAvatar())
+                .avatar(storageService.getFileUrl(account.get().getAvatar()))
                 .gender(account.get().getGender())
                 .productCount(countProduct)
                 .build();
