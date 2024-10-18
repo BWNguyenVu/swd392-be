@@ -31,6 +31,7 @@ public class FlowerListingResponseDTO implements Serializable {
     private FlowerListingStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer views;
     private boolean isDeleted;
     private String rejectReason;
 }

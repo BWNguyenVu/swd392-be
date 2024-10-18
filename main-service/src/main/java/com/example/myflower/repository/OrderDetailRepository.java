@@ -1,5 +1,6 @@
 package com.example.myflower.repository;
 
+import com.example.myflower.dto.order.responses.CountAndSumOrderResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.entity.OrderDetail;
@@ -30,4 +31,27 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             @Param("endDate") LocalDateTime endDate,
             @Param("search") String search,
             Pageable pageable);
+
+    @Query("SELECT o FROM OrderDetail o " +
+            "JOIN o.orderSummary b " +
+            "WHERE o.orderSummary.user = :user " +
+            "AND (b.buyerPhone LIKE %:search% OR b.buyerName LIKE %:search% OR b.buyerEmail LIKE %:search%) " +
+            "AND o.status IN :statuses " +
+            "AND o.createdAt BETWEEN :startDate AND :endDate")
+    Page<OrderDetail> findAllByOrderSummary_UserAndStatusInAndCreatedAtBetweenAndSearch(
+            @Param("user") Account user,
+            @Param("statuses") List<OrderDetailsStatusEnum> statuses,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("search") String search,
+            Pageable pageable);
+
+    @Query(value = "SELECT SUM(o.price) as totalPrice, COUNT(o.id) as orders " +
+            "FROM OrderDetail o " +
+            "WHERE o.seller.id = :sellerId " +
+            "AND o.createdAt BETWEEN :startDate AND :endDate")
+    List<Object[]> countAndSumPriceBySellerAndCreatedAtBetween(
+            @Param("sellerId") Integer sellerId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }

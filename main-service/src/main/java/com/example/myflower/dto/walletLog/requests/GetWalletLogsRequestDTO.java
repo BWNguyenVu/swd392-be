@@ -11,7 +11,6 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class GetWalletLogsRequestDTO extends BasePaginationRequestDTO {
     private List<WalletLogStatusEnum> status;
