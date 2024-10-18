@@ -2,6 +2,7 @@ package com.example.myflower.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
 @Builder
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Audited
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

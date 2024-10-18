@@ -75,7 +75,7 @@ public class OrderController {
         Page<OrderDetailResponseDTO> responseDTOS = orderService.getAllOrderByBuyer(requestDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
-                .message("Get orders of seller successfully")
+                .message("Get orders of buyer successfully")
                 .success(true)
                 .data(responseDTOS)
                 .build());

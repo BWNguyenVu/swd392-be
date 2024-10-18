@@ -2,15 +2,20 @@ package com.example.myflower.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited(targetAuditMode = NOT_AUDITED)
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
