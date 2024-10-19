@@ -2,13 +2,28 @@ package com.example.myflower.mapper;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.entity.Account;
-import com.example.myflower.filter.AccountEntityListener;
-import jakarta.persistence.EntityListeners;
+import com.example.myflower.service.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@EntityListeners(AccountEntityListener.class)
+@Component
 public class AccountMapper {
 
-    public static AccountResponseDTO mapToAccountResponseDTO(Account account) {
+    private final StorageService storageService;
+
+    @Autowired
+    public AccountMapper(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
+    public AccountResponseDTO mapToAccountResponseDTO(Account account) {
+        String avatarUrl = null;
+
+        // Manually handle the logic that would normally be in @PostLoad
+        if (account.getAvatar() != null) {
+            avatarUrl = storageService.getFileUrl(account.getAvatar());
+        }
+
         return AccountResponseDTO.builder()
                 .id(account.getId())
                 .name(account.getName())
@@ -17,7 +32,7 @@ public class AccountMapper {
                 .gender(account.getGender())
                 .role(account.getRole())
                 .externalAuthType(account.getExternalAuthType())
-                .avatar(account.getAvatar())
+                .avatar(avatarUrl)  // Set the avatar URL from storage service
                 .balance(account.getBalance())
                 .createAt(account.getCreateAt())
                 .updateAt(account.getUpdateAt())

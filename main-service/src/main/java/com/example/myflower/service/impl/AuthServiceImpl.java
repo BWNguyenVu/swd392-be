@@ -42,7 +42,8 @@ import java.util.Random;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService, AuthService {
-
+    @Autowired
+    private AccountMapper accountMapper;
     @Autowired
     private AccountRepository accountRepository;
 
@@ -306,7 +307,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         redisCommandService.storeOtpChangeEmail(account.getId(), changeEmailRequestDTO.getEmail(), "change-email");
 
         kafkaTemplate.send("email_change-topic", account);
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     private String generateRandomOtp() {
@@ -341,7 +342,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         account.setEmail(changeEmail);
         account.setUpdateAt(LocalDateTime.now());
         accountRepository.save(account);
-    return AccountMapper.mapToAccountResponseDTO(account);
+    return accountMapper.mapToAccountResponseDTO(account);
 
     }
 }
