@@ -25,6 +25,8 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private WalletLogMapper walletLogMapper;
 
     @Autowired
     @Lazy
@@ -48,7 +50,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction -> TransactionResponseDTO.builder()
                         .id(transaction.getId())
                         .order(buildOrderResponseDTO(transaction.getOrderSummary(), user))
-                        .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
+                        .walletLog(walletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
                         .createAt(transaction.getCreatedAt())
                         .updateAt(transaction.getUpdatedAt())
                         .build()).toList();
@@ -90,7 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
         TransactionResponseDTO transactionResponseDTO = TransactionResponseDTO.builder()
                 .id(transaction.getId())
                 .order(buildOrderResponseDTO(transaction.getOrderSummary(), transaction.getUser()))
-                .walletLog(WalletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
+                .walletLog(walletLogMapper.buildWalletLogResponseDTO(transaction.getWalletLog(), null))
                 .createAt(transaction.getCreatedAt())
                 .updateAt(transaction.getUpdatedAt())
                 .build();
