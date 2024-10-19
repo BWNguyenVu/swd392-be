@@ -26,7 +26,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@EntityListeners(AccountEntityListener.class)
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +56,7 @@ public class Account implements UserDetails {
     @Column
     private String externalAuthId;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1000)
     private String avatar;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -154,7 +153,5 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Blog> blogs;
-
-
 
 }

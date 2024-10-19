@@ -2,7 +2,10 @@ package com.example.myflower.mapper;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.entity.Account;
+import com.example.myflower.filter.AccountEntityListener;
+import jakarta.persistence.EntityListeners;
 
+@EntityListeners(AccountEntityListener.class)
 public class AccountMapper {
 
     public static AccountResponseDTO mapToAccountResponseDTO(Account account) {
