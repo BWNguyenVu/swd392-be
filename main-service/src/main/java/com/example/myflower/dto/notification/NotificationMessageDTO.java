@@ -1,7 +1,7 @@
-package com.swd.notification_service.dto.notifications;
+package com.example.myflower.dto.notification;
 
-import com.swd.notification_service.entity.enumType.DestinationScreenEnum;
-import com.swd.notification_service.entity.enumType.NotificationTypeEnum;
+import com.example.myflower.entity.enumType.DestinationScreenEnum;
+import com.example.myflower.entity.enumType.NotificationTypeEnum;
 import lombok.*;
 
 @NoArgsConstructor
@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class PushNotificationEventDTO {
+public class NotificationMessageDTO {
     private Integer userId;
     private String title;
     private String message;

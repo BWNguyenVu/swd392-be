@@ -16,8 +16,8 @@ public class NotificationConsumer {
     @NonNull
     private final ObjectMapper objectMapper;
 
-    @KafkaListener(topics = "push_notification_topic", groupId = "pushNotificationGroup")
-    public void processPushNotification(PushNotificationEventDTO eventDTO) {
-
+    @KafkaListener(topics = "push_notification_topic", groupId = "notificationsTopic")
+    public void processPushNotification(String eventJson) {
+        notificationService.pushNotification(eventJson);
     }
 }

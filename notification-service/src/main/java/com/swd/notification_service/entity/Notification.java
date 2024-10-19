@@ -29,6 +29,10 @@ public class Notification {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DestinationScreenEnum destinationScreen;
-    private boolean status;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "is_read")
+    private Boolean isRead;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 }
