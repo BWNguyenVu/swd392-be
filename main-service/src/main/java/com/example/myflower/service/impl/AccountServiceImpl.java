@@ -39,6 +39,8 @@ public class AccountServiceImpl implements AccountService {
     private final WalletLogService walletLogService;
     private static final BigDecimal MIN_BALANCE_AMOUNT = new BigDecimal("20000.00");
     @Autowired
+    private AccountMapper accountMapper;
+    @Autowired
     private AccountRepository accountRepository;
 
     // Constructor Injection cho các dependency
@@ -238,7 +240,7 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     @Override
@@ -267,7 +269,7 @@ public class AccountServiceImpl implements AccountService {
         String imageUrl = storageService.uploadFile(uploadFileRequestDTO.getFile());
         account.setAvatar(imageUrl);
         accountRepository.save(account);
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     @Override
@@ -281,6 +283,6 @@ public class AccountServiceImpl implements AccountService {
         account.setPhone(updateAccountRequestDTO.getPhone());
         account.setUpdateAt(LocalDateTime.now());
         accountRepository.save(account);
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 }
