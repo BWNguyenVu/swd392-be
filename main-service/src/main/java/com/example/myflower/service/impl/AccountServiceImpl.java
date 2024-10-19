@@ -245,6 +245,7 @@ public class AccountServiceImpl implements AccountService {
     public SellerResponseDTO getSellerById(Integer sellerId){
         Optional<Account> account = accountRepository.findById(sellerId);
         Integer countProduct = flowerListingService.countProductBySeller(sellerId);
+        account.get().setAvatar(storageService.getFileUrl(account.get().getAvatar()));
         return SellerResponseDTO.builder()
                 .id(account.get().getId())
                 .name(account.get().getName())

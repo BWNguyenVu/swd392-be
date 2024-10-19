@@ -13,7 +13,8 @@ public class AccountEntityListener {
 
     @PostLoad
     public void onPostLoad(Account account) {
-        if (account.getAvatar() != null) {
+        System.out.println(account.isSkipPostLoad());
+        if (account.getAvatar() != null && !account.isSkipPostLoad()) {
             String fileUrl = storageService.getFileUrl(account.getAvatar());
             account.setAvatar(fileUrl);
         }
