@@ -41,8 +41,9 @@ public class FlowerListing {
     private Integer stockQuantity;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false, length = 1000)
-    private String imageUrl;
+    @ManyToMany
+    @JoinTable(name = "flower_listing_images", joinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
+    private Set<MediaFile> mediaFiles = new HashSet<>();
     @Enumerated(EnumType.STRING)
     private FlowerListingStatusEnum status;
     @Column(name = "created_at")
