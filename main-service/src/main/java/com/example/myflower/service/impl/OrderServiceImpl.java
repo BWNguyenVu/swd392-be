@@ -1,31 +1,30 @@
 package com.example.myflower.service.impl;
 
-import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.dto.flowercategogy.request.UpdateFlowerCategoryRequestDTO;
 import com.example.myflower.dto.order.requests.*;
+import com.example.myflower.dto.order.responses.CountAndSumOrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
+import com.example.myflower.dto.order.responses.ReportResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.*;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.order.OrderAppException;
-import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.*;
-import com.example.myflower.service.AccountService;
-import com.example.myflower.service.AdminService;
-import com.example.myflower.service.OrderService;
+import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,21 +42,23 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private FlowerListingRepository flowerListingRepository;
 
-    private final Map<Account, BigDecimal> sellerBalanceMap = new HashMap<>();
-
     @Autowired
     private AdminService adminService;
 
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     @Override
     @Transactional
     public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
         // Get the current user account
         Account account = AccountUtils.getCurrentAccount();
-
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
@@ -191,63 +192,59 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailByOrderSummaryId(orderSummaryId);
         return convertOrderDetailDTO(orderDetails);
     }
-//    @Override
-//    public Page<OrderResponseDTO> getAllOrderByAccount(GetOrderByAccountRequestDTO requestDTO) {
-//        Account account = AccountUtils.getCurrentAccount();
-//        if (account == null || account.getBalance() == null) {
-//            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
-//        }
-//        List<OrderDetailsStatusEnum> defaultStatusList = List.of(
-//                OrderDetailsStatusEnum.PENDING,
-//                OrderDetailsStatusEnum.CANCELED,
-//                OrderDetailsStatusEnum.DELIVERED,
-//                OrderDetailsStatusEnum.SHIPPED,
-//                OrderDetailsStatusEnum.PREPARING
-//        );
-//
-//        if (requestDTO.getStatus() == null || requestDTO.getStatus().isEmpty()) {
-//            requestDTO.setStatus(defaultStatusList);
-//        }
-//
-//        if(requestDTO.getStartDate() == null ){
-//            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
-//        }
-//
-//        if(requestDTO.getEndDate() == null ){
-//            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
-//        }
-//
-//        Sort.Direction sortDirection = "desc".equalsIgnoreCase(requestDTO.getOrder()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-//        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), Sort.by(sortDirection, requestDTO.getSortBy()));
-//
-//        Page<OrderSummary> orderSummarys = switch (account.getRole()) {
-//            case ADMIN -> orderSummaryRepository.findAll(pageable);
-//            case USER -> orderSummaryRepository.findOrderSummariesByUserAndStatusInAndAndCreatedAtBetween(account, requestDTO.getStatus(),
-//                    requestDTO.getStartDate().atStartOfDay(),
-//                    requestDTO.getEndDate().plusDays(1).atStartOfDay(),
-//                    pageable);
-//            default -> throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
-//        };
-//
-//        return orderSummarys.map(
-//                        orderSummary -> OrderResponseDTO.builder()
-//                                .id(orderSummary.getId())
-//                                .buyerName(orderSummary.getBuyerName())
-//                                .buyerEmail(orderSummary.getBuyerEmail())
-//                                .buyerPhone(orderSummary.getBuyerPhone())
-//                                .buyerAddress(orderSummary.getBuyerAddress())
-//                                .balance(account.getBalance())
-//                                .orderDetails(getAllOrderDetailsByOrderSummaryId(orderSummary.getId()))
-//                                .note(orderSummary.getNote())
-//                                .status(orderSummary.getStatus())
-//                                .createdAt(orderSummary.getCreatedAt())
-//                                .totalAmount(orderSummary.getTotalPrice())
-//                                .build()
-//                );
-//    }
 
     @Override
-    public Page<OrderDetailResponseDTO> getOrdersBySeller(GetOrderDetailsBySellerRequestDTO requestDTO) {
+    public Page<OrderDetailResponseDTO> getAllOrderByBuyer(GetOrderDetailsRequestDTO requestDTO) {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null || account.getBalance() == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        List<OrderDetailsStatusEnum> defaultStatusList = List.of(
+                OrderDetailsStatusEnum.PENDING,
+                OrderDetailsStatusEnum.SELLER_CANCELED,
+                OrderDetailsStatusEnum.BUYER_CANCELED,
+                OrderDetailsStatusEnum.DELIVERED,
+                OrderDetailsStatusEnum.SHIPPED,
+                OrderDetailsStatusEnum.PREPARING
+        );
+
+        if (requestDTO.getStatus() == null || requestDTO.getStatus().isEmpty()) {
+            requestDTO.setStatus(defaultStatusList);
+        }
+
+        if(requestDTO.getStartDate() == null ){
+            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
+        }
+
+        if(requestDTO.getEndDate() == null ){
+            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
+        }
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(requestDTO.getOrder()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), Sort.by(sortDirection, requestDTO.getSortBy()));
+
+        Page<OrderDetail> orderDetails = orderDetailRepository.findAllByOrderSummary_UserAndStatusInAndCreatedAtBetweenAndSearch(
+                account,
+                requestDTO.getStatus(),
+                requestDTO.getStartDate().atStartOfDay(),
+                requestDTO.getEndDate().plusDays(1).atStartOfDay(),
+                "%" + requestDTO.getSearch() + "%",
+                pageable);
+
+        return  orderDetails.map(
+                orderDetail -> OrderDetailResponseDTO.builder()
+                        .id(orderDetail.getId())
+                        .price(orderDetail.getPrice())
+                        .quantity(orderDetail.getQuantity())
+                        .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                        .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                        .createAt(orderDetail.getCreatedAt())
+                        .status(orderDetail.getStatus())
+                        .build()
+        );
+    }
+
+    @Override
+    public Page<OrderDetailResponseDTO> getOrdersBySeller(GetOrderDetailsRequestDTO requestDTO) {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null || account.getBalance() == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
@@ -390,5 +387,47 @@ public class OrderServiceImpl implements OrderService {
         accountService.handleBalanceByOrder(accountAdmin, refundAdmin, WalletLogTypeEnum.SUBTRACT,WalletLogActorEnum.ADMIN, orderDetail.get().getOrderSummary(), null, WalletLogStatusEnum.SUCCESS, true);
 
         orderDetail.get().setRefund(true);
+    }
+
+    @Override
+    public OrderDetailResponseDTO getOrderDetailById(Integer orderDetailId) {
+        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailId).get();
+        return OrderDetailResponseDTO.builder()
+                .id(orderDetail.getId())
+                .price(orderDetail.getPrice())
+                .quantity(orderDetail.getQuantity())
+                .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                .createAt(orderDetail.getCreatedAt())
+                .status(orderDetail.getStatus())
+                .build();
+    }
+    @Override
+    public ReportResponseDTO getReportByAccount(GetReportRequestDTO requestDTO) {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        if(requestDTO.getStartDate() == null ){
+            requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
+        }
+
+        if(requestDTO.getEndDate() == null ){
+            requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
+        }
+
+        List<Object[]> result = orderDetailRepository.countAndSumPriceBySellerAndCreatedAtBetween(
+                account.getId(),
+                requestDTO.getStartDate().atStartOfDay(),
+                requestDTO.getEndDate().plusDays(1).atStartOfDay()
+        );
+        Integer countCart = cartItemService.countCartByTime(requestDTO, account);
+
+        return ReportResponseDTO.builder()
+                .totalPrice((BigDecimal) result.get(0)[0])
+                .orders(((Number) result.get(0)[1]).intValue())
+                .addToCart(countCart)
+                .build();
+
     }
 }

@@ -18,6 +18,7 @@ import com.example.myflower.service.JWTService;
 import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
+import com.nimbusds.jose.JOSEException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -35,13 +36,15 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService, AuthService {
-
+    @Autowired
+    private AccountMapper accountMapper;
     @Autowired
     private AccountRepository accountRepository;
 
@@ -317,7 +320,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         redisCommandService.storeOtpChangeEmail(account.getId(), changeEmailRequestDTO.getEmail(), "change-email");
 
         kafkaTemplate.send("email_change-topic", account);
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     private String generateRandomOtp() {
@@ -352,7 +355,13 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         account.setEmail(changeEmail);
         account.setUpdateAt(LocalDateTime.now());
         accountRepository.save(account);
-    return AccountMapper.mapToAccountResponseDTO(account);
+    return accountMapper.mapToAccountResponseDTO(account);
 
+    }
+    @Override
+    public IntrospectResponseDTO introspect(IntrospectRequestDTO request)  {
+        return IntrospectResponseDTO.builder()
+                .valid(jwtService.verifyToken(request.getToken(), false))
+                .build();
     }
 }

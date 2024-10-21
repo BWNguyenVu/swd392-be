@@ -23,13 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class WalletLogServiceImpl implements WalletLogService {
     @Autowired
     private WalletLogRepository walletLogRepository;
+    @Autowired
+    private WalletLogMapper walletLogMapper;
+
     @Override
     @Transactional
     public WalletLog createWalletLog(WalletLog walletLog, Account account) {
@@ -91,7 +93,7 @@ public class WalletLogServiceImpl implements WalletLogService {
             default -> throw new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND);
         };
 
-        return walletLogs.map(walletLog -> WalletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment()));
+        return walletLogs.map(walletLog -> walletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment()));
     }
 
 
@@ -101,7 +103,7 @@ public class WalletLogServiceImpl implements WalletLogService {
         WalletLog walletLog = walletLogRepository.findByIdAndUser(walletLogId, account)
                 .orElseThrow(() -> new WalletLogAppException(ErrorCode.WALLET_NOT_FOUND));
 
-        return WalletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment());
+        return walletLogMapper.buildWalletLogResponseDTO(walletLog, walletLog.getPayment());
     }
 
     @Override

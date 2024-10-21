@@ -4,6 +4,7 @@ import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

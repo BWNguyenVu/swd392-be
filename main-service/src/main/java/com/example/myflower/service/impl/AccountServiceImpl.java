@@ -6,7 +6,7 @@ import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
-import com.example.myflower.dto.payment.requests.CreatePaymentRequestDTO;
+import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.*;
@@ -26,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import vn.payos.type.ItemData;
 
 import java.io.IOException;
@@ -39,6 +38,8 @@ public class AccountServiceImpl implements AccountService {
     private final PaymentService paymentService;
     private final WalletLogService walletLogService;
     private static final BigDecimal MIN_BALANCE_AMOUNT = new BigDecimal("20000.00");
+    @Autowired
+    private AccountMapper accountMapper;
     @Autowired
     private AccountRepository accountRepository;
 
@@ -71,10 +72,10 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             // Create payment request
-            CreatePaymentRequestDTO createPaymentRequestDTO = buildPaymentRequest(addBalanceTitle, amount);
+            CreatePaymentResponseDTO createPaymentResponseDTO = buildPaymentRequest(addBalanceTitle, amount);
 
             // Process payment
-            PaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentRequestDTO, account);
+            PaymentResponseDTO paymentResponse = paymentService.createPayment(createPaymentResponseDTO, account);
 
             Payment payment = Payment.builder()
                     .id(paymentResponse.getId())
@@ -98,14 +99,14 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    private CreatePaymentRequestDTO buildPaymentRequest(String title, BigDecimal amount) {
+    private CreatePaymentResponseDTO buildPaymentRequest(String title, BigDecimal amount) {
         ItemData item = ItemData.builder()
                 .name(title)
                 .price(amount.intValue())
                 .quantity(1)
                 .build();
 
-        return CreatePaymentRequestDTO.builder()
+        return CreatePaymentResponseDTO.builder()
                 .item(item)
                 .totalAmount(amount)
                 .note(title)
@@ -239,13 +240,14 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     @Override
     public SellerResponseDTO getSellerById(Integer sellerId){
         Optional<Account> account = accountRepository.findById(sellerId);
         Integer countProduct = flowerListingService.countProductBySeller(sellerId);
+        account.get().setAvatar(storageService.getFileUrl(account.get().getAvatar()));
         return SellerResponseDTO.builder()
                 .id(account.get().getId())
                 .name(account.get().getName())
@@ -267,9 +269,7 @@ public class AccountServiceImpl implements AccountService {
         String imageUrl = storageService.uploadFile(uploadFileRequestDTO.getFile());
         account.setAvatar(imageUrl);
         accountRepository.save(account);
-        account.setAvatar(storageService.getFileUrl(imageUrl));
-
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 
     @Override
@@ -283,6 +283,6 @@ public class AccountServiceImpl implements AccountService {
         account.setPhone(updateAccountRequestDTO.getPhone());
         account.setUpdateAt(LocalDateTime.now());
         accountRepository.save(account);
-        return AccountMapper.mapToAccountResponseDTO(account);
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 }

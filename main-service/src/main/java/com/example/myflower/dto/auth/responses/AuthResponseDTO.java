@@ -5,6 +5,7 @@ import com.example.myflower.entity.enumType.AccountProviderEnum;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class AuthResponseDTO implements Serializable {
     private AccountRoleEnum role;
     private AccountProviderEnum externalAuthType;
     private String externalAuthId;
+    @Column(nullable = true, length = 1000)
     private String avatar;
     private BigDecimal balance;
     private String accessToken;

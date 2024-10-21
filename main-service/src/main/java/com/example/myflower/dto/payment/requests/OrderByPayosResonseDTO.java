@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import vn.payos.type.ItemData;
 
 import java.math.BigDecimal;
-
+import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreatePaymentRequestDTO {
+public class OrderByPayosResonseDTO {
     private BigDecimal totalAmount;
     private String note;
-    private ItemData item;
+    private List<ItemData> item;
 }

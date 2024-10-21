@@ -6,7 +6,6 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class UpdateOrderDetailRequestDTO {
     private String reason;

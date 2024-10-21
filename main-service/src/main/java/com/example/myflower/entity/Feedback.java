@@ -3,8 +3,11 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.RatingEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Getter
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited(targetAuditMode = NOT_AUDITED)
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,12 +3,14 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Audited
 @Entity
 @Getter
 @Setter
@@ -24,6 +26,8 @@ public class FlowerListing {
     private Account user;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = true)
+    private int views;
     @Column(nullable = false, length = 1000)
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
