@@ -45,8 +45,8 @@ public class JWTServiceImpl implements JWTService {
         Date expirationDate = new Date(now.getTime() + EXPIRATION);
 
         return Jwts.builder()
-                .setSubject(requestDTO.getUserId().toString())
-                .claim("email", requestDTO.getEmail())
+                .setSubject(requestDTO.getEmail())
+                .claim("userId", requestDTO.getUserId())
                 .claim("role", requestDTO.getRole().toString())
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
