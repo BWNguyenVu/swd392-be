@@ -19,6 +19,7 @@ import com.example.myflower.service.JWTService;
 import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
+import com.nimbusds.jose.JOSEException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -344,5 +346,11 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         accountRepository.save(account);
     return accountMapper.mapToAccountResponseDTO(account);
 
+    }
+    @Override
+    public IntrospectResponseDTO introspect(IntrospectRequestDTO request)  {
+        return IntrospectResponseDTO.builder()
+                .valid(jwtService.verifyToken(request.getToken(), false))
+                .build();
     }
 }

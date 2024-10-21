@@ -1,0 +1,29 @@
+server:
+  port: 8888
+jwt:
+  secret: "CRAZY@IWASC"
+
+app:
+  api-prefix: /api/v1
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: main_service
+          uri: https://services.blossom-app.store
+          predicates:
+            - Path=${app.api-prefix}/**
+          filters:
+            - StripPrefix=0
+        - id: notification_service
+          uri: https://notifications.blossom-app.store
+          predicates:
+            - Path=${app.api-prefix}/profile/users/**
+          filters:
+            - StripPrefix=0
