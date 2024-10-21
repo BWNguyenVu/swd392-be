@@ -13,7 +13,7 @@ spring:
     gateway:
       routes:
         - id: main_service
-          uri: https://services.blossom-app.store
+          uri: http://localhost:6868
           predicates:
             - Path=${app.api-prefix}/**
           filters:

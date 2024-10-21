@@ -6,6 +6,7 @@ import com.myflower.api_gateway.dto.BaseResponseDTO;
 import com.myflower.api_gateway.dto.responses.IntrospectResponseDTO;
 import com.myflower.api_gateway.services.IdentityService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -19,7 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import java.util.List;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter implements GlobalFilter, Ordered {
@@ -53,7 +54,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                     introspectResponse.getData(),
                     IntrospectResponseDTO.class
             );
-
+            log.info("introspectData: {}", introspectData);
             if (introspectData.isValid()) {
                 return chain.filter(exchange);
             } else {
