@@ -27,4 +27,6 @@ public interface JWTService {
     Map<String, Object> getPayload(String token) throws IOException;
 
     String generateTokenByOtp(String otp);
+
+    boolean verifyToken(String token, boolean isRefresh);
 }
