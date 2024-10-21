@@ -15,6 +15,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -118,5 +119,24 @@ public class JWTServiceImpl implements JWTService {
         DecodedJWT decodedJWT = JWT.decode(token);
         String payload = new String(java.util.Base64.getUrlDecoder().decode(decodedJWT.getPayload()));
         return objectMapper.readValue(payload, Map.class);
+    }
+
+    @Override
+    public boolean verifyToken(String token, boolean isRefresh) {
+        try {
+            Claims claims = extractAllClaims(token);
+
+            Date expiryTime = isRefresh
+                    ? new Date(claims.getIssuedAt().toInstant().plusMillis(EXPIRATION_REFRESHTOKEN).toEpochMilli())
+                    : claims.getExpiration();
+
+            if (expiryTime.after(new Date()) && !isTokenExpired(token)) {
+                return true;
+            }
+        } catch (JwtException | InvalidToken e) {
+            return false;
+        }
+
+        return false;
     }
 }
