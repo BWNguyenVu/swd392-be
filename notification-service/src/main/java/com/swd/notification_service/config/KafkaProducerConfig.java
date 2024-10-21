@@ -1,6 +1,7 @@
 package com.swd.notification_service.config;
 
 import com.swd.notification_service.dto.account.Account;
+import com.swd.notification_service.dto.notifications.PushNotificationEventDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,4 +34,19 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, Account> accountKafkaTemplate() {
         return new KafkaTemplate<>(accountProducerFactory());
     }
+
+    @Bean
+    public ProducerFactory<String, PushNotificationEventDTO> notificationProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, PushNotificationEventDTO> notificationKafkaTemplate() {
+        return new KafkaTemplate<>(notificationProducerFactory());
+    }
+
 }
