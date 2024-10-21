@@ -29,6 +29,11 @@ public class KafkaTopicConfig {
     }
 
     @Bean
+    public NewTopic notificationMessageTopic() {
+        return new NewTopic("notificationsTopic", 1, (short) 1);
+    }
+
+    @Bean
     public NewTopic processPaymentMessage() {
         return new NewTopic("create-payment", 1, (short) 1);
     }

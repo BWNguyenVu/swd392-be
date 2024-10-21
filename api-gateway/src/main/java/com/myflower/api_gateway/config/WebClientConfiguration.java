@@ -12,7 +12,7 @@ public class WebClientConfiguration {
     @Bean
     WebClient webClient(){
         return WebClient.builder()
-                .baseUrl("http://localhost:6868/api/v1")
+                .baseUrl("https://services.blossom-app.store/api/v1")
                 .build();
     }
 

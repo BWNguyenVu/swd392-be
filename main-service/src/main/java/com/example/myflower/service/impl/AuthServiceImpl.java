@@ -5,10 +5,10 @@ import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.AuthResponseDTO;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
+import com.example.myflower.dto.notification.NotificationMessageDTO;
+import com.example.myflower.dto.jwt.requests.GenerateAccessTokenRequestDTO;
 import com.example.myflower.entity.Account;
-import com.example.myflower.entity.enumType.AccountProviderEnum;
-import com.example.myflower.entity.enumType.AccountRoleEnum;
-import com.example.myflower.entity.enumType.AccountStatusEnum;
+import com.example.myflower.entity.enumType.*;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
@@ -67,6 +67,9 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
     private KafkaTemplate<String, Account> kafkaTemplate;
 
     @Autowired
+    private KafkaTemplate<String, NotificationMessageDTO> kafkaNotificationTemplate;
+
+    @Autowired
     private StorageService storageService;
 
     @Override
@@ -110,7 +113,13 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
                 refreshToken = jwtService.generateRefreshToken(account.getEmail());
                 redisCommandService.storeRefreshToken(account.getId(), refreshToken);
             }
-            account.setTokens(jwtService.generateToken(account.getEmail()));
+            account.setTokens(jwtService.generateAccessToken(
+                    GenerateAccessTokenRequestDTO.builder()
+                            .userId(account.getId())
+                            .role(account.getRole())
+                            .email(account.getEmail())
+                            .build()
+            ));
             account.setRefreshToken(refreshToken);
 
             String responseString = "Login successful";
@@ -277,6 +286,15 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
             Account accountEntity = getAccountByEmail(email);
             accountEntity.setStatus(AccountStatusEnum.VERIFIED);
             accountRepository.save(accountEntity);
+            NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
+                    .userId(accountEntity.getId())
+                    .title("Welcome")
+                    .message("Welcome " + accountEntity.getName() + " to our platform!")
+                    .destinationScreen(DestinationScreenEnum.HOME_PAGE)
+                    .type(NotificationTypeEnum.WELCOME)
+                    .build();
+            // KAFKA SEND MESSAGE TO NOTIFICATION SERVICE
+            kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
             return true;
         } catch (Exception e) {
             throw new RuntimeException("Invalid or expired token!", e);

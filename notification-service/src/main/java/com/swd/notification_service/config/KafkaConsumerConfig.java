@@ -1,6 +1,7 @@
 package com.swd.notification_service.config;
 
 import com.swd.notification_service.dto.account.Account;
+import com.swd.notification_service.dto.notifications.PushNotificationEventDTO;
 import com.swd.notification_service.dto.wallets.CashOutResponse;
 import com.swd.notification_service.dto.wallets.DataResponse;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -15,6 +16,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,11 @@ public class KafkaConsumerConfig {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.ojt.notification_service.dto.wallets, *, com.ojt.notification_service.dto.wallets.Enum.*, com.ojt.notification_service.dto.wallets.*, com.ojt.notification_service.dto.account, com.ojt.notification_service.dto.account.*, com.ojt.mockproject.entity.*");
 
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(DataResponse.class));
+        return new DefaultKafkaConsumerFactory<>(
+                props,
+                new StringDeserializer(),
+                new JsonDeserializer<>(DataResponse.class)
+        );
     }
 
     @Bean

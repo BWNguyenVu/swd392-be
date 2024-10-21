@@ -1,8 +1,5 @@
 server:
   port: 8888
-jwt:
-  secret: "CRAZY@IWASC"
-
 app:
   api-prefix: /api/v1
 
@@ -24,6 +21,6 @@ spring:
         - id: notification_service
           uri: https://notifications.blossom-app.store
           predicates:
-            - Path=${app.api-prefix}/profile/users/**
+            - Path=${app.api-prefix}/**
           filters:
             - StripPrefix=0

@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.jwt.requests.GenerateAccessTokenRequestDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.exception.token.InvalidToken;
 import com.example.myflower.service.JWTService;
@@ -38,6 +39,20 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
+    @Override
+    public String generateAccessToken(GenerateAccessTokenRequestDTO requestDTO) {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + EXPIRATION);
+
+        return Jwts.builder()
+                .setSubject(requestDTO.getUserId().toString())
+                .claim("email", requestDTO.getEmail())
+                .claim("role", requestDTO.getRole().toString())
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .compact();
+    }
     @Override
     public String generateRefreshToken(String email) {
         Date now = new Date(); // get current time
