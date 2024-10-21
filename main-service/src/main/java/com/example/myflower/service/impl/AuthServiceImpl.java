@@ -6,6 +6,7 @@ import com.example.myflower.dto.auth.responses.AuthResponseDTO;
 import com.example.myflower.dto.auth.requests.*;
 import com.example.myflower.dto.auth.responses.*;
 import com.example.myflower.dto.notification.NotificationMessageDTO;
+import com.example.myflower.dto.jwt.requests.GenerateAccessTokenRequestDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.enumType.*;
 import com.example.myflower.exception.ErrorCode;
@@ -112,7 +113,13 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
                 refreshToken = jwtService.generateRefreshToken(account.getEmail());
                 redisCommandService.storeRefreshToken(account.getId(), refreshToken);
             }
-            account.setTokens(jwtService.generateToken(account.getEmail()));
+            account.setTokens(jwtService.generateAccessToken(
+                    GenerateAccessTokenRequestDTO.builder()
+                            .userId(account.getId())
+                            .role(account.getRole())
+                            .email(account.getEmail())
+                            .build()
+            ));
             account.setRefreshToken(refreshToken);
 
             String responseString = "Login successful";
