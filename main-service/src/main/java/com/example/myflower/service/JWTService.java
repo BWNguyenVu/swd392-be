@@ -1,6 +1,7 @@
 package com.example.myflower.service;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.example.myflower.dto.jwt.requests.GenerateAccessTokenRequestDTO;
 import com.example.myflower.entity.Account;
 
 import java.io.IOException;
@@ -27,4 +28,8 @@ public interface JWTService {
     Map<String, Object> getPayload(String token) throws IOException;
 
     String generateTokenByOtp(String otp);
+
+    boolean verifyToken(String token, boolean isRefresh);
+
+    String generateAccessToken(GenerateAccessTokenRequestDTO requestDTO);
 }

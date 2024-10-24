@@ -110,7 +110,16 @@ public class AuthController {
         );
     }
 
-
-
-
+    @PostMapping("/introspect")
+    public ResponseEntity<BaseResponseDTO> checkIntrospect(@RequestBody IntrospectRequestDTO request) {
+        IntrospectResponseDTO responseDTO = authService.introspect(request);
+        System.out.println("Introspect hello");
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                BaseResponseDTO.builder()
+                        .message("Check introspection successfully")
+                        .success(true)
+                        .data(responseDTO)
+                        .build()
+        );
+    }
 }

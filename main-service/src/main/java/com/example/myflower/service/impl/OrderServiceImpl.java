@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
         // Get the current user account
-        Account account = AccountUtils.getCurrentAccount().setSkipPostLoad(true);
+        Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
