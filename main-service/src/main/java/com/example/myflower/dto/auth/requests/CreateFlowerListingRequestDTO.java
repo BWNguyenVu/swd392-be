@@ -33,5 +33,5 @@ public class CreateFlowerListingRequestDTO {
     private String address;
     private List<Integer> categories;
     @NotNull(message = "Flower image is required")
-    private MultipartFile image;
+    private List<MultipartFile> images;
 }

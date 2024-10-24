@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,6 +33,6 @@ public class UpdateFlowerListingRequestDTO {
     @NotBlank(message = "Address is required")
     private String address;
     private List<Integer> categories;
-    @NotNull(message = "Flower image is required")
-    private MultipartFile image;
+    private List<MultipartFile> newImages;
+    private List<Integer> deletedImages = new ArrayList<>();
 }

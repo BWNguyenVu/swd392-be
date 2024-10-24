@@ -17,12 +17,16 @@ import java.time.LocalDateTime;
 public class MediaFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
+    private Integer id;
     @Column(nullable = false)
-    public String url;
+    private String fileName;
+    @Column(nullable = true)
+    private String caption;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    public StorageMethodEnum storageMethod;
-    @Column(nullable = false)
-    public LocalDateTime createdAt;
+    private StorageMethodEnum storageMethod;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

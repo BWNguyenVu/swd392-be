@@ -1,6 +1,7 @@
 package com.example.myflower.dto.auth.responses;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,7 +28,7 @@ public class FlowerListingResponseDTO implements Serializable {
     private Integer stockQuantity;
     private String address;
     private List<FlowerCategoryResponseDTO> categories;
-    private String imageUrl;
+    private List<FileResponseDTO> images;
     private FlowerListingStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

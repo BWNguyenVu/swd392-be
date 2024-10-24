@@ -6,21 +6,19 @@ import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.entity.Account;
-import com.example.myflower.entity.FlowerCategory;
-import com.example.myflower.entity.FlowerListing;
+import com.example.myflower.dto.file.FileResponseDTO;
+import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.repository.FlowerCategoryRepository;
+import com.example.myflower.repository.FlowerImageRepository;
 import com.example.myflower.repository.FlowerListingRepository;
-import com.example.myflower.service.FlowerListingService;
-import com.example.myflower.service.RedisCommandService;
-import com.example.myflower.service.SchedulerService;
-import com.example.myflower.service.StorageService;
+import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
+import com.example.myflower.utils.FileUtils;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +45,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     private RedisCommandService redisCommandService;
 
     @NonNull
+    private FileMediaService fileMediaService;
+
+    @NonNull
     private StorageService storageService;
 
     @NonNull
@@ -57,6 +55,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @NonNull
     private FlowerCategoryRepository flowerCategoryRepository;
+
+    @NonNull
+    private FlowerImageRepository flowerImageRepository;
 
     @Autowired
     private SchedulerService schedulerService;
@@ -100,7 +101,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListingListResponseDTO responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
         //Map file name to storage url
         responseDTO.getContent()
-                .forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
+                .forEach(flower -> flower.setImages(this.getFlowerImages(flower.getId())));
         LOG.info("[getFlowerListings] End with result: {}", responseDTO);
         return responseDTO;
     }
@@ -119,7 +120,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
-        responseDTO.setImageUrl(storageService.getFileUrl(result.getImageUrl()));
+        responseDTO.setImages(this.getFlowerImages(id));
+
         redisCommandService.setFlowerById(responseDTO);
         LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
         return responseDTO;
@@ -138,7 +140,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .map(FlowerListingMapper::toFlowerListingResponseDTO)
                 .toList();
         //Map file name to storage url
-        responseDTO.forEach(flower -> flower.setImageUrl(storageService.getFileUrl(flower.getImageUrl())));
+        responseDTO.forEach(flower -> flower.setImages(this.getFlowerImages(flower.getId())));
         LOG.info("[getFlowerListingsByUserID] End with response data: {}", responseDTO);
         return responseDTO;
     }
@@ -146,89 +148,117 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Override
     @Transactional
     public FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account) {
-        try {
-            LOG.info("[createFlowerListing] Start create new flower listing with data: {}", flowerListingRequestDTO);
-            // Fetch categories by their IDs
-            List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
-            LOG.info("[createFlowerListing] Found flower categories: {}", categories);
-            MultipartFile imageFile = flowerListingRequestDTO.getImage();
+        LOG.info("[createFlowerListing] Start create new flower listing with data: {}", flowerListingRequestDTO);
+        // Fetch categories by their IDs
+        List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
+        LOG.info("[createFlowerListing] Found flower categories: {}", categories);
+        List<MultipartFile> imageFileList = flowerListingRequestDTO.getImages();
 
+        for (MultipartFile imageFile : imageFileList) {
             if (!ValidationUtils.validateImage(imageFile)) {
                 throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
             }
+        }
 
-            //Store image at file storage
-            String fileName = storageService.uploadFile(imageFile);
+        FlowerListing flowerListing = FlowerListing
+                .builder()
+                .name(flowerListingRequestDTO.getName())
+                .description(flowerListingRequestDTO.getDescription())
+                .user(account)
+                .address(flowerListingRequestDTO.getAddress())
+                .price(flowerListingRequestDTO.getPrice())
+                .stockQuantity(flowerListingRequestDTO.getStockQuantity())
+                .categories(new HashSet<>(categories))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .status(FlowerListingStatusEnum.PENDING)
+                .isDeleted(Boolean.FALSE)
+                .build();
+        FlowerListing result = flowerListingRepository.save(flowerListing);
 
-            FlowerListing flowerListing = FlowerListing
-                    .builder()
-                    .name(flowerListingRequestDTO.getName())
-                    .description(flowerListingRequestDTO.getDescription())
-                    .user(account)
-                    .address(flowerListingRequestDTO.getAddress())
-                    .price(flowerListingRequestDTO.getPrice())
-                    .stockQuantity(flowerListingRequestDTO.getStockQuantity())
-                    .categories(new HashSet<>(categories))
-                    .imageUrl(fileName)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .status(FlowerListingStatusEnum.PENDING)
-                    .isDeleted(Boolean.FALSE)
+        List<MediaFile> fileEntityList = fileMediaService.uploadMultipleFile(imageFileList);
+        List<FlowerImage> flowerImageEntityList = new ArrayList<>();
+        fileEntityList.forEach(fileEntity -> {
+            FlowerImage flowerImage = FlowerImage.builder()
+                    .mediaFile(fileEntity)
+                    .flowerListing(flowerListing)
                     .build();
-            FlowerListing result = flowerListingRepository.save(flowerListing);
+            flowerImageEntityList.add(flowerImage);
+        });
+        flowerImageRepository.saveAll(flowerImageEntityList);
 
-            FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
-            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
-            redisCommandService.setFlowerById(responseDTO);
-            LOG.info("[createFlowerListing] End with result: {}", responseDTO);
-            return responseDTO;
-        }
-        catch (IOException e) {
-            LOG.error("[createFlowerListing] Has exception: ", e);
-            throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
+        List<FileResponseDTO> fileResponseList = fileEntityList.stream()// Get MediaFile from FlowerImage
+                .map(mediaFile -> FileResponseDTO.builder() // Create FileResponseDTO
+                        .id(mediaFile.getId()) // Set the ID from MediaFile
+                        .url(storageService.getFileUrl(mediaFile.getFileName())) // Set the URL
+                        .build())
+                .toList();
+        responseDTO.setImages(fileResponseList);
+
+        redisCommandService.setFlowerById(responseDTO);
+        LOG.info("[createFlowerListing] End with result: {}", responseDTO);
+        return responseDTO;
     }
 
     @Override
+    @Transactional
     public FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO) {
-        try {
-            LOG.info("[updateFlowerListing] Start update flower listing by ID {} and payload: {}", id, flowerListingRequestDTO);
-            FlowerListing flowerListing = flowerListingRepository
-                    .findById(id)
-                    .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+        LOG.info("[updateFlowerListing] Start update flower listing by ID {} and payload: {}", id, flowerListingRequestDTO);
+        FlowerListing flowerListing = flowerListingRepository
+                .findById(id)
+                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
-            //If request user is not owner of flower listing or not admin then throw error
-            if (!account.getRole().equals(AccountRoleEnum.ADMIN) && !Objects.equals(flowerListing.getUser().getId(), account.getId())) {
-                throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
-            }
+        //If request user is not owner of flower listing or not admin then throw error
+        if (!account.getRole().equals(AccountRoleEnum.ADMIN) && !Objects.equals(flowerListing.getUser().getId(), account.getId())) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
 
-            MultipartFile imageFile = flowerListingRequestDTO.getImage();
+        List<MultipartFile> imageFileList = FileUtils.filterEmptyFiles(flowerListingRequestDTO.getNewImages());
+        for (MultipartFile imageFile : imageFileList) {
             if (!ValidationUtils.validateImage(imageFile)) {
                 throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
             }
-            //Store image at file storage
-            String fileName = storageService.uploadFile(imageFile);
-
-            flowerListing.setName(flowerListingRequestDTO.getName());
-            flowerListing.setDescription(flowerListingRequestDTO.getDescription());
-            flowerListing.setAddress(flowerListingRequestDTO.getAddress());
-            flowerListing.setPrice(flowerListingRequestDTO.getPrice());
-            flowerListing.setStockQuantity(flowerListingRequestDTO.getStockQuantity());
-            flowerListing.setImageUrl(fileName);
-            flowerListing.setUpdatedAt(LocalDateTime.now());
-            flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
-
-            FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
-
-            FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
-            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
-            redisCommandService.setFlowerById(responseDTO);
-            LOG.info("[updateFlowerListing] End with new data: {}", responseDTO);
-            return responseDTO;
         }
-        catch (IOException e) {
-            throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
+
+        List<FlowerImage> flowerImageList = flowerImageRepository.findAllByFlowerListingId(id);
+        List<FlowerImage> remainingImages = flowerImageList.stream()
+                .filter(image -> !flowerListingRequestDTO.getDeletedImages().contains(image.getMediaFile().getId()))
+                .toList();
+        // Check if the remainingImages list is empty and the newImages list is also empty
+        if (remainingImages.isEmpty() && imageFileList.isEmpty()) {
+            throw new FlowerListingException(ErrorCode.NO_IMAGE_LEFT);
         }
+
+        flowerListing.setName(flowerListingRequestDTO.getName());
+        flowerListing.setDescription(flowerListingRequestDTO.getDescription());
+        flowerListing.setAddress(flowerListingRequestDTO.getAddress());
+        flowerListing.setPrice(flowerListingRequestDTO.getPrice());
+        flowerListing.setStockQuantity(flowerListingRequestDTO.getStockQuantity());
+        flowerListing.setUpdatedAt(LocalDateTime.now());
+        flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
+
+        FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
+        //Save new flower image entities
+        List<FlowerImage> flowerImageEntityList = new ArrayList<>();
+        List<MediaFile> fileEntityList = fileMediaService.uploadMultipleFile(imageFileList);
+        fileEntityList.forEach(fileEntity -> {
+            FlowerImage flowerImage = FlowerImage.builder()
+                    .mediaFile(fileEntity)
+                    .flowerListing(flowerListing)
+                    .build();
+            flowerImageEntityList.add(flowerImage);
+        });
+        flowerImageRepository.saveAll(flowerImageEntityList);
+        //Delete old flower image entities
+        flowerImageRepository.deleteAllByMediaFileIdIn(flowerListingRequestDTO.getDeletedImages());
+
+        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
+        responseDTO.setImages(this.getFlowerImages(id));
+
+        redisCommandService.setFlowerById(responseDTO);
+        LOG.info("[updateFlowerListing] End with new data: {}", responseDTO);
+        return responseDTO;
     }
 
     @Override
@@ -252,5 +282,31 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             throw new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND);
         }
         flowerListingRepository.save(flowerListing.get());
+    }
+
+    @Override
+    public List<FileResponseDTO> getFlowerImages(Integer flowerId) {
+        List<FlowerImage> flowerImageList = flowerImageRepository.findAllByFlowerListingId(flowerId);
+        return flowerImageList.stream()
+                .map(FlowerImage::getMediaFile) // Get MediaFile from FlowerImage
+                .map(mediaFile -> FileResponseDTO.builder() // Create FileResponseDTO
+                        .id(mediaFile.getId()) // Set the ID from MediaFile
+                        .url(storageService.getFileUrl(mediaFile.getFileName())) // Set the URL
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public FileResponseDTO getFeaturedFlowerImage(Integer flowerId) {
+        List<FlowerImage> flowerImageList = flowerImageRepository.findAllByFlowerListingId(flowerId);
+        //TODO: IMPLEMENT SORT ORDER TO GET IMAGE WITH FIRST ORDER
+         MediaFile file = flowerImageList.stream()
+                 .map(FlowerImage::getMediaFile)
+                 .findFirst()
+                 .orElseThrow(() -> new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR));
+         return FileResponseDTO.builder()
+                 .id(file.getId())
+                 .url(storageService.getFileUrl(file.getFileName()))
+                 .build();
     }
 }

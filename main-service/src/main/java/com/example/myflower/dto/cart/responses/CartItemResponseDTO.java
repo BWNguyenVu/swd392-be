@@ -32,7 +32,6 @@ public class CartItemResponseDTO {
             this.flowerName = flower.getName();
             this.flowerDescription = flower.getDescription();
             this.flowerPrice = flower.getPrice();
-            this.flowerImageUrl = flower.getImageUrl();
             this.eventType = flower.getEventType();
             this.stockQuantity = flower.getStockQuantity();
             this.address = flower.getAddress();
