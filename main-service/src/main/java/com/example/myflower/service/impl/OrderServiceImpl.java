@@ -347,13 +347,13 @@ public class OrderServiceImpl implements OrderService {
         }
         switch (requestDTO.getStatus()) {
             case PREPARING -> {
-                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PENDING)){
+                if(account.getId().equals(orderDetail.get().getSeller().getId()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PENDING)){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.PREPARING);
                     // send notification for user
                 }
             }
             case SHIPPED -> {
-                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PREPARING)){
+                if(account.getId().equals(orderDetail.get().getSeller().getId()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PREPARING)){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.SHIPPED);
                 }
             }
@@ -364,7 +364,7 @@ public class OrderServiceImpl implements OrderService {
 //                }
 //            }
             case DELIVERED -> {
-                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.DELIVERED);
                     //send notification for seller & buyer
                 }
@@ -373,7 +373,7 @@ public class OrderServiceImpl implements OrderService {
                 if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
                 }
-                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
                     handleBalanceRefund(orderDetail);
@@ -384,7 +384,7 @@ public class OrderServiceImpl implements OrderService {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
                 }
 
-                if(account.equals(orderDetail.get().getSeller())){
+                if(account.getId().equals(orderDetail.get().getSeller().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
 
