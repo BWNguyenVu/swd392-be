@@ -24,7 +24,7 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderSummaryId",referencedColumnName = "id", nullable = false)
     private OrderSummary orderSummary;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "sellerId",referencedColumnName = "id", nullable = false)
     private Account seller;
     @ManyToOne(fetch = FetchType.LAZY)
