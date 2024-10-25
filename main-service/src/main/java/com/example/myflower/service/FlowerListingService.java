@@ -5,6 +5,7 @@ import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerListing;
 
@@ -21,4 +22,8 @@ public interface FlowerListingService {
     void clearFlowerListingCache();
     Integer countProductBySeller(Integer sellerId);
     void updateViewsFlowerListing(Integer flowerListingId, Integer views);
+
+    List<FileResponseDTO> getFlowerImages(Integer flowerId);
+
+    FileResponseDTO getFeaturedFlowerImage(Integer flowerId);
 }

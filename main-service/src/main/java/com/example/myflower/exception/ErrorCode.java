@@ -50,6 +50,7 @@ public enum ErrorCode {
     FLOWER_NOT_APPROVED(3103, "Flower listing is not approved", HttpStatus.BAD_REQUEST),
     FLOWER_OUT_OF_STOCK(3104, "Flower listing is out of stock", HttpStatus.BAD_REQUEST),
     QUANTITY_INVALID(3105, "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
+    NO_IMAGE_LEFT(3106, "No images left after deletion and no new images provided", HttpStatus.BAD_REQUEST),
 
     // TRANSACTIONS | CODE: 4XXX
     TRANSACTION_NOT_FOUND(4000, "Transaction not found", HttpStatus.NOT_FOUND),
