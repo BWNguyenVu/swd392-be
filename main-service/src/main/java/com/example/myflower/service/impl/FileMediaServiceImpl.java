@@ -7,7 +7,6 @@ import com.example.myflower.exception.mediaFile.MediaFileException;
 import com.example.myflower.repository.MediaFileRepository;
 import com.example.myflower.service.FileMediaService;
 import com.example.myflower.service.StorageService;
-import com.example.myflower.utils.FileUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +49,19 @@ public class FileMediaServiceImpl implements FileMediaService {
                 mediaFileList.add(mediaFile);
             }
             return mediaFileRepository.saveAll(mediaFileList);
+        }
+        catch (Exception e) {
+            throw new MediaFileException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public void deleteMultipleFiles(List<MediaFile> mediaFileList) {
+        try {
+            for (MediaFile mediaFile : mediaFileList) {
+                storageService.deleteFile(mediaFile.getFileName());
+            }
+            mediaFileRepository.deleteAll(mediaFileList);
         }
         catch (Exception e) {
             throw new MediaFileException(ErrorCode.INTERNAL_SERVER_ERROR);

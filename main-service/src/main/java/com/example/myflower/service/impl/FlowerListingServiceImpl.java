@@ -225,6 +225,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         List<FlowerImage> remainingImages = flowerImageList.stream()
                 .filter(image -> !flowerListingRequestDTO.getDeletedImages().contains(image.getMediaFile().getId()))
                 .toList();
+        List<MediaFile> deletedImages = flowerImageList.stream()
+                .filter(image -> !remainingImages.contains(image))
+                .map(FlowerImage::getMediaFile)
+                .toList();
         // Check if the remainingImages list is empty and the newImages list is also empty
         if (remainingImages.isEmpty() && imageFileList.isEmpty()) {
             throw new FlowerListingException(ErrorCode.NO_IMAGE_LEFT);
@@ -252,6 +256,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerImageRepository.saveAll(flowerImageEntityList);
         //Delete old flower image entities
         flowerImageRepository.deleteAllByMediaFileIdIn(flowerListingRequestDTO.getDeletedImages());
+        //Delete all selected images in storage
+        fileMediaService.deleteMultipleFiles(deletedImages);
 
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
         responseDTO.setImages(this.getFlowerImages(id));

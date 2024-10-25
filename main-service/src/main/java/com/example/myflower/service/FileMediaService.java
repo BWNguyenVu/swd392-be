@@ -9,4 +9,6 @@ import java.util.List;
 public interface FileMediaService {
     @Transactional
     List<MediaFile> uploadMultipleFile(List<MultipartFile> multipartFileList);
+
+    void deleteMultipleFiles(List<MediaFile> mediaFileList);
 }

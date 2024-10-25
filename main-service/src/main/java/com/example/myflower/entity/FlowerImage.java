@@ -18,7 +18,7 @@ public class FlowerImage {
     @ManyToOne
     @JoinColumn(name = "media_file_id")
     private MediaFile mediaFile;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flower_id")
     private FlowerListing flowerListing;
     @Column(nullable = true)
