@@ -13,6 +13,7 @@ import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.repository.CartItemRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.CartItemService;
+import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final FlowerListingRepository flowerListingRepository;
     private final AccountRepository accountRepository;
+    private final FlowerListingService flowerListingService;
     private final StorageService storageService;
 
     @Override
@@ -44,7 +46,7 @@ public class CartItemServiceImpl implements CartItemService {
             List<CartItemResponseDTO> cartItemResponse = cartItems.stream()
                     .map(CartItemResponseDTO::new)
                     .toList();
-            cartItemResponse.forEach(cartItemResponseDTO -> cartItemResponseDTO.setFlowerImageUrl(storageService.getFileUrl(cartItemResponseDTO.getFlowerImageUrl())));
+            cartItemResponse.forEach(cartItemResponseDTO -> cartItemResponseDTO.setFlowerImageUrl(flowerListingService.getFeaturedFlowerImage(cartItemResponseDTO.getFlowerId()).getUrl()));
 
             return new ResponseEntity<>(new BaseResponseDTO("OK", null, HttpStatus.OK.value(),
                     cartItemResponse), HttpStatus.OK);
@@ -98,7 +100,7 @@ public class CartItemServiceImpl implements CartItemService {
                 cartItemRepository.save(newCartItem);
 
                 CartItemResponseDTO response = new CartItemResponseDTO(newCartItem);
-                response.setFlowerImageUrl(storageService.getFileUrl(response.getFlowerImageUrl()));
+                response.setFlowerImageUrl(flowerListingService.getFeaturedFlowerImage(response.getFlowerId()).getUrl());
                 return new ResponseEntity<>(new BaseResponseDTO("OK", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);
 
