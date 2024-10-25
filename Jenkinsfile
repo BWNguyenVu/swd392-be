@@ -30,7 +30,8 @@ pipeline {
                         string(credentialsId: 'GOOGLE_CLIENT_ID', variable: 'GOOGLE_CLIENT_ID'),
                         string(credentialsId: 'GOOGLE_CLIENT_SECRET', variable: 'GOOGLE_CLIENT_SECRET'),
                         string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
-                        string(credentialsId: 'PUBLIC_API', variable: 'PUBLIC_API')
+                        string(credentialsId: 'PUBLIC_API', variable: 'PUBLIC_API'),
+                        string(credentialsId: 'CONNECTION_STRING_NOTIFICATION_DEV', variable: 'CONNECTION_STRING_NOTIFICATION_DEV'),
                     ]) {
                         // This block sets up the environment variables
                         env.AWS_ACCESS_KEY = AWS_ACCESS_KEY
@@ -55,6 +56,7 @@ pipeline {
                         env.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET
                         env.JWT_SECRET = JWT_SECRET
                         env.PUBLIC_API = PUBLIC_API
+                        env.CONNECTION_STRING_NOTIFICATION_DEV = CONNECTION_STRING_NOTIFICATION_DEV
                     }
                 }
             }
@@ -128,7 +130,10 @@ pipeline {
                         -Dspring.mail.username=${EMAIL_USERNAME} \
                         -Dspring.mail.password="${EMAIL_PASSWORD}" \
                         -Dspring.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVER} \
-                        -Dpublic.api.url=${PUBLIC_API}
+                        -Dpublic.api.url=${PUBLIC_API} \
+                        -Dspring.datasource.url=${CONNECTION_STRING_NOTIFICATION_DEV} \
+                        -Dspring.datasource.username=${POSTGRES_USERNAME} \
+                        -Dspring.datasource.password=${POSTGRES_PASSWORD} \
                     '''
                 }
             }
@@ -235,6 +240,9 @@ pipeline {
                         -e EMAIL_PASSWORD="${EMAIL_PASSWORD}" \
                         -e KAFKA_BOOTSTRAP_SERVER=${KAFKA_BOOTSTRAP_SERVER} \
                         -e PUBLIC_API=${PUBLIC_API} \
+                        -e CONNECTION_STRING_NOTIFICATION_DEV=${CONNECTION_STRING_NOTIFICATION_DEV} \
+                        -e POSTGRES_USERNAME=${POSTGRES_USERNAME} \
+                        -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
                         bwnguyenvu/swd392-notification:latest
                     '''
                 }

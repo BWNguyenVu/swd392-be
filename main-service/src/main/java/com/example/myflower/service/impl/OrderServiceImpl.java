@@ -87,6 +87,33 @@ public class OrderServiceImpl implements OrderService {
         return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
     }
 
+    @Override
+    @Transactional
+    public OrderResponseDTO orderByCod(CreateOrderRequestDTO orderDTO) throws OrderAppException {
+        // Get the current user account
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        Map<Account, BigDecimal> sellerBalanceMap = new HashMap<>();
+
+        BigDecimal totalPrice = orderDTO.getOrderDetails().stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Create order summary
+        OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
+        orderSummaryRepository.save(orderSummary);
+
+
+        // Create order details
+        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap);
+
+        List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
+        // Return response with order details
+        return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
+    }
+
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary, Map<Account, BigDecimal> sellerBalanceMap) {
         Account accountAdmin = adminService.getAccountAdmin();
         // subtract balance for buyer
@@ -125,7 +152,9 @@ public class OrderServiceImpl implements OrderService {
 
             FlowerListing flowerListing = flowerListingRepository.findById(item.getFlowerListingId())
                     .orElseThrow(() -> new OrderAppException(ErrorCode.FLOWER_NOT_FOUND));
-
+            if (flowerListing.getStockQuantity().compareTo(item.getQuantity()) < 0) {
+                throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+            }
             Account seller = flowerListing.getUser();
             sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);
 
@@ -134,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
                     .seller(flowerListing.getUser())
                     .flowerListing(flowerListing)
                     .price(item.getPrice())
+                    .paymentMethod(orderDTO.getPaymentMethod())
                     .quantity(item.getQuantity())
                     .status(OrderDetailsStatusEnum.PENDING)
                     .createdAt(LocalDateTime.now())
@@ -147,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
         return OrderResponseDTO.builder()
-                .message("Order by wallet successfully!")
+                .message("Order by cod successfully!")
                 .error(false)
                 .id(orderSummary.getId())
                 .totalAmount(orderSummary.getTotalPrice())
@@ -181,6 +211,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         return OrderDetailResponseDTO.builder()
                 .flowerListing(flowerListingResponseDTO)
+                .paymentMethod(orderDetail.getPaymentMethod())
                 .status(orderDetail.getStatus())
                 .price(orderDetail.getPrice())
                 .quantity(orderDetail.getQuantity())
@@ -316,13 +347,13 @@ public class OrderServiceImpl implements OrderService {
         }
         switch (requestDTO.getStatus()) {
             case PREPARING -> {
-                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PENDING)){
+                if(account.getId().equals(orderDetail.get().getSeller().getId()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PENDING)){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.PREPARING);
                     // send notification for user
                 }
             }
             case SHIPPED -> {
-                if(account.equals(orderDetail.get().getSeller()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PREPARING)){
+                if(account.getId().equals(orderDetail.get().getSeller().getId()) && orderDetail.get().getStatus().equals(OrderDetailsStatusEnum.PREPARING)){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.SHIPPED);
                 }
             }
@@ -333,7 +364,7 @@ public class OrderServiceImpl implements OrderService {
 //                }
 //            }
             case DELIVERED -> {
-                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.DELIVERED);
                     //send notification for seller & buyer
                 }
@@ -342,7 +373,7 @@ public class OrderServiceImpl implements OrderService {
                 if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
                 }
-                if(account.equals(orderDetail.get().getOrderSummary().getUser())){
+                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
                     handleBalanceRefund(orderDetail);
@@ -353,7 +384,7 @@ public class OrderServiceImpl implements OrderService {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
                 }
 
-                if(account.equals(orderDetail.get().getSeller())){
+                if(account.getId().equals(orderDetail.get().getSeller().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
 
