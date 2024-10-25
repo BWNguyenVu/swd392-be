@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface OrderService {
     OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException;
+    OrderResponseDTO orderByCod(CreateOrderRequestDTO orderDTO) throws OrderAppException;
     List<OrderDetailResponseDTO> getAllOrderDetailsByOrderSummaryId(Integer orderSummaryId) throws OrderAppException;
     Page<OrderDetailResponseDTO> getAllOrderByBuyer(GetOrderDetailsRequestDTO requestDTO);
     Page<OrderDetailResponseDTO> getOrdersBySeller(GetOrderDetailsRequestDTO requestDTO) throws OrderAppException;

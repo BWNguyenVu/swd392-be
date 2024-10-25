@@ -2,6 +2,7 @@ package com.example.myflower.entity;
 
 import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -37,6 +38,8 @@ public class OrderDetail {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderDetailsStatusEnum status;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethodEnum paymentMethod;
     @Column(nullable = true)
     private String cancelReason;
     @Column(nullable = true)

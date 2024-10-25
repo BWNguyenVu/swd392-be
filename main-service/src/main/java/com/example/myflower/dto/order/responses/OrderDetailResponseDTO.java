@@ -1,8 +1,10 @@
 package com.example.myflower.dto.order.responses;
 
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
+import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.OrderSummary;
 import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +26,7 @@ public class OrderDetailResponseDTO {
     private Integer quantity;
     private BigDecimal price;
     private OrderDetailsStatusEnum status;
+    private PaymentMethodEnum paymentMethod;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

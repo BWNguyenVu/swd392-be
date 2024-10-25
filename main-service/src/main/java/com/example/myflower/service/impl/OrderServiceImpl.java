@@ -87,6 +87,33 @@ public class OrderServiceImpl implements OrderService {
         return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
     }
 
+    @Override
+    @Transactional
+    public OrderResponseDTO orderByCod(CreateOrderRequestDTO orderDTO) throws OrderAppException {
+        // Get the current user account
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        Map<Account, BigDecimal> sellerBalanceMap = new HashMap<>();
+
+        BigDecimal totalPrice = orderDTO.getOrderDetails().stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Create order summary
+        OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
+        orderSummaryRepository.save(orderSummary);
+
+
+        // Create order details
+        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap);
+
+        List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
+        // Return response with order details
+        return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
+    }
+
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary, Map<Account, BigDecimal> sellerBalanceMap) {
         Account accountAdmin = adminService.getAccountAdmin();
         // subtract balance for buyer
@@ -136,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
                     .seller(flowerListing.getUser())
                     .flowerListing(flowerListing)
                     .price(item.getPrice())
+                    .paymentMethod(orderDTO.getPaymentMethod())
                     .quantity(item.getQuantity())
                     .status(OrderDetailsStatusEnum.PENDING)
                     .createdAt(LocalDateTime.now())
@@ -149,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
         return OrderResponseDTO.builder()
-                .message("Order by wallet successfully!")
+                .message("Order by cod successfully!")
                 .error(false)
                 .id(orderSummary.getId())
                 .totalAmount(orderSummary.getTotalPrice())
@@ -183,6 +211,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         return OrderDetailResponseDTO.builder()
                 .flowerListing(flowerListingResponseDTO)
+                .paymentMethod(orderDetail.getPaymentMethod())
                 .status(orderDetail.getStatus())
                 .price(orderDetail.getPrice())
                 .quantity(orderDetail.getQuantity())
