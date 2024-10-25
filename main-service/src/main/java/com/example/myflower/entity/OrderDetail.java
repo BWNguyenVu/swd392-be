@@ -2,6 +2,7 @@ package com.example.myflower.entity;
 
 import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
 import com.example.myflower.entity.enumType.OrderStatusEnum;
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -24,7 +25,7 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderSummaryId",referencedColumnName = "id", nullable = false)
     private OrderSummary orderSummary;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "sellerId",referencedColumnName = "id", nullable = false)
     private Account seller;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +38,8 @@ public class OrderDetail {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderDetailsStatusEnum status;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethodEnum paymentMethod;
     @Column(nullable = true)
     private String cancelReason;
     @Column(nullable = true)

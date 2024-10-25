@@ -1,5 +1,6 @@
 package com.example.myflower.dto.order.requests;
 
+import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

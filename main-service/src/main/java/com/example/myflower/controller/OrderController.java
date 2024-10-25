@@ -51,6 +51,30 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @PostMapping("/by-cod")
+    public ResponseEntity<OrderResponseDTO> orderByCod(@RequestBody CreateOrderRequestDTO order) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(orderService.orderByCod(order));
+        } catch (OrderAppException e) {
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(
+                    OrderResponseDTO.builder()
+                            .message(e.getErrorCode().getMessage())
+                            .error(true)
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    OrderResponseDTO.builder()
+                            .message(e.getMessage())
+                            .error(true)
+                            .build()
+            );
+        }
+    }
+
+
+
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-buyer")
     public ResponseEntity<BaseResponseDTO> getOrdersByUser(
             @RequestParam(required = false, defaultValue = "") String search,
