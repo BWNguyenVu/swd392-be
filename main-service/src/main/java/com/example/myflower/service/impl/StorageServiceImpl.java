@@ -32,7 +32,7 @@ public class StorageServiceImpl implements StorageService {
         File file = FileUtils.convertMultiPartFileToFile(uploadedFile);
         try {
             if (Boolean.TRUE.equals(isUsingS3)) {
-                String fileName = System.currentTimeMillis() + "_" + uploadedFile.getOriginalFilename();
+                String fileName = FileUtils.generateFileName(uploadedFile);
                 s3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
                 return fileName;
             }

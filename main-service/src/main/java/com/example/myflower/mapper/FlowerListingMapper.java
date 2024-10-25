@@ -34,7 +34,6 @@ public class FlowerListingMapper {
                 .stockQuantity(flowerListing.getStockQuantity())
                 .address(flowerListing.getAddress())
                 .categories(flowerCategories)
-                .imageUrl(flowerListing.getImageUrl())
                 .status(flowerListing.getStatus())
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())

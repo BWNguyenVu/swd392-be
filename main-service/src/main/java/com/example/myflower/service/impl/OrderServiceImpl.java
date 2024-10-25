@@ -3,7 +3,6 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.order.requests.*;
-import com.example.myflower.dto.order.responses.CountAndSumOrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.dto.order.responses.ReportResponseDTO;
@@ -20,11 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private FlowerListingRepository flowerListingRepository;
+
+    @Autowired
+    private FlowerListingService flowerListingService;
 
     @Autowired
     private AdminService adminService;
@@ -178,7 +178,7 @@ public class OrderServiceImpl implements OrderService {
                 .id(orderDetail.getId())
                 .name(orderDetail.getFlowerListing().getName())
                 .user(convertAccountDTO(orderDetail.getFlowerListing().getUser()))
-                .imageUrl(orderDetail.getFlowerListing().getImageUrl())
+                .images(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getFlowerListing().getId())))
                 .description(orderDetail.getFlowerListing().getDescription())
                 .build();
         return OrderDetailResponseDTO.builder()
