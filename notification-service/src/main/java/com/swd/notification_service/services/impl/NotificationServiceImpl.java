@@ -7,6 +7,7 @@ import com.swd.notification_service.entity.Notification;
 import com.swd.notification_service.mapper.NotificationMapper;
 import com.swd.notification_service.repository.NotificationRepository;
 import com.swd.notification_service.services.NotificationService;
+import com.swd.notification_service.services.SocketService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     @NonNull
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @NonNull
-    NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepository;
+    @NonNull
+    private SocketService socketService;
 
     @Override
     public List<NotificationResponseDTO> getAllNotifications(Integer userId) {
@@ -41,8 +44,11 @@ public class NotificationServiceImpl implements NotificationService {
                     .message(eventDTO.getMessage())
                     .destinationScreen(eventDTO.getDestinationScreen())
                     .createdAt(LocalDateTime.now())
+                    .isRead(Boolean.FALSE)
                     .build();
-            notificationRepository.save(notificationEntity);
+            Notification result = notificationRepository.save(notificationEntity);
+
+            socketService.sendNotificationToUser(NotificationMapper.toResponseDTO(result));
         }
         catch (Exception e) {
             e.printStackTrace();
