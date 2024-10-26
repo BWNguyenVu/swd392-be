@@ -17,10 +17,10 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Account user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "flower_id", referencedColumnName = "id", nullable = false)
     private FlowerListing flower;
     @Column(nullable = false)
     private Integer quantity;

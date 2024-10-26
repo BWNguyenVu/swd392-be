@@ -10,7 +10,9 @@ import com.example.myflower.dto.order.responses.ReportResponseDTO;
 import com.example.myflower.exception.order.OrderAppException;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface OrderService {
     OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException;
@@ -21,4 +23,5 @@ public interface OrderService {
     OrderDetailResponseDTO updateOrder(UpdateOrderDetailRequestDTO requestDTO, Integer orderDetailId);
     OrderDetailResponseDTO getOrderDetailById(Integer orderDetailId);
     ReportResponseDTO getReportByAccount(GetReportRequestDTO requestDTO);
+    List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate);
 }

@@ -13,5 +13,6 @@ public class ReportResponseDTO {
     private Integer addToCart;
     private BigDecimal totalPrice;
     private Integer orders;
-    private Integer conversionRate;
+    private double conversionRate;
+    private Integer views;
 }
