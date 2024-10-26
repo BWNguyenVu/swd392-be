@@ -9,7 +9,9 @@ import com.example.myflower.entity.CartItem;
 import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.ErrorCode;
+import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.repository.AccountRepository;
+import com.example.myflower.repository.AuditRepository;
 import com.example.myflower.repository.CartItemRepository;
 import com.example.myflower.repository.FlowerListingRepository;
 import com.example.myflower.service.CartItemService;
@@ -17,6 +19,7 @@ import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,8 @@ public class CartItemServiceImpl implements CartItemService {
     private final AccountRepository accountRepository;
     private final FlowerListingService flowerListingService;
     private final StorageService storageService;
-
+    @Autowired
+    private AuditRepository cartItemAuditRepository;
     @Override
     public ResponseEntity<BaseResponseDTO> getCartItemsByUser() throws Exception {
         try {
@@ -162,5 +166,24 @@ public class CartItemServiceImpl implements CartItemService {
                 requestDTO.getStartDate().atStartOfDay(),
                 requestDTO.getEndDate().plusDays(1).atStartOfDay()
         );
+    }
+    @Override
+    public List<Object[]> getCartHistoryById(Integer cartItemId) {
+        return cartItemAuditRepository.getCartHistoryById(cartItemId);
+    }
+    @Override
+    public Integer getCartHistoryCountByAccountId() {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AccountAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        return cartItemAuditRepository.getCartHistoryCountByAccountId(account.getId());
+    }
+
+    @Override
+    public Integer countCart(GetReportRequestDTO requestDTO, Integer flowerId) {
+        LocalDateTime startDate = requestDTO.getStartDate().atStartOfDay();
+        LocalDateTime endDate = requestDTO.getEndDate().plusDays(1).atStartOfDay();
+        return cartItemAuditRepository.countCartByTime(flowerId, startDate, endDate);
     }
 }

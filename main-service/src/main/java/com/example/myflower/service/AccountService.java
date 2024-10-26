@@ -16,6 +16,7 @@ import com.example.myflower.entity.enumType.WalletLogTypeEnum;
 import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface AccountService {
     ResponseEntity<AddBalanceResponseDTO> addBalance(AddBalanceRequestDTO addBalanceRequestDTO);
@@ -25,4 +26,5 @@ public interface AccountService {
     AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException;
     AccountResponseDTO updateProfile(UpdateAccountRequestDTO accountRequestDTO);
     SellerResponseDTO getSellerById(Integer sellerId);
+    List<AccountResponseDTO> getAllUser();
 }

@@ -10,10 +10,7 @@ import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
 import com.example.myflower.entity.*;
-import com.example.myflower.entity.enumType.PaymentMethodEnum;
-import com.example.myflower.entity.enumType.WalletLogActorEnum;
-import com.example.myflower.entity.enumType.WalletLogStatusEnum;
-import com.example.myflower.entity.enumType.WalletLogTypeEnum;
+import com.example.myflower.entity.enumType.*;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
@@ -31,6 +28,7 @@ import vn.payos.type.ItemData;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -284,5 +282,21 @@ public class AccountServiceImpl implements AccountService {
         account.setUpdateAt(LocalDateTime.now());
         accountRepository.save(account);
         return accountMapper.mapToAccountResponseDTO(account);
+    }
+
+    @Override
+    public List<AccountResponseDTO> getAllUser() {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null || !account.getRole().equals(AccountRoleEnum.ADMIN)) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        List<Account> accountList = accountRepository.findAll();
+        return accountList.stream()
+                .map(accounts -> {
+                    AccountResponseDTO response = accountMapper.mapToAccountResponseDTO(accounts);
+                    response.setStatus(accounts.getStatus());
+                    return response;
+                })
+                .toList();
     }
 }

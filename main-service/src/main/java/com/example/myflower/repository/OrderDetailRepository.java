@@ -54,4 +54,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             @Param("sellerId") Integer sellerId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT od FROM OrderDetail od WHERE od.seller.id = :sellerId " +
+            "AND od.createdAt BETWEEN :startDate AND :endDate " +
+            "ORDER BY od.createdAt")
+    List<OrderDetail> findOrderDetailsBySellerAndDateRange(
+            @Param("sellerId") Integer sellerId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }

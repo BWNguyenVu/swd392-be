@@ -25,7 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -53,6 +57,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartItemService cartItemService;
+
+    @Autowired
+    private AuditRepository auditRepository;
 
     @Override
     @Transactional
@@ -433,6 +440,7 @@ public class OrderServiceImpl implements OrderService {
                 .status(orderDetail.getStatus())
                 .build();
     }
+
     @Override
     public ReportResponseDTO getReportByAccount(GetReportRequestDTO requestDTO) {
         Account account = AccountUtils.getCurrentAccount();
@@ -452,13 +460,62 @@ public class OrderServiceImpl implements OrderService {
                 requestDTO.getStartDate().atStartOfDay(),
                 requestDTO.getEndDate().plusDays(1).atStartOfDay()
         );
-        Integer countCart = cartItemService.countCartByTime(requestDTO, account);
-
+        List<FlowerListingResponseDTO> flowerListingResponseDTOList = flowerListingService.getFlowerListingsByUserID(account.getId());
+        int totalCartCount = 0;
+        int totalViews = 0;
+        for (FlowerListingResponseDTO flower : flowerListingResponseDTOList) {
+            int count = cartItemService.countCart(requestDTO, flower.getId());
+            totalCartCount += count;
+            int viewsCount = auditRepository.countViewByTime(flower.getId(), requestDTO.getStartDate().atStartOfDay(), requestDTO.getEndDate().plusDays(1).atStartOfDay());
+            totalViews += viewsCount;
+        }
+        int totalOrders = ((Number) result.get(0)[1]).intValue();
+        double conversionCalculator = ( (double) totalOrders * 100) / totalViews;
         return ReportResponseDTO.builder()
                 .totalPrice((BigDecimal) result.get(0)[0])
-                .orders(((Number) result.get(0)[1]).intValue())
-                .addToCart(countCart)
+                .orders(totalOrders)
+                .addToCart(totalCartCount)
+                .views(totalViews)
+                .conversionRate(conversionCalculator)
                 .build();
 
     }
+
+    @Override
+    public List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate) {
+        Account account = AccountUtils.getCurrentAccount();
+
+        // Retrieve order details within the specified date range
+        List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailsBySellerAndDateRange(
+                account.getId(), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+
+        // Initialize hourly maps for prices and counts
+        Map<Integer, BigDecimal> hourlyPriceMap = IntStream.range(0, 24)
+                .boxed()
+                .collect(Collectors.toMap(hour -> hour, hour -> BigDecimal.ZERO));
+
+        Map<Integer, Integer> hourlyOrderCountMap = IntStream.range(0, 24)
+                .boxed()
+                .collect(Collectors.toMap(hour -> hour, hour -> 0));
+
+        // Aggregate actual prices and counts from order details
+        orderDetails.forEach(od -> {
+            int hour = od.getCreatedAt().getHour(); // Get the hour of the order
+            hourlyPriceMap.merge(hour, od.getPrice(), BigDecimal::add);
+            hourlyOrderCountMap.merge(hour, 1, Integer::sum);
+        });
+
+        // Prepare the result with the hourly data
+        return IntStream.range(0, 24)
+                .mapToObj(hour -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("time", String.format("%02d:00", hour)); // Format time as "HH:00"
+                    map.put("price", hourlyPriceMap.get(hour));
+                    map.put("orderCount", hourlyOrderCountMap.get(hour));
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }
