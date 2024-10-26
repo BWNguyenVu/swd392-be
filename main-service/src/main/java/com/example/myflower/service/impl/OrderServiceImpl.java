@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -483,42 +484,38 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate) {
         Account account = AccountUtils.getCurrentAccount();
+
+        // Retrieve order details within the specified date range
         List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailsBySellerAndDateRange(
-                account.getId(), startDate.atStartOfDay(), startDate.plusDays(1).atStartOfDay());
+                account.getId(), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
 
-        Map<LocalDateTime, BigDecimal> hourlyPriceMap = IntStream.range(0, 24)
-                .mapToObj(hour -> startDate.atStartOfDay().plusHours(hour))
-                .collect(Collectors.toMap(time -> time, time -> BigDecimal.ZERO));
+        // Initialize hourly maps for prices and counts
+        Map<Integer, BigDecimal> hourlyPriceMap = IntStream.range(0, 24)
+                .boxed()
+                .collect(Collectors.toMap(hour -> hour, hour -> BigDecimal.ZERO));
 
-        Map<LocalDateTime, Integer> hourlyOrderCountMap = IntStream.range(0, 24)
-                .mapToObj(hour -> startDate.atStartOfDay().plusHours(hour))
-                .collect(Collectors.toMap(time -> time, time -> 0));
+        Map<Integer, Integer> hourlyOrderCountMap = IntStream.range(0, 24)
+                .boxed()
+                .collect(Collectors.toMap(hour -> hour, hour -> 0));
 
-        Map<LocalDateTime, BigDecimal> actualPriceMap = orderDetails.stream()
-                .collect(Collectors.groupingBy(
-                        od -> od.getCreatedAt().truncatedTo(ChronoUnit.HOURS),
-                        Collectors.mapping(OrderDetail::getPrice, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
-                ));
+        // Aggregate actual prices and counts from order details
+        orderDetails.forEach(od -> {
+            int hour = od.getCreatedAt().getHour(); // Get the hour of the order
+            hourlyPriceMap.merge(hour, od.getPrice(), BigDecimal::add);
+            hourlyOrderCountMap.merge(hour, 1, Integer::sum);
+        });
 
-        Map<LocalDateTime, Long> actualOrderCountMap = orderDetails.stream()
-                .collect(Collectors.groupingBy(
-                        od -> od.getCreatedAt().truncatedTo(ChronoUnit.HOURS),
-                        Collectors.counting()
-                ));
-
-        actualPriceMap.forEach(hourlyPriceMap::put);
-        actualOrderCountMap.forEach((key, count) -> hourlyOrderCountMap.put(key, count.intValue()));
-
-        return hourlyPriceMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey()) // Sort by hour
-                .map(entry -> {
+        // Prepare the result with the hourly data
+        return IntStream.range(0, 24)
+                .mapToObj(hour -> {
                     Map<String, Object> map = new HashMap<>();
-                    LocalDateTime time = entry.getKey();
-                    map.put("time", time);
-                    map.put("price", hourlyPriceMap.get(time));
-                    map.put("orderCount", hourlyOrderCountMap.get(time));
+                    map.put("time", String.format("%02d:00", hour)); // Format time as "HH:00"
+                    map.put("price", hourlyPriceMap.get(hour));
+                    map.put("orderCount", hourlyOrderCountMap.get(hour));
                     return map;
                 })
                 .collect(Collectors.toList());
     }
+
+
 }
