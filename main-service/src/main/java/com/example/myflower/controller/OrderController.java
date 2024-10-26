@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
@@ -166,7 +167,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @GetMapping("/report")
+    @GetMapping("/dashboard/report")
     public ResponseEntity<BaseResponseDTO> getReport(
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
@@ -184,5 +185,12 @@ public class OrderController {
                         .data(responseDTO)
                         .build()
         );
+    }
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @GetMapping("/dashboard/line-chart")
+    public List<Map<String, Object>> getPriceOverTimeBySeller(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        return orderService.getPriceOverTimeBySellerAndDateRange(startDate, endDate);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/account")
@@ -98,6 +99,29 @@ public class AccountController {
                     .message(e.getErrorCode().getMessage())
                     .build();
             return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/profile/all")
+    public ResponseEntity<BaseResponseDTO> getAllUser() {
+        try {
+            List<AccountResponseDTO> accountResponseDTO = accountService.getAllUser();
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    BaseResponseDTO.builder()
+                            .message("Get all profile successful")
+                            .success(true)
+                            .data(accountResponseDTO)
+                            .build()
+            );
+        } catch (AccountAppException e) {
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(
+                    BaseResponseDTO.builder()
+                            .message(e.getErrorCode().getMessage())
+                            .success(false)
+                            .code(e.getErrorCode().getCode())
+                            .build()
+            );
         }
     }
 }

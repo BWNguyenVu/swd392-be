@@ -25,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -53,6 +56,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartItemService cartItemService;
+
+    @Autowired
+    private AuditRepository auditRepository;
 
     @Override
     @Transactional
@@ -433,6 +439,7 @@ public class OrderServiceImpl implements OrderService {
                 .status(orderDetail.getStatus())
                 .build();
     }
+
     @Override
     public ReportResponseDTO getReportByAccount(GetReportRequestDTO requestDTO) {
         Account account = AccountUtils.getCurrentAccount();
@@ -452,13 +459,66 @@ public class OrderServiceImpl implements OrderService {
                 requestDTO.getStartDate().atStartOfDay(),
                 requestDTO.getEndDate().plusDays(1).atStartOfDay()
         );
-        Integer countCart = cartItemService.countCartByTime(requestDTO, account);
-
+        List<FlowerListingResponseDTO> flowerListingResponseDTOList = flowerListingService.getFlowerListingsByUserID(account.getId());
+        int totalCartCount = 0;
+        int totalViews = 0;
+        for (FlowerListingResponseDTO flower : flowerListingResponseDTOList) {
+            int count = cartItemService.countCart(requestDTO, flower.getId());
+            totalCartCount += count;
+            int viewsCount = auditRepository.countViewByTime(flower.getId(), requestDTO.getStartDate().atStartOfDay(), requestDTO.getEndDate().plusDays(1).atStartOfDay());
+            totalViews += viewsCount;
+        }
+        int totalOrders = ((Number) result.get(0)[1]).intValue();
+        double conversionCalculator = ( (double) totalOrders * 100) / totalViews;
         return ReportResponseDTO.builder()
                 .totalPrice((BigDecimal) result.get(0)[0])
-                .orders(((Number) result.get(0)[1]).intValue())
-                .addToCart(countCart)
+                .orders(totalOrders)
+                .addToCart(totalCartCount)
+                .views(totalViews)
+                .conversionRate(conversionCalculator)
                 .build();
 
+    }
+
+    @Override
+    public List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate) {
+        Account account = AccountUtils.getCurrentAccount();
+        List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailsBySellerAndDateRange(
+                account.getId(), startDate.atStartOfDay(), startDate.plusDays(1).atStartOfDay());
+
+        Map<LocalDateTime, BigDecimal> hourlyPriceMap = IntStream.range(0, 24)
+                .mapToObj(hour -> startDate.atStartOfDay().plusHours(hour))
+                .collect(Collectors.toMap(time -> time, time -> BigDecimal.ZERO));
+
+        Map<LocalDateTime, Integer> hourlyOrderCountMap = IntStream.range(0, 24)
+                .mapToObj(hour -> startDate.atStartOfDay().plusHours(hour))
+                .collect(Collectors.toMap(time -> time, time -> 0));
+
+        Map<LocalDateTime, BigDecimal> actualPriceMap = orderDetails.stream()
+                .collect(Collectors.groupingBy(
+                        od -> od.getCreatedAt().truncatedTo(ChronoUnit.HOURS),
+                        Collectors.mapping(OrderDetail::getPrice, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                ));
+
+        Map<LocalDateTime, Long> actualOrderCountMap = orderDetails.stream()
+                .collect(Collectors.groupingBy(
+                        od -> od.getCreatedAt().truncatedTo(ChronoUnit.HOURS),
+                        Collectors.counting()
+                ));
+
+        actualPriceMap.forEach(hourlyPriceMap::put);
+        actualOrderCountMap.forEach((key, count) -> hourlyOrderCountMap.put(key, count.intValue()));
+
+        return hourlyPriceMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()) // Sort by hour
+                .map(entry -> {
+                    Map<String, Object> map = new HashMap<>();
+                    LocalDateTime time = entry.getKey();
+                    map.put("time", time);
+                    map.put("price", hourlyPriceMap.get(time));
+                    map.put("orderCount", hourlyOrderCountMap.get(time));
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 }
