@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: integration-service
+  profiles:
+    active: prod
+  output:
+    ansi:
+      enabled: always
+server:
+  port: 8081
+  servlet:
+    context-path: /api/v1
