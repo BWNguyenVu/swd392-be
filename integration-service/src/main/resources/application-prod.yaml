@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: integration-service
+  datasource:
+    url: ${CONNECTION_STRING_INTEGRATION_POSTGRES_PROD}
+    username: ${USERNAME_INTEGRATION_POSTGRES_PROD}
+    password: ${PASSWORD_INTEGRATION_POSTGRES_PROD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: update
+        show_sql: true
+        envers:
+          autoRegisterListeners: true
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+    producer:
+      acks: -1
+      retries: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+  data:
+    redis:
+      database: ${REDIS_DATABASE}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      timeout: 3600
+  main:
+    allow-bean-definition-overriding: true
