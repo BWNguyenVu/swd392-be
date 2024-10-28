@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.admin.requests.CreateAccountIntegrationRequest;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerListing;
@@ -15,6 +16,7 @@ import com.example.myflower.utils.AccountUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,7 +30,8 @@ public class AdminServiceImpl implements AdminService {
     private final FlowerListingRepository flowerListingRepository;
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private KafkaTemplate<String, CreateAccountIntegrationRequest> kafkaTemplate;
     @Override
     public FlowerListingResponseDTO approveFlowerListing(Integer id) {
         Account adminAccount = AccountUtils.getCurrentAccount();
@@ -72,4 +75,10 @@ public class AdminServiceImpl implements AdminService {
         List<Account> accounts = accountRepository.findAccountsByRole(AccountRoleEnum.ADMIN);
         return accounts.get(0);
     }
+
+    @Override
+    public void createAccountIntegration(CreateAccountIntegrationRequest requestDTO){
+        kafkaTemplate.send("create_account-integration_topic", requestDTO);
+    }
+
 }

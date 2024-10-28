@@ -320,6 +320,10 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         if(account.getEmail().equals(changeEmailRequestDTO.getEmail())){
             throw new AuthAppException(ErrorCode.EMAIL_EXISTED);
         }
+        Optional<Account> accountOptional = accountRepository.findByEmail(changeEmailRequestDTO.getEmail());
+        if (accountOptional.isPresent()) {
+            throw new AuthAppException(ErrorCode.EMAIL_DUPLICATE);
+        }
         account.setEmail(changeEmailRequestDTO.getEmail());
         account.setOtp(generateRandomOtp());
         String encodeOtp = jwtService.generateTokenByOtp(account.getOtp()) ;

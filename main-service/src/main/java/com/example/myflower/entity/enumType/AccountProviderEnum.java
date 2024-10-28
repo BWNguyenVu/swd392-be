@@ -3,5 +3,8 @@ package com.example.myflower.entity.enumType;
 public enum AccountProviderEnum {
     LOCAL,
     GOOGLE,
-    FACEBOOK;
+    FACEBOOK,
+    GHTK,
+    LALAMOVE,
+    AHAMOVE;
 }
