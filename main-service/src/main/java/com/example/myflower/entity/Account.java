@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Audited
+@Table(indexes = {
+        @Index(columnList = "email"),
+})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
