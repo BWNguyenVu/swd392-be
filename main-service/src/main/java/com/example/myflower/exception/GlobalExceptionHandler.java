@@ -2,7 +2,9 @@ package com.example.myflower.exception;
 
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.exception.auth.AuthAppException;
+import com.example.myflower.exception.feedback.FeedbackAppException;
 import com.example.myflower.exception.flowers.FlowerListingException;
+import com.example.myflower.exception.mediaFile.MediaFileException;
 import com.example.myflower.exception.order.OrderAppException;
 import com.example.myflower.exception.transaction.TransactionAppException;
 import com.example.myflower.exception.walletLog.WalletLogAppException;
@@ -87,6 +89,28 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = WalletLogAppException.class)
     public ResponseEntity<ApiResponse> handlingWalletLogException(WalletLogAppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler(value = MediaFileException.class)
+    public ResponseEntity<ApiResponse> handlingMediaFileException(MediaFileException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(apiResponse);
+    }
+
+    @ExceptionHandler(value = FeedbackAppException.class)
+    public ResponseEntity<ApiResponse> handlingFeedbackException(FeedbackAppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
 
         ApiResponse apiResponse = new ApiResponse();
