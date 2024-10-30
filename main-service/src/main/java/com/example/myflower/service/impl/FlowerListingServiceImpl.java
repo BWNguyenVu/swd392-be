@@ -4,7 +4,7 @@ import com.example.myflower.consts.Constants;
 import com.example.myflower.dto.auth.requests.CreateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
-import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
+import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.*;
@@ -35,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +62,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     private SchedulerService schedulerService;
 
     @Override
-    public FlowerListingListResponseDTO getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
+    public PaginationResponseDTO<FlowerListingResponseDTO> getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
     {
         LOG.info("[getFlowerListings] Start get flower listing by parameters with request {}", requestDTO);
         //Construct sort by field parameters
@@ -89,16 +88,25 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         if (requestDTO.getCategoryIds() != null && requestDTO.getCategoryIds().isEmpty()) {
             requestDTO.setCategoryIds(null);
         }
+
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        //If current user is admin then they can query delete status, otherwise can only get active flowers
+        Boolean deleteStatus = Boolean.FALSE;
+        FlowerListingStatusEnum flowerStatus = FlowerListingStatusEnum.APPROVED;
+        if (currentAccount != null && currentAccount.getRole().equals(AccountRoleEnum.ADMIN)) {
+            deleteStatus = requestDTO.getDeleteStatus();
+            flowerStatus = requestDTO.getFlowerStatus();
+        }
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(
                 requestDTO.getSearchString(),
                 requestDTO.getCategoryIds(),
-                FlowerListingStatusEnum.APPROVED,
-                Boolean.FALSE,
+                flowerStatus,
+                deleteStatus,
                 pageable
         );
 
-        FlowerListingListResponseDTO responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
+        PaginationResponseDTO<FlowerListingResponseDTO> responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
         //Map file name to storage url
         responseDTO.getContent()
                 .forEach(flower -> flower.setImages(this.getFlowerImages(flower.getId())));
@@ -110,19 +118,23 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     public FlowerListingResponseDTO getFlowerListingByID(Integer id) {
         LOG.info("[getFlowerListingByID] Start get flower listing by ID: {}", id);
 
-        schedulerService.updateFlowerViews(id, 1);
-
-        FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
-        if (cacheResponseDTO != null) {
-            return cacheResponseDTO;
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        Boolean isDeleted = null;
+        if (!AccountUtils.isAdminRole(currentAccount)) {
+            FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
+            if (cacheResponseDTO != null) {
+                return cacheResponseDTO;
+            }
+            isDeleted = Boolean.FALSE;
         }
         FlowerListing result = flowerListingRepository
-                .findByIdAndDeleteStatus(id, Boolean.FALSE)
+                .findByIdAndDeleteStatus(id, isDeleted)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
         FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
         responseDTO.setImages(this.getFlowerImages(id));
 
         redisCommandService.setFlowerById(responseDTO);
+        schedulerService.updateFlowerViews(id, 1);
         LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
         return responseDTO;
     }
@@ -131,7 +143,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     public List<FlowerListingResponseDTO> getFlowerListingsByUserID(Integer userId) {
         LOG.info("[getFlowerListingByUserID] Start get flower listing by userID {}", userId);
         Account currentAccount = AccountUtils.getCurrentAccount();
-        if (!(currentAccount != null && (AccountRoleEnum.ADMIN.equals(currentAccount.getRole()) || userId.equals(currentAccount.getId())))) {
+        if (!this.isHavingFlowerPermissions(currentAccount, userId)) {
             LOG.error("[getFlowerListingByUserID] Current user is unauthorized to access this resource");
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
@@ -210,7 +222,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
         //If request user is not owner of flower listing or not admin then throw error
-        if (!account.getRole().equals(AccountRoleEnum.ADMIN) && !Objects.equals(flowerListing.getUser().getId(), account.getId())) {
+        if (!this.isHavingFlowerPermissions(account, flowerListing)) {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
 
@@ -314,5 +326,66 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                  .id(file.getId())
                  .url(storageService.getFileUrl(file.getFileName()))
                  .build();
+    }
+
+    @Override
+    public FlowerListingResponseDTO approveFlowerListing(Integer id) {
+        Account adminAccount = AccountUtils.getCurrentAccount();
+
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+
+        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
+                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+
+        flowerListing.setStatus(FlowerListingStatusEnum.APPROVED);
+        flowerListing.setUpdatedAt(LocalDateTime.now());
+
+        FlowerListing approvedListing = flowerListingRepository.save(flowerListing);
+        return FlowerListingMapper.toFlowerListingResponseDTO(approvedListing);
+    }
+
+    @Override
+    public FlowerListingResponseDTO rejectFlowerListing(Integer id, String reason) {
+        Account adminAccount = AccountUtils.getCurrentAccount();
+
+        //Check if the requester is admin
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+
+        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
+                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+
+        flowerListing.setStatus(FlowerListingStatusEnum.REJECTED);
+        flowerListing.setRejectReason(reason);
+        flowerListing.setUpdatedAt(LocalDateTime.now());
+
+        FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
+        return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
+    }
+
+    @Override
+    public void disableExpiredFlowers() {
+        List<FlowerListing> expiredFlower = flowerListingRepository.findByExpireDateAfter(LocalDateTime.now());
+        expiredFlower.forEach(flower -> flower.setStatus(FlowerListingStatusEnum.EXPIRED));
+        flowerListingRepository.saveAll(expiredFlower);
+    }
+
+    private boolean isHavingFlowerPermissions(Account account, FlowerListing flower) {
+        if (flower == null || account == null) {
+            return false;
+        }
+        return AccountUtils.isAdminRole(account)
+                || Objects.equals(flower.getUser().getId(), account.getId());
+    }
+
+    private boolean isHavingFlowerPermissions(Account account, Integer userId) {
+        if (account == null) {
+            return false;
+        }
+        return AccountUtils.isAdminRole(account)
+                || Objects.equals(account.getId(), userId);
     }
 }

@@ -1,4 +1,4 @@
-package com.swd.notification_service.services;
+package com.swd.notification_service.dto.email_detail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

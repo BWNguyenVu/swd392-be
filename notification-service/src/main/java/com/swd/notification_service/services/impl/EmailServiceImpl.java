@@ -1,7 +1,8 @@
-package com.swd.notification_service.services;
+package com.swd.notification_service.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swd.notification_service.dto.account.Account;
+import com.swd.notification_service.dto.email_detail.EmailDetail;
 import com.swd.notification_service.dto.orders.OrderDTO;
 import com.swd.notification_service.dto.wallets.DataResponse;
 import jakarta.mail.MessagingException;
@@ -15,7 +16,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Service
-public class EmailService {
+public class EmailServiceImpl {
 
     private final ObjectMapper objectMapper;
     private final TemplateEngine templateEngine;
@@ -25,7 +26,7 @@ public class EmailService {
     private String publicApiUrl;
 
     @Autowired
-    public EmailService(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
+    public EmailServiceImpl(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
         this.objectMapper = objectMapper;
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;

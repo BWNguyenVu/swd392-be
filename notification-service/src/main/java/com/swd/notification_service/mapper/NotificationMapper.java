@@ -7,6 +7,7 @@ public class NotificationMapper {
     private NotificationMapper() {}
     public static NotificationResponseDTO toResponseDTO(Notification notification) {
         return NotificationResponseDTO.builder()
+                .id(notification.getId())
                 .userId(notification.getUserId())
                 .title(notification.getTitle())
                 .message(notification.getMessage())
@@ -14,6 +15,8 @@ public class NotificationMapper {
                 .destinationScreen(notification.getDestinationScreen())
                 .isRead(notification.getIsRead())
                 .isDeleted(notification.getIsDeleted())
+                .createdAt(notification.getCreatedAt())
+                .updatedAt(notification.getUpdatedAt())
                 .build();
     }
 }

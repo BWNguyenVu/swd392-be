@@ -10,6 +10,7 @@ import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.RatingEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.feedback.FeedbackAppException;
+import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.mapper.FeedbackMapper;
 import com.example.myflower.repository.FeedbackRepository;
 import com.example.myflower.repository.FlowerListingRepository;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +38,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         if (currentUser == null) {
             throw new FeedbackAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
+
+        //TODO: Validate only users buy the flower can add feedback
 
         FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(requestDTO.getFlowerId(), Boolean.FALSE)
                 .orElseThrow(() -> new FeedbackAppException(ErrorCode.FLOWER_NOT_FOUND));
@@ -103,12 +105,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public void restoreFeedback(Integer id) {
-        Account currentUser = AccountUtils.getCurrentAccount();
-        if (currentUser == null) {
-            throw new FeedbackAppException(ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-        if (currentUser.getRole() != AccountRoleEnum.ADMIN) {
-            throw new FeedbackAppException(ErrorCode.UNAUTHORIZED);
+        Account adminAccount = AccountUtils.getCurrentAccount();
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
 
         Feedback feedback = feedbackRepository.findById(id).orElseThrow(() -> new FeedbackAppException(ErrorCode.FEEDBACK_NOT_FOUND));

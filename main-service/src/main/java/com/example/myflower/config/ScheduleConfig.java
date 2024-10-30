@@ -18,4 +18,9 @@ public class ScheduleConfig {
     public void clearFlowerCache() {
         flowerListingService.clearFlowerListingCache();
     }
+
+    @Scheduled(cron = "0 */15 * * * *") // Runs every 15 minutes
+    public void disableExpiredFlower() {
+        flowerListingService.disableExpiredFlowers();
+    }
 }

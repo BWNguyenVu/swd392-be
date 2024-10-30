@@ -1,4 +1,4 @@
-package com.swd.notification_service.dto.notifications;
+package com.swd.notification_service.dto.broadcast_notification.request;
 
 import com.swd.notification_service.entity.enumType.DestinationScreenEnum;
 import com.swd.notification_service.entity.enumType.NotificationTypeEnum;
@@ -6,20 +6,15 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class NotificationResponseDTO {
-    private Integer id;
-    private Integer userId;
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateBroadcastNotificationRequestDTO {
     private String title;
     private String message;
     private NotificationTypeEnum type;
     private DestinationScreenEnum destinationScreen;
-    private Boolean isRead;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Boolean isDeleted;
+    private LocalDateTime scheduledTime;
 }

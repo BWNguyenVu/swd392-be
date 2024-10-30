@@ -1,7 +1,7 @@
 package com.example.myflower.mapper;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
-import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
+import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.entity.Account;
@@ -41,12 +41,12 @@ public class FlowerListingMapper {
                 .build();
     }
 
-    public static FlowerListingListResponseDTO toFlowerListingListResponseDTO(Page<FlowerListing> flowerListingPage) {
+    public static PaginationResponseDTO<FlowerListingResponseDTO> toFlowerListingListResponseDTO(Page<FlowerListing> flowerListingPage) {
         List<FlowerListingResponseDTO> flowerListingResponseDTOList = flowerListingPage
                 .stream()
                 .map(FlowerListingMapper::toFlowerListingResponseDTO)
                 .toList();
-        return FlowerListingListResponseDTO.builder()
+        return PaginationResponseDTO.<FlowerListingResponseDTO>builder()
                 .content(flowerListingResponseDTOList)
                 .pageNumber(flowerListingPage.getNumber())
                 .pageSize(flowerListingPage.getSize())

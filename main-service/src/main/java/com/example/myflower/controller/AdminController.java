@@ -4,6 +4,7 @@ import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.admin.requests.CreateAccountIntegrationRequest;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.service.AdminService;
+import com.example.myflower.service.FlowerListingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,17 +19,19 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private FlowerListingService flowerListingService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/flower-listings/approve/{id}")
     public FlowerListingResponseDTO approveListing(@PathVariable Integer id) {
-        return adminService.approveFlowerListing(id);
+        return flowerListingService.approveFlowerListing(id);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/flower-listings/reject/{id}")
     public FlowerListingResponseDTO rejectListing(@PathVariable Integer id, @RequestParam String reason) {
-        return adminService.rejectFlowerListing(id, reason);
+        return flowerListingService.rejectFlowerListing(id, reason);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -42,5 +45,4 @@ public class AdminController {
                         .build()
         );
     }
-
 }
