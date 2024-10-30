@@ -3,7 +3,7 @@ package com.example.myflower.controller;
 import com.example.myflower.dto.auth.requests.CreateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
-import com.example.myflower.dto.auth.responses.FlowerListingListResponseDTO;
+import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.service.FlowerListingService;
@@ -26,12 +26,13 @@ public class FlowerListingController {
     private FlowerListingService flowerListingService;
 
     @GetMapping
-    public ResponseEntity<FlowerListingListResponseDTO> getFlowerListings(
+    public ResponseEntity<PaginationResponseDTO<FlowerListingResponseDTO>> getFlowerListings(
             @RequestParam(required = false, defaultValue = "") String searchString,
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false) String order,
+            @RequestParam(required = false) Boolean deleted,
             @RequestParam(required = false) List<Integer> categoryIds)
     {
         GetFlowerListingsRequestDTO requestDTO = GetFlowerListingsRequestDTO.builder()
@@ -40,6 +41,7 @@ public class FlowerListingController {
                 .pageSize(pageSize)
                 .sortBy(sortBy)
                 .order(order)
+                .deleteStatus(deleted)
                 .categoryIds(categoryIds)
                 .build();
         return ResponseEntity.ok().body(flowerListingService.getFlowerListings(requestDTO));
@@ -75,6 +77,12 @@ public class FlowerListingController {
     @PostMapping("/clear-cache")
     public ResponseEntity<Void> clearFlowerListingCache() {
         flowerListingService.clearFlowerListingCache();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/disable-expired-flowers")
+    public ResponseEntity<Void> disableExpiredFlowers() {
+        flowerListingService.disableExpiredFlowers();
         return ResponseEntity.noContent().build();
     }
 }

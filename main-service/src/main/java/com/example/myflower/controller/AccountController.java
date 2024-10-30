@@ -2,12 +2,15 @@ package com.example.myflower.controller;
 
 import com.example.myflower.dto.BaseResponseDTO;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
+import com.example.myflower.dto.account.requests.GetUsersRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
 import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
+import com.example.myflower.dto.pagination.PaginationResponseDTO;
+import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.service.AccountService;
 import jakarta.validation.Valid;
@@ -104,9 +107,23 @@ public class AccountController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/profile/all")
-    public ResponseEntity<BaseResponseDTO> getAllUser() {
+    public ResponseEntity<BaseResponseDTO> getAllUser(@RequestParam(required = false, defaultValue = "") String search,
+                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                                      @RequestParam(required = false, defaultValue = "20") Integer pageSize,
+                                                      @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+                                                      @RequestParam(required = false) String order,
+                                                      @RequestParam(required = false) List<AccountRoleEnum> roles
+    ) {
         try {
-            List<AccountResponseDTO> accountResponseDTO = accountService.getAllUser();
+            GetUsersRequestDTO requestDTO = GetUsersRequestDTO.builder()
+                    .search(search)
+                    .pageNumber(pageNumber)
+                    .pageSize(pageSize)
+                    .sortBy(sortBy)
+                    .order(order)
+                    .roles(roles)
+                    .build();
+            PaginationResponseDTO<AccountResponseDTO> accountResponseDTO = accountService.getAllUser(requestDTO);
             return ResponseEntity.status(HttpStatus.OK).body(
                     BaseResponseDTO.builder()
                             .message("Get all profile successful")

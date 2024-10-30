@@ -1,8 +1,8 @@
-package com.swd.notification_service.services;
+package com.swd.notification_service.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.swd.notification_service.dto.email_detail.EmailDetail;
 import com.swd.notification_service.dto.wallets.CashoutAdminResponse;
-import com.swd.notification_service.dto.wallets.DataResponse;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 
 @Service
-public class EmailAdminService {
+public class EmailAdminServiceImpl {
     private final ObjectMapper objectMapper;
     private final TemplateEngine templateEngine;
     private final JavaMailSender javaMailSender;
@@ -22,7 +22,7 @@ public class EmailAdminService {
     private String publicApiUrl;
 
     @Autowired
-    public EmailAdminService(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
+    public EmailAdminServiceImpl(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
         this.objectMapper = objectMapper;
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;

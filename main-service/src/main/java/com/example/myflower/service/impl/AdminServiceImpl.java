@@ -25,53 +25,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
-
-    @NonNull
-    private final FlowerListingRepository flowerListingRepository;
     @Autowired
     private AccountRepository accountRepository;
+
     @Autowired
     private KafkaTemplate<String, CreateAccountIntegrationRequest> kafkaTemplate;
-    @Override
-    public FlowerListingResponseDTO approveFlowerListing(Integer id) {
-        Account adminAccount = AccountUtils.getCurrentAccount();
-
-        if (!(adminAccount != null && AccountRoleEnum.ADMIN.equals(adminAccount.getRole()))) {
-            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
-        }
-
-        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
-                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
-
-        flowerListing.setStatus(FlowerListingStatusEnum.APPROVED);
-        flowerListing.setUpdatedAt(LocalDateTime.now());
-
-        FlowerListing approvedListing = flowerListingRepository.save(flowerListing);
-        return FlowerListingMapper.toFlowerListingResponseDTO(approvedListing);
-    }
 
     @Override
-    public FlowerListingResponseDTO rejectFlowerListing(Integer id, String reason) {
-        Account adminAccount = AccountUtils.getCurrentAccount();
-
-        //Check if the requester is admin
-        if (!(adminAccount != null && AccountRoleEnum.ADMIN.equals(adminAccount.getRole()))) {
-            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
-        }
-
-        FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
-                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
-
-        flowerListing.setStatus(FlowerListingStatusEnum.REJECTED);
-        flowerListing.setRejectReason(reason);
-        flowerListing.setUpdatedAt(LocalDateTime.now());
-
-        FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
-        return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
-    }
-
-    @Override
-    public Account getAccountAdmin (){
+    public Account getAccountAdmin() {
         List<Account> accounts = accountRepository.findAccountsByRole(AccountRoleEnum.ADMIN);
         return accounts.get(0);
     }
