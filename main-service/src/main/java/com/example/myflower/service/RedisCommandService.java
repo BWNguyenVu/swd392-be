@@ -43,4 +43,8 @@ public interface RedisCommandService {
     void deleteOtp(Integer userId, String newEmail, String changeEmail);
 
     void clearFlowerCache();
+
+    void clearFlowerCategoryCache();
+
+    void clearFeedbackCache();
 }

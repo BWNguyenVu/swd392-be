@@ -46,6 +46,8 @@ public class FlowerListing {
     private Set<MediaFile> mediaFiles = new HashSet<>();
     @Enumerated(EnumType.STRING)
     private FlowerListingStatusEnum status;
+    @Column(name = "expire_date")
+    private LocalDateTime expireDate;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

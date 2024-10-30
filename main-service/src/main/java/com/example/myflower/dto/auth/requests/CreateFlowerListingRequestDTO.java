@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -34,4 +35,6 @@ public class CreateFlowerListingRequestDTO {
     private List<Integer> categories;
     @NotNull(message = "Flower image is required")
     private List<MultipartFile> images;
+    @NotNull(message = "Expire date is required")
+    private LocalDateTime expireDate;
 }

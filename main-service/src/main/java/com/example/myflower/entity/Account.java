@@ -4,7 +4,6 @@ import com.example.myflower.entity.enumType.AccountGenderEnum;
 import com.example.myflower.entity.enumType.AccountProviderEnum;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
 import com.example.myflower.entity.enumType.AccountStatusEnum;
-import com.example.myflower.filter.AccountEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Audited
+@Table(indexes = {
+        @Index(columnList = "email"),
+})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
