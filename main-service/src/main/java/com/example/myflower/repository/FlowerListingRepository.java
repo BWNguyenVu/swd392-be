@@ -2,8 +2,10 @@ package com.example.myflower.repository;
 
 import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
+import jakarta.persistence.LockModeType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -53,4 +55,8 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     Integer countFlowerListingByUserIdAndStatusNotIn(Integer userId, List<FlowerListingStatusEnum> statusList);
 
     List<FlowerListing> findByExpireDateAfter(LocalDateTime date);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT f FROM FlowerListing f WHERE f.id = :id")
+    FlowerListing findByIdWithLock(Integer id);
 }

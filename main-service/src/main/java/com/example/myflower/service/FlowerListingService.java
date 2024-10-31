@@ -7,6 +7,7 @@ import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.Account;
+import com.example.myflower.entity.FlowerListing;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public interface FlowerListingService {
     void clearFlowerListingCache();
     Integer countProductBySeller(Integer sellerId);
     void updateViewsFlowerListing(Integer flowerListingId, Integer views);
+
+    void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity);
 
     List<FileResponseDTO> getFlowerImages(Integer flowerId);
 

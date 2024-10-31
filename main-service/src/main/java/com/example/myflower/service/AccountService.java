@@ -28,5 +28,6 @@ public interface AccountService {
     AccountResponseDTO uploadAvatar(UploadFileRequestDTO uploadFileRequestDTO) throws IOException;
     AccountResponseDTO updateProfile(UpdateAccountRequestDTO accountRequestDTO);
     SellerResponseDTO getSellerById(Integer sellerId);
+    AccountResponseDTO updateStatusUser(UpdateAccountRequestDTO updateAccountRequestDTO);
     PaginationResponseDTO<AccountResponseDTO> getAllUser(GetUsersRequestDTO requestDTO);
 }

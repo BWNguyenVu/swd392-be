@@ -11,6 +11,7 @@ import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
+import com.example.myflower.entity.enumType.AccountStatusEnum;
 import com.example.myflower.exception.account.AccountAppException;
 import com.example.myflower.service.AccountService;
 import jakarta.validation.Valid;
@@ -84,6 +85,20 @@ public class AccountController {
                         .success(true)
                         .data(accountResponseDTO)
                         .build());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/update-status-user")
+    public ResponseEntity<BaseResponseDTO> updateStatusUser(@RequestBody AccountStatusEnum status){
+        UpdateAccountRequestDTO updateAccountRequestDTO = UpdateAccountRequestDTO.builder()
+                .status(status)
+                .build();
+        AccountResponseDTO accountResponseDTO = accountService.updateStatusUser(updateAccountRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
+                .message("Update profile successful")
+                .success(true)
+                .data(accountResponseDTO)
+                .build());
     }
 
     @GetMapping("/profile/{profileId}")

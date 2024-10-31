@@ -33,6 +33,8 @@ public class WalletLog {
     private WalletLogActorEnum actorEnum;
     @Column(nullable = false)
     private BigDecimal amount;
+    @Column(nullable = true)
+    private BigDecimal balance;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodEnum paymentMethod;
