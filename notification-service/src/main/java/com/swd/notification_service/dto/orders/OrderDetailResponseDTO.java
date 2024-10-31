@@ -1,21 +1,19 @@
-package com.example.myflower.dto.order.responses;
+package com.swd.notification_service.dto.orders;
 
-import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.entity.enumType.OrderDetailsStatusEnum;
-import com.example.myflower.entity.enumType.PaymentMethodEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.swd.notification_service.dto.flowers.FlowerListingResponseDTO;
+import com.swd.notification_service.dto.orders.Enum.OrderDetailsStatusEnum;
+import com.swd.notification_service.dto.orders.Enum.PaymentMethodEnum;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-@Data
 @Getter
 @Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDetailResponseDTO {
     private Integer id;
     private FlowerListingResponseDTO flowerListing;

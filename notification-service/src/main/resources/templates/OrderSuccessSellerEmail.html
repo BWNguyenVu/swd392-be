@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Order Notification</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo {
+            margin: 30px 0;
+        }
+
+        .header-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #742FAB;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .content {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .content h1 {
+            font-size: 20px;
+            color: #222222;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+
+        .order-details {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .order-details .invoice {
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .product {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+
+        .product-details {
+            text-align: left;
+        }
+
+        .product-details h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333333;
+        }
+
+        .product-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #999999;
+        }
+
+        .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+            margin-left: auto;
+        }
+
+        .subtotal,
+        .discount,
+        .tax,
+        .total {
+            display: flex;
+            justify-content: space-between;
+            margin: 3px 0;
+        }
+
+        .total-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #742FAB;
+        }
+
+        .divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #999999;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #742FAB;
+            text-decoration: none;
+        }
+
+        .disclaimer {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .disclaimer a {
+            color: #742FAB;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <!-- Logo Section -->
+    <div class="logo">
+        <img alt="Bloom Logo" height="100" src="https://res.cloudinary.com/dlpust9lj/image/upload/v1728573363/mmslb7mvf6enednkfkr1.png" width="100" />
+    </div>
+
+    <div class="content">
+        <div class="header-text">New Order Notification!</div>
+        <h1>Hi [[${sellerName}]],</h1>
+        <p>You have received a new order from [[${buyerName}]]. Please find the order details below:</p>
+
+        <div class="order-details">
+            <p><strong>Order Details:</strong></p>
+            <p>Invoice Number: <a href="#" class="invoice">[[${invoiceNumber}]]</a></p>
+
+                <div class="product">
+                    <img th:src="${imageUrl}" alt="Product Image">
+                    <div class="product-details">
+                        <h3 th:text="${name}"></h3>
+                        <p>Qty: <span th:text="${quantity}"></span></p>
+                    </div>
+                    <div class="price" th:text="' ' + ${total} + ' VND'"></div>
+                </div>
+
+            <div class="divider"></div>
+
+            <div class="total">
+                <p><strong>Total: </strong></p>
+                <p class="total-value" th:text="' ' + ${total} + ' VND'"></p>
+            </div>
+
+            <div class="button-container">
+                <a th:href="${transactionsLink}" class="btn-primary" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #742FAB; line-height: 2em; font-weight: bold; text-align: center;text-transform: capitalize; margin: 20px 0; padding: 10px 20px; border-style: solid; border-radius: 15px">View Transaction</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="footer">
+        <p>© 2024 Bloom. All rights reserved.</p>
+    </div>
+
+    <div class="disclaimer">
+        <p>You are receiving this email because you are a seller on Bloom. If you have any questions, please <a href="#">contact us</a>.</p>
+        <p>
+            <a href="#">Privacy policy</a> • <a href="#">Terms of service</a> • <a href="#">Help center</a> • <a href="#">Unsubscribe</a>
+        </p>
+    </div>
+</div>
+
+</body>
+
+</html>

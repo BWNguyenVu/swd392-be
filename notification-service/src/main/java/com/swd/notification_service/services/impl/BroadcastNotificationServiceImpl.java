@@ -2,10 +2,13 @@ package com.swd.notification_service.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.swd.notification_service.consts.Constants;
 import com.swd.notification_service.dto.account.UserResponseDTO;
 import com.swd.notification_service.dto.broadcast_notification.request.CreateBroadcastNotificationRequestDTO;
+import com.swd.notification_service.dto.broadcast_notification.request.GetBroadcastNotificationListRequestDTO;
 import com.swd.notification_service.dto.broadcast_notification.response.BroadcastNotificationResponseDTO;
 import com.swd.notification_service.dto.notifications.PushNotificationEventDTO;
+import com.swd.notification_service.dto.pagination.response.PaginationResponseDTO;
 import com.swd.notification_service.entity.BroadcastNotification;
 import com.swd.notification_service.mapper.BroadcastNotificationMapper;
 import com.swd.notification_service.repository.BroadcastNotificationRepository;
@@ -15,10 +18,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,13 +60,67 @@ public class BroadcastNotificationServiceImpl implements BroadcastNotificationSe
     }
 
     @Override
-    public BroadcastNotificationResponseDTO getBroadcastNotification(Integer notificationId) {
-        return null;
+    public PaginationResponseDTO<BroadcastNotificationResponseDTO> getBroadcastNotifications(GetBroadcastNotificationListRequestDTO requestDTO) {
+        if(requestDTO.getStartDate() == null ){
+            requestDTO.setStartDate(LocalDateTime.of(1970, 1, 1, 0, 0));
+        }
+        if(requestDTO.getEndDate() == null ){
+            requestDTO.setEndDate(LocalDateTime.of(9999, 12, 31, 0, 0));
+        }
+
+        Sort sort;
+        switch (requestDTO.getSortBy()) {
+            case Constants.SORT_BY_CREATE_DATE:
+                sort = Sort.by(Constants.SORT_BY_CREATE_DATE);
+                break;
+            case Constants.SORT_BROADCAST_NOTIFICATION_BY_EXECUTE_TIME:
+                sort = Sort.by(Constants.SORT_BROADCAST_NOTIFICATION_BY_EXECUTE_TIME);
+                break;
+            default:
+                sort = Sort.by(Constants.SORT_BY_UPDATE_DATE);
+                break;
+        }
+        //Construct sort order parameters
+        if (Constants.SORT_ORDER_DESCENDING.equals(requestDTO.getOrder())) {
+            sort = sort.descending();
+        }
+        //Construct pagination and sort parameters
+        Pageable pageable = PageRequest.of(
+                requestDTO.getPageNumber(),
+                requestDTO.getPageSize(),
+                sort
+        );
+        Page<BroadcastNotification> result = broadcastNotificationRepository.findByParameters(
+                requestDTO.getSearch(),
+                requestDTO.getStartDate(),
+                requestDTO.getEndDate(),
+                requestDTO.getIsExecuted(), requestDTO.getIsDeleted(),
+                pageable
+        );
+        return BroadcastNotificationMapper.toPaginationResponseDTO(result);
+    }
+
+    @Override
+    public BroadcastNotificationResponseDTO getBroadcastNotificationById(Integer notificationId) {
+        BroadcastNotification broadcastNotification = broadcastNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid notificationId"));
+        return BroadcastNotificationMapper.toResponseDTO(broadcastNotification);
     }
 
     @Override
     public void deleteBroadcastNotification(Integer notificationId) {
+        BroadcastNotification broadcastNotification = broadcastNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid notificationId"));
+        broadcastNotification.setIsDeleted(Boolean.TRUE);
+        broadcastNotificationRepository.save(broadcastNotification);
+    }
 
+    @Override
+    public void restoreBroadcastNotification(Integer notificationId) {
+        BroadcastNotification broadcastNotification = broadcastNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid notificationId"));
+        broadcastNotification.setIsDeleted(Boolean.FALSE);
+        broadcastNotificationRepository.save(broadcastNotification);
     }
 
     @Override
