@@ -19,14 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -61,9 +60,15 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private AuditRepository auditRepository;
 
+    @Autowired
+    private KafkaTemplate<String, OrderResponseDTO> kafkaTemplate;
+
     @Override
     @Transactional
     public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
+        if (orderDTO.getPaymentMethod() != PaymentMethodEnum.WALLET){
+            throw new OrderAppException(ErrorCode.ORDER_INVALID);
+        }
         // Get the current user account
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
@@ -91,12 +96,18 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
         // Return response with order details
-        return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
+        String message = "Order by wallet successfully";
+        OrderResponseDTO orderResponseDTO = createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO, message);
+        kafkaTemplate.send("email_order_wallet_topic", orderResponseDTO);
+        return orderResponseDTO;
     }
 
     @Override
     @Transactional
     public OrderResponseDTO orderByCod(CreateOrderRequestDTO orderDTO) throws OrderAppException {
+        if (orderDTO.getPaymentMethod() != PaymentMethodEnum.COD){
+            throw new OrderAppException(ErrorCode.ORDER_INVALID);
+        }
         // Get the current user account
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
@@ -118,7 +129,10 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
         // Return response with order details
-        return createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO);
+        String message = "Order by cod successfully";
+        OrderResponseDTO orderResponseDTO = createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO, message);
+        kafkaTemplate.send("email_order_wallet_topic", orderResponseDTO);
+        return orderResponseDTO;
     }
 
     private void distributeBalance(Account accountBuyer, BigDecimal totalPrice, OrderSummary orderSummary, Map<Account, BigDecimal> sellerBalanceMap) {
@@ -176,17 +190,21 @@ public class OrderServiceImpl implements OrderService {
                     .createdAt(LocalDateTime.now())
                     .build();
 
-            orderDetailRepository.save(orderDetail);
-            orderDetails.add(orderDetail);
+            OrderDetail response = orderDetailRepository.save(orderDetail);
+            orderDetails.add(response);
         }
         return orderDetails;
     }
 
-    private OrderResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO) {
+    private OrderResponseDTO createOrderByWalletResponseDTO(OrderSummary orderSummary, Account account, List<OrderDetailResponseDTO> orderDetailsResponseDTO, String message) {
         return OrderResponseDTO.builder()
-                .message("Order by cod successfully!")
+                .message(message)
                 .error(false)
                 .id(orderSummary.getId())
+                .buyerName(orderSummary.getBuyerName())
+                .buyerAddress(orderSummary.getBuyerAddress())
+                .buyerPhone(orderSummary.getBuyerPhone())
+                .buyerEmail(account.getEmail())
                 .totalAmount(orderSummary.getTotalPrice())
                 .balance(account.getBalance())
                 .note(orderSummary.getNote())
@@ -217,6 +235,7 @@ public class OrderServiceImpl implements OrderService {
                 .description(orderDetail.getFlowerListing().getDescription())
                 .build();
         return OrderDetailResponseDTO.builder()
+                .id(orderDetail.getId())
                 .flowerListing(flowerListingResponseDTO)
                 .paymentMethod(orderDetail.getPaymentMethod())
                 .status(orderDetail.getStatus())

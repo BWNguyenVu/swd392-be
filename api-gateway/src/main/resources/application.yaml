@@ -13,13 +13,19 @@ spring:
     gateway:
       routes:
         - id: main_service
-          uri: https://services.blossom-app.store
+          uri: https://services.isolutions.top
           predicates:
             - Path=${app.api-prefix}/**
           filters:
             - StripPrefix=0
         - id: notification_service
-          uri: https://notifications.blossom-app.store
+          uri: https://notifications.isolutions.top
+          predicates:
+            - Path=${app.api-prefix}/**
+          filters:
+            - StripPrefix=0
+        - id: integration_service
+          uri: https://integrations.isolutions.top
           predicates:
             - Path=${app.api-prefix}/**
           filters:
