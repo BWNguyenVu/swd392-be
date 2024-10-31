@@ -35,6 +35,7 @@ public class WalletLogServiceImpl implements WalletLogService {
     @Override
     @Transactional
     public WalletLog createWalletLog(WalletLog walletLog, Account account) {
+        walletLog.setBalance(account.getBalance());
         walletLog.setActorEnum(walletLog.getActorEnum());
         walletLog.setUser(account);
         walletLog.setAmount(walletLog.getAmount());

@@ -1,6 +1,7 @@
 package com.example.myflower.repository;
 
 import com.example.myflower.dto.order.responses.CountAndSumOrderResponseDTO;
+import com.example.myflower.dto.order.responses.CountOrderStatusResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.entity.OrderDetail;
@@ -62,4 +63,20 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             @Param("sellerId") Integer sellerId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+
+    @Query("SELECT " +
+            "SUM(CASE WHEN o.status = 'PENDING' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'PREPARING' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'SHIPPED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'DELIVERED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'BUYER_CANCELED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'SELLER_CANCELED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'REFUNDED' THEN 1 ELSE 0 END) " +
+            "FROM OrderDetail o " +
+            "JOIN o.orderSummary os " +
+            "WHERE os.user.id = :userId")
+    List<Object[]> countAllStatusesAndOrderSummary_User_Id(@Param("userId") Integer userId);
+
+
 }

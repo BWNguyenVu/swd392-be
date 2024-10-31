@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.integration_service.dto.requests.AccountIntegrationLoginRequest;
 import com.integration_service.dto.requests.GHTKGetShippingFeeRequestDTO;
 import com.integration_service.dto.requests.GHTKParseAddressRequestDTO;
+import com.integration_service.dto.requests.GHTKSuggestAddressRequestDTO;
 import com.integration_service.dto.responses.AccountIntegrationResponse;
 import com.integration_service.dto.responses.GHTKLoginResponseDTO;
 import com.integration_service.entity.AccountIntegration;
@@ -68,6 +69,18 @@ public class IntegrationServiceImpl implements IntegrationService {
             String jwtToken = integrationScheduler.getJwt();
             String shopToken = integrationScheduler.getShopToken();
             return ghtkGatewayClient.parseAddress(requestDTO.getAddress(), shopToken, jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> suggestAddress(GHTKSuggestAddressRequestDTO requestDTO) {
+        try {
+            String jwtToken = integrationScheduler.getJwt();
+            String shopToken = integrationScheduler.getShopToken();
+            return ghtkGatewayClient.suggestAddress(requestDTO.getSearch(), shopToken, jwtToken);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getLocalizedMessage());
