@@ -2,18 +2,18 @@ package com.swd.notification_service.utils.Consumers;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.swd.notification_service.services.EmailAdminService;
-import com.swd.notification_service.services.EmailService;
+import com.swd.notification_service.services.impl.EmailAdminServiceImpl;
+import com.swd.notification_service.services.impl.EmailServiceImpl;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailConsumer {
-    private final EmailService emailService;
+    private final EmailServiceImpl emailService;
     private final ObjectMapper objectMapper;
-    private final EmailAdminService emailAdminService;
+    private final EmailAdminServiceImpl emailAdminService;
 
-    public EmailConsumer(EmailService emailService, EmailAdminService emailAdminService) {
+    public EmailConsumer(EmailServiceImpl emailService, EmailAdminServiceImpl emailAdminService) {
         this.emailService = emailService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);

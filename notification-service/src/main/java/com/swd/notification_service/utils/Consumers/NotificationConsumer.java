@@ -18,6 +18,12 @@ public class NotificationConsumer {
 
     @KafkaListener(topics = "push_notification_topic", groupId = "notificationsTopic")
     public void processPushNotification(String eventJson) {
-        notificationService.pushNotification(eventJson);
+        try {
+            PushNotificationEventDTO eventDTO = objectMapper.readValue(eventJson, PushNotificationEventDTO.class);
+            notificationService.pushNotification(eventDTO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

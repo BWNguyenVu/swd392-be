@@ -52,6 +52,10 @@ public enum ErrorCode {
     QUANTITY_INVALID(3105, "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
     NO_IMAGE_LEFT(3106, "No images left after deletion and no new images provided", HttpStatus.BAD_REQUEST),
 
+    // FEEDBACKS | CODE: 35XX
+    FEEDBACK_NOT_FOUND(3501, "Feedback not found", HttpStatus.NOT_FOUND),
+    USER_ALREADY_FEEDBACK(3502, "Current user already feedback on the flower", HttpStatus.BAD_REQUEST),
+
     // TRANSACTIONS | CODE: 4XXX
     TRANSACTION_NOT_FOUND(4000, "Transaction not found", HttpStatus.NOT_FOUND),
     // WALLET LOG | 7XXX

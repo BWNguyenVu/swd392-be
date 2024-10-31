@@ -3,6 +3,7 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.flowercategogy.request.CreateFlowerCategoryRequestDTO;
 import com.example.myflower.dto.flowercategogy.request.UpdateFlowerCategoryRequestDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
+import com.example.myflower.entity.Account;
 import com.example.myflower.entity.FlowerCategory;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerCategoryException;
@@ -12,6 +13,7 @@ import com.example.myflower.repository.FlowerCategoryRepository;
 import com.example.myflower.service.FlowerCategoryService;
 import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
+import com.example.myflower.utils.AccountUtils;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,11 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
     @Transactional
     public FlowerCategoryResponseDTO createFlowerCategory(CreateFlowerCategoryRequestDTO requestDTO) {
         try {
+            Account adminAccount = AccountUtils.getCurrentAccount();
+            if (!AccountUtils.isAdminRole(adminAccount)) {
+                throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+            }
+
             MultipartFile imageFile = requestDTO.getImage();
             if (!ValidationUtils.validateImage(imageFile)) {
                 throw new FlowerCategoryException(ErrorCode.INVALID_IMAGE);
@@ -67,20 +74,24 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
 
     @Override
     public List<FlowerCategoryResponseDTO> getAllFlowerCategory() {
-        //Get form cache
-        List<FlowerCategoryResponseDTO> cacheResponseDTOList = redisCommandService.getAllFlowerCategoriesWithDeleteStatusFalse();
-        if (!cacheResponseDTOList.isEmpty()) {
-            return cacheResponseDTOList;
+        Account adminAccount = AccountUtils.getCurrentAccount();
+        Boolean isDeleted = null;
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            //Get form cache
+            List<FlowerCategoryResponseDTO> cacheResponseDTOList = redisCommandService.getAllFlowerCategoriesWithDeleteStatusFalse();
+            if (!cacheResponseDTOList.isEmpty()) {
+                return cacheResponseDTOList;
+            }
+            isDeleted = Boolean.FALSE;
         }
-
         //Get from database
-        List<FlowerCategory> results = flowerCategoryRepository.findAllByDeleteStatus(Boolean.FALSE);
+        List<FlowerCategory> results = flowerCategoryRepository.findAllByDeleteStatus(isDeleted);
         List<FlowerCategoryResponseDTO> responseDTOList = results.stream()
                 .map(FlowerCategoryMapper::toCategoryResponseDTO)
                 .toList();
         responseDTOList.forEach(responseDTO -> responseDTO.setImageUrl(storageService.getFileUrl(responseDTO.getImageUrl())));
         //Save to cache
-        if (!responseDTOList.isEmpty()) {
+        if (!responseDTOList.isEmpty() && Boolean.FALSE.equals(isDeleted)) {
             redisCommandService.setAllFlowerCategoriesWithDeleteStatusFalse(responseDTOList);
         }
         return responseDTOList;
@@ -88,22 +99,34 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
 
     @Override
     public FlowerCategoryResponseDTO getFlowerCategoryById(Integer id) {
-        FlowerCategoryResponseDTO cacheResponseDTO = redisCommandService.getFlowerCategoryById(id);
-        if (cacheResponseDTO != null) {
-            return cacheResponseDTO;
+        Account adminAccount = AccountUtils.getCurrentAccount();
+        Boolean isDeleted = null;
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            FlowerCategoryResponseDTO cacheResponseDTO = redisCommandService.getFlowerCategoryById(id);
+            if (cacheResponseDTO != null) {
+                return cacheResponseDTO;
+            }
+            isDeleted = Boolean.FALSE;
         }
-        FlowerCategory result = flowerCategoryRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
+        FlowerCategory result = flowerCategoryRepository.findByIdAndDeleteStatus(id, isDeleted)
                 .orElseThrow(() -> new FlowerCategoryException(ErrorCode.FLOWER_CATEGORY_NOT_FOUND));
         FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
         responseDTO.setImageUrl(storageService.getFileUrl(responseDTO.getImageUrl()));
-        //Save to cache
-        redisCommandService.setFlowerCategoryById(responseDTO);
+        if (Boolean.FALSE.equals(isDeleted)) {
+            //Save to cache
+            redisCommandService.setFlowerCategoryById(responseDTO);
+        }
         return responseDTO;
     }
 
     @Override
     public FlowerCategoryResponseDTO updateFlowerCategoryById(Integer id, UpdateFlowerCategoryRequestDTO requestDTO) {
         try {
+            Account adminAccount = AccountUtils.getCurrentAccount();
+            if (!AccountUtils.isAdminRole(adminAccount)) {
+                throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+            }
+
             MultipartFile imageFile = requestDTO.getImage();
             if (!ValidationUtils.validateImage(imageFile)) {
                 throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
@@ -137,6 +160,11 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
 
     @Override
     public void deleteFlowerCategoryById(Integer id) {
+        Account adminAccount = AccountUtils.getCurrentAccount();
+        if (!AccountUtils.isAdminRole(adminAccount)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+
         FlowerCategory flowerCategory = flowerCategoryRepository.findById(id)
                 .orElseThrow(() -> new FlowerCategoryException(ErrorCode.FLOWER_CATEGORY_NOT_FOUND));
 

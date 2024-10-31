@@ -6,6 +6,10 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
+@Table(indexes = {
+        @Index(columnList = "flower_id"),
+        @Index(columnList = "media_file_id")
+})
 @Getter
 @Setter
 @Builder

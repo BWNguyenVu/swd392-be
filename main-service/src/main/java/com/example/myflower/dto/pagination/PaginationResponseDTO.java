@@ -1,4 +1,4 @@
-package com.example.myflower.dto.auth.responses;
+package com.example.myflower.dto.pagination;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlowerListingListResponseDTO implements Serializable {
-    private List<FlowerListingResponseDTO> content;
+public class PaginationResponseDTO<T extends Serializable> implements Serializable {
+    private List<T> content;
     private Integer pageNumber;
     private Integer totalPages;
     private Integer pageSize;

@@ -12,12 +12,14 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class NotificationResponseDTO {
+    private Integer id;
     private Integer userId;
     private String title;
     private String message;
     private NotificationTypeEnum type;
     private DestinationScreenEnum destinationScreen;
     private Boolean isRead;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Boolean isDeleted;
 }

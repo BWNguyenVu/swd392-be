@@ -1,11 +1,14 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.consts.Constants;
 import com.example.myflower.dto.account.requests.AddBalanceRequestDTO;
+import com.example.myflower.dto.account.requests.GetUsersRequestDTO;
 import com.example.myflower.dto.account.requests.UpdateAccountRequestDTO;
 import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
+import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
 import com.example.myflower.dto.payment.responses.PaymentResponseDTO;
@@ -19,6 +22,10 @@ import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,7 +35,6 @@ import vn.payos.type.ItemData;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -285,18 +291,35 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponseDTO> getAllUser() {
+    public PaginationResponseDTO<AccountResponseDTO> getAllUser(GetUsersRequestDTO requestDTO) {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null || !account.getRole().equals(AccountRoleEnum.ADMIN)) {
             throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        List<Account> accountList = accountRepository.findAll();
-        return accountList.stream()
-                .map(accounts -> {
-                    AccountResponseDTO response = accountMapper.mapToAccountResponseDTO(accounts);
-                    response.setStatus(accounts.getStatus());
-                    return response;
-                })
-                .toList();
+
+        if (requestDTO.getRoles() != null && requestDTO.getRoles().isEmpty()) {
+            requestDTO.setRoles(null);
+        }
+        //Construct sort by field parameters
+        Sort sort;
+        switch (requestDTO.getSortBy()) {
+            case "name":
+                sort = Sort.by("name");
+                break;
+            case "email":
+                sort = Sort.by("email");
+                break;
+            default:
+                sort = Sort.by("createAt");
+                break;
+        }
+        if (Constants.SORT_ORDER_DESCENDING.equals(requestDTO.getOrder())) {
+            sort = sort.descending();
+        }
+        //Construct pagination and sort parameters
+        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), sort);
+        Page<Account> accountList = accountRepository
+                .findAccountWithParameters(requestDTO.getRoles(), requestDTO.getSearch(), pageable);
+        return accountMapper.toPaginationResponseDTO(accountList);
     }
 }

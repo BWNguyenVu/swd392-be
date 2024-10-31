@@ -1,6 +1,7 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
+import com.example.myflower.dto.feedback.response.FeedbackResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerCategoryException;
@@ -252,6 +253,30 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         }
         catch (Exception e) {
             LOG.error("[clearFlowerCache] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void clearFlowerCategoryCache() {
+        try {
+            String pattern = "flowerCategory:*";
+            Set<String> keySet = redisService.getKeysByPattern(pattern);
+            redisService.deleteListStringValueByKey(keySet);
+        }
+        catch (Exception e) {
+            LOG.error("[clearFlowerCategoryCache] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void clearFeedbackCache() {
+        try {
+            String pattern = "feedbacks:*";
+            Set<String> keySet = redisService.getKeysByPattern(pattern);
+            redisService.deleteListStringValueByKey(keySet);
+        }
+        catch (Exception e) {
+            LOG.error("[clearFeedbackCache] Has exception: ", e);
         }
     }
 }

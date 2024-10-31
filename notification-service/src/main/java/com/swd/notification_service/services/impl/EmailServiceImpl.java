@@ -1,10 +1,10 @@
-package com.swd.notification_service.services;
+package com.swd.notification_service.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swd.notification_service.dto.account.Account;
 import com.swd.notification_service.dto.orders.OrderDetailResponseDTO;
 import com.swd.notification_service.dto.orders.OrderResponseDTO;
-import com.swd.notification_service.dto.wallets.DataResponse;
+import com.swd.notification_service.dto.email_detail.EmailDetail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class EmailService {
+public class EmailServiceImpl {
 
     private final ObjectMapper objectMapper;
     private final TemplateEngine templateEngine;
@@ -33,7 +33,7 @@ public class EmailService {
     private String publicApiUrl;
 
     @Autowired
-    public EmailService(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
+    public EmailServiceImpl(ObjectMapper objectMapper, TemplateEngine templateEngine, JavaMailSender javaMailSender) {
         this.objectMapper = objectMapper;
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
@@ -198,7 +198,7 @@ public class EmailService {
             context.setVariable("invoiceNumber", orderDetailResponseDTO.getId());
             context.setVariable("total", orderDetailResponseDTO.getPrice());
             context.setVariable("transactionsLink", "https://blossom.isolutions.top/orders-history");
-            context.setVariable("name", orderDetailResponseDTO.getPrice());
+            context.setVariable("name", orderDetailResponseDTO.getFlowerListing().getName());
             context.setVariable("quantity", orderDetailResponseDTO.getQuantity());
             context.setVariable("imageUrl", orderDetailResponseDTO.getFlowerListing().getImages().get(0).getUrl());
 

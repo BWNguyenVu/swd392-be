@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
+@Table(indexes = {
+        @Index(columnList = "flowerId"),
+})
 @Getter
 @Setter
 @Builder
@@ -23,6 +26,9 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
+    private FlowerListing flower;
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)

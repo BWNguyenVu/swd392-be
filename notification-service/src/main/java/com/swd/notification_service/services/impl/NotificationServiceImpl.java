@@ -7,20 +7,22 @@ import com.swd.notification_service.entity.Notification;
 import com.swd.notification_service.mapper.NotificationMapper;
 import com.swd.notification_service.repository.NotificationRepository;
 import com.swd.notification_service.services.NotificationService;
+import com.swd.notification_service.services.SocketService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     @NonNull
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @NonNull
-    NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepository;
+    @NonNull
+    private SocketService socketService;
 
     @Override
     public List<NotificationResponseDTO> getAllNotifications(Integer userId) {
@@ -31,18 +33,40 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void pushNotification(String notification) {
+    public void pushNotification(PushNotificationEventDTO eventDTO) {
         try {
-            PushNotificationEventDTO eventDTO = objectMapper.readValue(notification, PushNotificationEventDTO.class);
             Notification notificationEntity = Notification.builder()
                     .userId(eventDTO.getUserId())
                     .title(eventDTO.getTitle())
                     .type(eventDTO.getType())
                     .message(eventDTO.getMessage())
                     .destinationScreen(eventDTO.getDestinationScreen())
-                    .createdAt(LocalDateTime.now())
                     .build();
-            notificationRepository.save(notificationEntity);
+            Notification result = notificationRepository.save(notificationEntity);
+
+            socketService.sendNotificationToUser(NotificationMapper.toResponseDTO(result));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void pushMultipleNotifications(List<PushNotificationEventDTO> eventDTOList) {
+        try {
+            List<Notification> notificationList = eventDTOList.stream()
+                    .map(eventDTO -> Notification.builder()
+                            .userId(eventDTO.getUserId())
+                            .title(eventDTO.getTitle())
+                            .type(eventDTO.getType())
+                            .message(eventDTO.getMessage())
+                            .destinationScreen(eventDTO.getDestinationScreen())
+                            .build())
+                    .toList();
+            List<Notification> result = notificationRepository.saveAll(notificationList);
+            for (Notification notification : result) {
+                socketService.sendNotificationToUser(NotificationMapper.toResponseDTO(notification));
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
