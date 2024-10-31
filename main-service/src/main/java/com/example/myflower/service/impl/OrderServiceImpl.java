@@ -2,6 +2,7 @@ package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
+import com.example.myflower.dto.notification.NotificationMessageDTO;
 import com.example.myflower.dto.order.requests.*;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
@@ -63,6 +64,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private KafkaTemplate<String, OrderResponseDTO> kafkaTemplate;
 
+    @Autowired
+    private KafkaTemplate<String, NotificationMessageDTO> kafkaNotificationTemplate;
+
     @Override
     @Transactional
     public OrderResponseDTO orderByWallet(CreateOrderRequestDTO orderDTO) throws OrderAppException {
@@ -98,6 +102,30 @@ public class OrderServiceImpl implements OrderService {
         // Return response with order details
         String message = "Order by wallet successfully";
         OrderResponseDTO orderResponseDTO = createOrderByWalletResponseDTO(orderSummary, account, orderDetailsResponseDTO, message);
+        //Push notification
+        List<NotificationMessageDTO> notificationList = new ArrayList<>();
+        NotificationMessageDTO buyerNotification = NotificationMessageDTO.builder()
+                .userId(account.getId())
+                .title(message)
+                .message("Your order with ID " + orderResponseDTO.getId() + " has been purchased successfully!")
+                .destinationScreen(DestinationScreenEnum.MY_ORDER)
+                .type(NotificationTypeEnum.ORDER_STATUS)
+                .build();
+        notificationList.add(buyerNotification);
+        orderDetails.forEach(orderDetail -> {
+                            NotificationMessageDTO sellerNotification = NotificationMessageDTO.builder()
+                                    .userId(orderDetail.getSeller().getId())
+                                    .title("Your flower has been ordered")
+                                    .message(orderDetail.getFlowerListing().getName() + " has been purchased!")
+                                    .destinationScreen(DestinationScreenEnum.MY_FLOWER_LISTING)
+                                    .type(NotificationTypeEnum.ORDER_STATUS)
+                                    .build();
+                            notificationList.add(sellerNotification);
+        });
+        // KAFKA SEND MESSAGE TO NOTIFICATION SERVICE
+        notificationList.forEach(notificationMessageDTO
+                -> kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO)
+        );
         kafkaTemplate.send("email_order_wallet_topic", orderResponseDTO);
         return orderResponseDTO;
     }

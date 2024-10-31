@@ -37,9 +37,12 @@ public class BroadcastNotification {
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
+    @Column(name = "is_deleted", nullable = true)
+    private Boolean isDeleted;
 
     @PrePersist
     protected void onCreate() {
+        this.isDeleted = false;
         this.isExecuted = false;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

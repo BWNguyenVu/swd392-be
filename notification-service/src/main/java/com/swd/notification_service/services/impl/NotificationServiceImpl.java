@@ -3,6 +3,7 @@ package com.swd.notification_service.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swd.notification_service.dto.notifications.NotificationResponseDTO;
 import com.swd.notification_service.dto.notifications.PushNotificationEventDTO;
+import com.swd.notification_service.dto.pagination.CursorPaginationRequest;
 import com.swd.notification_service.entity.Notification;
 import com.swd.notification_service.mapper.NotificationMapper;
 import com.swd.notification_service.repository.NotificationRepository;
@@ -10,8 +11,12 @@ import com.swd.notification_service.services.NotificationService;
 import com.swd.notification_service.services.SocketService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +30,12 @@ public class NotificationServiceImpl implements NotificationService {
     private SocketService socketService;
 
     @Override
-    public List<NotificationResponseDTO> getAllNotifications(Integer userId) {
-        List<Notification> result = notificationRepository.getAllByUserId(userId);
+    public List<NotificationResponseDTO> getAllNotifications(Integer userId, CursorPaginationRequest<LocalDateTime> paginationRequest) {
+        if (paginationRequest.getCursor() == null) {
+            paginationRequest.setCursor(LocalDateTime.now());
+        }
+        Pageable pageable = PageRequest.of(0, paginationRequest.getSize());
+        Page<Notification> result = notificationRepository.findByUserIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, paginationRequest.getCursor(), pageable);
         return result.stream()
                 .map(NotificationMapper::toResponseDTO)
                 .toList();
