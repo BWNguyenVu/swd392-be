@@ -35,9 +35,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -86,12 +84,14 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         try {
             // GET EMAIL BY REQUEST DTO AND VALIDATION EMAIL
             Account account = getAccountByEmail(loginRequestDTO.getEmail());
-
             if (account == null) {
                 throw new AuthAppException(ErrorCode.EMAIL_NOT_FOUND);
             }
             if (account.getStatus().equals(AccountStatusEnum.UNVERIFIED)) {
                 throw new AuthAppException(ErrorCode.ACCOUNT_NOT_VERIFY);
+            }
+            if (account.getStatus().equals(AccountStatusEnum.BAN)) {
+                throw new AuthAppException(ErrorCode.ACCOUNT_BANNED);
             }
             Authentication authentication = null;
             try {

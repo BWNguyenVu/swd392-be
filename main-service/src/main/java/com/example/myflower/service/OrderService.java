@@ -4,6 +4,7 @@ import com.example.myflower.dto.order.requests.CreateOrderRequestDTO;
 import com.example.myflower.dto.order.requests.GetOrderDetailsRequestDTO;
 import com.example.myflower.dto.order.requests.GetReportRequestDTO;
 import com.example.myflower.dto.order.requests.UpdateOrderDetailRequestDTO;
+import com.example.myflower.dto.order.responses.CountOrderStatusResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.ReportResponseDTO;
@@ -24,4 +25,5 @@ public interface OrderService {
     OrderDetailResponseDTO getOrderDetailById(Integer orderDetailId);
     ReportResponseDTO getReportByAccount(GetReportRequestDTO requestDTO);
     List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate);
+    CountOrderStatusResponseDTO getCountOrderStatus();
 }
