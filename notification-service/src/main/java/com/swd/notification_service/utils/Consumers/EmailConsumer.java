@@ -50,5 +50,16 @@ public class EmailConsumer {
         }
     }
 
+    @KafkaListener(topics = "email_order_wallet_topic", groupId = "emailMessageTopic")
+    public void emailBuyerOrder(String order) {
+        try {
+            emailService.buyerOrderByWallet(order);
+            emailService.orderNotificationForSeller(order);
+            System.out.println("Received order: " + order);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

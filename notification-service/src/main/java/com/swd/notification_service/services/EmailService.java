@@ -2,7 +2,8 @@ package com.swd.notification_service.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swd.notification_service.dto.account.Account;
-import com.swd.notification_service.dto.orders.OrderDTO;
+import com.swd.notification_service.dto.orders.OrderDetailResponseDTO;
+import com.swd.notification_service.dto.orders.OrderResponseDTO;
 import com.swd.notification_service.dto.wallets.DataResponse;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -13,6 +14,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class EmailService {
@@ -45,29 +53,6 @@ public class EmailService {
         } catch (Exception e) {
             e.printStackTrace();
             // Handle specific exceptions or log appropriately
-        }
-    }
-
-    public void buyCourseSuccessByWallet(String order) {
-        try {
-            OrderDTO orderDTO = objectMapper.readValue(order, OrderDTO.class);
-
-            EmailDetail emailDetail = new EmailDetail();
-            emailDetail.setName(orderDTO.getBuyerName());
-            emailDetail.setRecipient(orderDTO.getBuyerEmail());
-            emailDetail.setSubject("Course Purchase Success!");
-
-            Context context = new Context();
-            context.setVariable("name", orderDTO.getBuyerName());
-//            context.setVariable("courseName", orderDTO.getCourseName()); // Assuming OrderDTO has a courseName field
-            context.setVariable("totalPrice", orderDTO.getTotalPrice());
-
-            String emailContent = templateEngine.process("CoursePurchaseSuccessEmailTemplate", context);
-            emailDetail.setMsgBody(emailContent);
-            sendEmailWithTemplate(emailDetail, "CoursePurchaseSuccessEmailTemplate");
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -107,60 +92,6 @@ public class EmailService {
         }
     }
 
-    public void cashoutByInstructor(String cashout) {
-        try {
-            DataResponse cashoutDTO = objectMapper.readValue(cashout, DataResponse.class);
-
-            EmailDetail emailDetail = new EmailDetail();
-            emailDetail.setName(cashoutDTO.getName());
-            emailDetail.setRecipient(cashoutDTO.getEmail());
-            emailDetail.setSubject("Congratulations on Your Cashout!");
-
-            String emailTemplate = createEmailTemplate(cashoutDTO);
-            emailDetail.setMsgBody(emailTemplate);
-
-            sendEmail(emailDetail);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle specific exceptions or log appropriately
-        }
-    }
-
-    private String createEmailTemplate(DataResponse cashoutDTO) {
-        String template = "Hello %s,\n\n" +
-                "Congratulations on your cashout!\n\n" +
-                "Here are the details:\n" +
-                "Remaining Balance: %s\n" +
-                "Cashout Amount: %s\n" +
-                "Bank Name: %s\n" +
-                "Bank Account Number: %s\n\n" +
-                "Thank you,\n" +
-                "Your Application Team";
-
-        return String.format(template,
-                cashoutDTO.getName(),
-                cashoutDTO.getRemainingBalance(),
-                cashoutDTO.getCashoutBalance(),
-                cashoutDTO.getBankName(),
-                cashoutDTO.getBankAccountNumber());
-    }
-
-    private void sendEmail(EmailDetail emailDetail) {
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-
-            mimeMessageHelper.setFrom("isolutions.top.contact@gmail.com");
-            mimeMessageHelper.setTo(emailDetail.getRecipient());
-            mimeMessageHelper.setSubject(emailDetail.getSubject());
-            mimeMessageHelper.setText(emailDetail.getMsgBody(), false);
-
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void VerifyAccountMailTemplate(EmailDetail emailDetail, Account account) {
         try {
@@ -188,19 +119,66 @@ public class EmailService {
         }
     }
 
+    public void buyerOrderByWallet(String order){
+        try {
+            OrderResponseDTO orderResponseDTO = objectMapper.readValue(order, OrderResponseDTO.class);
+            EmailDetail emailDetail = createEmailDetailOrder(orderResponseDTO, "Thank You for Your Purchase!", "");
+            sendOrderConfirmationEmail(emailDetail, orderResponseDTO, "OrderSuccessEmail");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void orderNotificationForSeller(String order) {
+        try {
+            OrderResponseDTO orderResponseDTO = objectMapper.readValue(order, OrderResponseDTO.class);
+            orderResponseDTO.getOrderDetails().stream()
+                    .distinct()
+                    .forEach(orderDetailResponseDTO ->
+                            sendNewOrderForSeller(
+                                    createEmailDetailOrderForSeller(orderDetailResponseDTO, "You have a new order", ""),
+                                    orderDetailResponseDTO,
+                                    "OrderSuccessSellerEmail"
+                            )
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private EmailDetail createEmailDetailOrderForSeller(OrderDetailResponseDTO orderDetailResponseDTO, String subject, String msgBody) {
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setName(orderDetailResponseDTO.getFlowerListing().getUser().getName());
+        emailDetail.setRecipient(orderDetailResponseDTO.getFlowerListing().getUser().getEmail());
+        emailDetail.setSubject(subject);
+        emailDetail.setMsgBody(msgBody);
+        return emailDetail;
+    }
+
+    private EmailDetail createEmailDetailOrder(OrderResponseDTO orderResponseDTO, String subject, String msgBody) {
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setName(orderResponseDTO.getBuyerName());
+        emailDetail.setRecipient(orderResponseDTO.getBuyerEmail());
+        emailDetail.setSubject(subject);
+        emailDetail.setMsgBody(msgBody);
+        return emailDetail;
+    }
+
+
     public void sendEmailWithTemplate(EmailDetail emailDetail, String templateName) {
         try {
             Context context = new Context();
             context.setVariable("name", emailDetail.getName());
             context.setVariable("link", emailDetail.getMsgBody());
             context.setVariable("otp", emailDetail.getMsgBody());
-
             String text = templateEngine.process(templateName, context);
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setFrom("isolutions.top.contact@gmail.com");
+            mimeMessageHelper.setFrom("BLOSSOM APP <isolutions.top.contact@gmail.com>");
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setSubject(emailDetail.getSubject());
             mimeMessageHelper.setText(text, true);
@@ -211,4 +189,79 @@ public class EmailService {
             // Handle email sending exceptions
         }
     }
+    private void sendNewOrderForSeller(EmailDetail emailDetail, OrderDetailResponseDTO orderDetailResponseDTO, String templateName) {
+        try {
+            Context context = new Context();
+
+            // Set basic buyer and order information
+            context.setVariable("buyerName", emailDetail.getName());
+            context.setVariable("invoiceNumber", orderDetailResponseDTO.getId());
+            context.setVariable("total", orderDetailResponseDTO.getPrice());
+            context.setVariable("transactionsLink", "https://blossom.isolutions.top/orders-history");
+            context.setVariable("name", orderDetailResponseDTO.getPrice());
+            context.setVariable("quantity", orderDetailResponseDTO.getQuantity());
+            context.setVariable("imageUrl", orderDetailResponseDTO.getFlowerListing().getImages().get(0).getUrl());
+
+            // Render the template with context
+            String text = templateEngine.process(templateName, context);
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom("BLOSSOM APP <isolutions.top.contact@gmail.com>");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+            mimeMessageHelper.setText(text, true);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendOrderConfirmationEmail(EmailDetail emailDetail, OrderResponseDTO orderResponseDTO, String templateName) {
+        try {
+            Context context = new Context();
+
+            // Set basic buyer and order information
+            context.setVariable("buyerName", emailDetail.getName());
+            context.setVariable("invoiceNumber", orderResponseDTO.getId());
+            context.setVariable("total", orderResponseDTO.getTotalAmount());
+            context.setVariable("transactionsLink", "https://blossom.isolutions.top/orders-history");
+
+            // Prepare order details list to match the template's structure
+            List<Map<String, Object>> productList = new ArrayList<>();
+            for (OrderDetailResponseDTO detail : orderResponseDTO.getOrderDetails()) {
+                Map<String, Object> productData = new HashMap<>();
+                productData.put("name", detail.getFlowerListing().getName());
+                productData.put("quantity", detail.getQuantity());
+                productData.put("price", detail.getPrice());
+                productData.put("imageUrl", detail.getFlowerListing().getImages().get(0).getUrl()); // Assuming first image is used
+                productList.add(productData);
+            }
+            context.setVariable("orderDetails", productList);
+
+            // Render the template with context
+            String text = templateEngine.process(templateName, context);
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom("BLOSSOM APP <isolutions.top.contact@gmail.com>");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+            mimeMessageHelper.setText(text, true);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+
+
+    // Example method to calculate subtotal if it's not directly provided
+
 }
