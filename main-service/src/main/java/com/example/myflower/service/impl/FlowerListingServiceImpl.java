@@ -4,12 +4,15 @@ import com.example.myflower.consts.Constants;
 import com.example.myflower.dto.auth.requests.CreateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
+import com.example.myflower.dto.notification.NotificationMessageDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.*;
 import com.example.myflower.entity.enumType.AccountRoleEnum;
+import com.example.myflower.entity.enumType.DestinationScreenEnum;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
+import com.example.myflower.entity.enumType.NotificationTypeEnum;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.order.OrderAppException;
@@ -25,11 +28,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +66,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Autowired
     private SchedulerService schedulerService;
+
+    @Autowired
+    private KafkaTemplate<String, NotificationMessageDTO> kafkaNotificationTemplate;
 
 
     @Override
@@ -282,7 +290,37 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     }
 
     @Override
-    public Integer countProductBySeller(Integer sellerId){
+    public void deleteFlower(Integer id) {
+        FlowerListing flowerListing = flowerListingRepository
+                .findById(id)
+                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        if (!this.isHavingFlowerPermissions(currentAccount, flowerListing)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+        flowerListing.setDeleted(Boolean.TRUE);
+        flowerListingRepository.save(flowerListing);
+        redisCommandService.deleteFlowerById(id);
+    }
+
+    @Override
+    public void restoreFlower(Integer id) {
+        FlowerListing flowerListing = flowerListingRepository
+                .findById(id)
+                .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        if (!this.isHavingFlowerPermissions(currentAccount, flowerListing)) {
+            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+        }
+        flowerListing.setDeleted(Boolean.FALSE);
+        FlowerListing updatedFlower = flowerListingRepository.save(flowerListing);
+        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlower);
+        responseDTO.setImages(this.getFlowerImages(id));
+        redisCommandService.setFlowerById(responseDTO);
+    }
+
+    @Override
+    public Integer countProductBySeller(Integer sellerId) {
         return flowerListingRepository.countFlowerListingByUserIdAndStatusNotIn(sellerId, List.of(FlowerListingStatusEnum.PENDING, FlowerListingStatusEnum.REJECTED) );
     }
 
@@ -354,6 +392,15 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing approvedListing = flowerListingRepository.save(flowerListing);
+        //Push notification
+        NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
+                .userId(flowerListing.getUser().getId())
+                .title("Your flower has been approved")
+                .message(flowerListing.getName() + " has been approved by admin!")
+                .destinationScreen(DestinationScreenEnum.MY_FLOWER_LISTING)
+                .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
+                .build();
+        kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
         return FlowerListingMapper.toFlowerListingResponseDTO(approvedListing);
     }
 
@@ -374,14 +421,35 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
+
+        //Push notification
+        NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
+                .userId(flowerListing.getUser().getId())
+                .title("Your flower has been rejected")
+                .message(flowerListing.getName() + " has been rejected by admin with reason: " + flowerListing.getRejectReason())
+                .destinationScreen(DestinationScreenEnum.MY_FLOWER_LISTING)
+                .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
+                .build();
+        kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
         return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
     }
 
     @Override
     public void disableExpiredFlowers() {
-        List<FlowerListing> expiredFlower = flowerListingRepository.findByExpireDateAfter(LocalDateTime.now());
+        List<FlowerListing> expiredFlower = flowerListingRepository.findByExpireDateBefore(LocalDateTime.now());
         expiredFlower.forEach(flower -> flower.setStatus(FlowerListingStatusEnum.EXPIRED));
         flowerListingRepository.saveAll(expiredFlower);
+        expiredFlower.forEach(flowerListing -> {
+            //Push notification
+            NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
+                    .userId(flowerListing.getUser().getId())
+                    .title("Your flower has been expired!")
+                    .message(flowerListing.getName() + " has been expired on " + flowerListing.getExpireDate())
+                    .destinationScreen(DestinationScreenEnum.MY_FLOWER_LISTING)
+                    .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
+                    .build();
+            kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
+        });
     }
 
     private boolean isHavingFlowerPermissions(Account account, FlowerListing flower) {

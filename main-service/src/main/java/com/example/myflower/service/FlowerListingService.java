@@ -20,6 +20,11 @@ public interface FlowerListingService {
     FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account);
     FlowerListingResponseDTO updateFlowerListing(Integer id, Account account, UpdateFlowerListingRequestDTO flowerListingRequestDTO);
     void clearFlowerListingCache();
+
+    void deleteFlower(Integer id);
+
+    void restoreFlower(Integer id);
+
     Integer countProductBySeller(Integer sellerId);
     void updateViewsFlowerListing(Integer flowerListingId, Integer views);
 
