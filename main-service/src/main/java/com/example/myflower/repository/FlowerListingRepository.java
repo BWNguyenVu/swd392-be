@@ -19,7 +19,7 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     @Query("SELECT fl FROM FlowerListing fl " +
             "JOIN FETCH fl.user " +
             "LEFT JOIN FETCH fl.categories fc " +
-            "WHERE fl.name IS NULL OR fl.name ILIKE %:name% " +
+            "WHERE :name IS NULL OR fl.name ILIKE %:name% " +
             "AND (:status IS NULL OR fl.status = :status) " +
             "AND (:isDeleted IS NULL OR fl.isDeleted = :isDeleted) " +
             "AND (:categoryIds IS NULL OR fl.id IN (" +
@@ -52,5 +52,5 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
 
     Integer countFlowerListingByUserIdAndStatusNotIn(Integer userId, List<FlowerListingStatusEnum> statusList);
 
-    List<FlowerListing> findByExpireDateAfter(LocalDateTime date);
+    List<FlowerListing> findByExpireDateBefore(LocalDateTime date);
 }
