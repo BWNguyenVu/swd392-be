@@ -1,8 +1,9 @@
 package com.example.myflower.service;
 
-import com.example.myflower.dto.auth.requests.ChangeEmailRequestDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
+import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
 
 import java.util.List;
 
@@ -18,10 +19,12 @@ public interface RedisCommandService {
     void deleteFlowerCategoryById(Integer id);
 
     // Method to get a flower listing by its ID
-    FlowerListingResponseDTO getFlowerById(Integer id);
+    FlowerListingCacheDTO getFlowerById(Integer id);
 
     // Method to set a single flower listing by its ID
     void setFlowerById(FlowerListingResponseDTO responseDTO);
+
+    void storeFlower(FlowerListingCacheDTO cacheDTO);
 
     // Method to delete a flower listing by its ID
     void deleteFlowerById(Integer id);
@@ -36,6 +39,14 @@ public interface RedisCommandService {
 
     boolean isRevokedTokenExist(Integer userId, String refreshToken);
 
+    void storePresignedUrl(String fileName, String presignedUrl);
+
+    String getPresignedUrl(String fileName);
+
+    void storeMediaFile(FileResponseDTO file);
+
+    FileResponseDTO getMediaFile(Integer id);
+
     void storeOtpChangeEmail(Integer userId, String newEmail, String changeEmail);
 
     String getOtpChangeEmail(Integer userId, String changeEmail);
@@ -47,4 +58,6 @@ public interface RedisCommandService {
     void clearFlowerCategoryCache();
 
     void clearFeedbackCache();
+
+    void clearPresignedUrlCache();
 }

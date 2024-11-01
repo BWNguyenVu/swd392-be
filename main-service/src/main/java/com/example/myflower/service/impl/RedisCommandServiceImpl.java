@@ -1,8 +1,9 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
-import com.example.myflower.dto.feedback.response.FeedbackResponseDTO;
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
+import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerCategoryException;
 import com.example.myflower.exception.flowers.FlowerListingException;
@@ -17,6 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +40,13 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             Set<String> keys = redisService.getKeysByPattern(pattern);
             return keys.stream()
                     .map(key -> redisService.getStringValueByKey(key))
-                    .map(value -> objectMapper.convertValue(value, FlowerCategoryResponseDTO.class))
+                    .map(value -> {
+                        try {
+                            return objectMapper.readValue(value, FlowerCategoryResponseDTO.class);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .toList();
         }
         catch (Exception e) {
@@ -51,7 +60,7 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         try {
             String key = String.format("flowerCategory:%s", id);
             String value = redisService.getStringValueByKey(key);
-            return objectMapper.convertValue(value, FlowerCategoryResponseDTO.class);
+            return objectMapper.readValue(value, FlowerCategoryResponseDTO.class);
         }
         catch (Exception e) {
             LOG.error("[getFlowerCategoryById] Has exception: ", e);
@@ -103,11 +112,11 @@ public class RedisCommandServiceImpl implements RedisCommandService {
     }
 
     @Override
-    public FlowerListingResponseDTO getFlowerById(Integer id) {
+    public FlowerListingCacheDTO getFlowerById(Integer id) {
         try {
             String key = String.format("flowers:%s", id);
             String value = redisService.getStringValueByKey(key);
-            return objectMapper.readValue(value, FlowerListingResponseDTO.class);
+            return objectMapper.readValue(value, FlowerListingCacheDTO.class);
         }
         catch (Exception e) {
             LOG.error("[getFlowerById] Has exception: ", e);
@@ -123,6 +132,18 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             redisService.setStringValueByKey(key, value);
         } catch (JsonProcessingException e) {
             throw new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        catch (Exception e) {
+            LOG.error("[setFlowerById] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void storeFlower(FlowerListingCacheDTO cacheDTO) {
+        try {
+            String key = String.format("flowers:%s", cacheDTO.getId());
+            String value = objectMapper.writeValueAsString(cacheDTO);
+            redisService.setStringValueByKey(key, value);
         }
         catch (Exception e) {
             LOG.error("[setFlowerById] Has exception: ", e);
@@ -220,16 +241,77 @@ public class RedisCommandServiceImpl implements RedisCommandService {
     }
 
     @Override
+    public void storePresignedUrl(String fileName, String presignedUrl) {
+        try {
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            String key = String.format("presignedUrl:%s", encodedFileName);
+            redisService.setStringValueByKey(key, presignedUrl);
+        }
+        catch (Exception e) {
+            LOG.error("[storePresignedUrl] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public String getPresignedUrl(String fileName) {
+        try {
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            String key = String.format("presignedUrl:%s", encodedFileName);
+            return redisService.getStringValueByKey(key);
+        }
+        catch (Exception e) {
+            LOG.error("[getPresignedUrl] Has exception: ", e);
+            return null;
+        }
+    }
+
+    @Override
+    public void storeMediaFile(FileResponseDTO file) {
+        try {
+            String key = String.format("mediaFile:%s", file.getId());
+            String value = objectMapper.writeValueAsString(file);
+            redisService.setStringValueByKey(key, value);
+        }
+        catch (Exception e) {
+            LOG.error("[storeMediaFile] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public FileResponseDTO getMediaFile(Integer id) {
+        try {
+            String key = String.format("mediaFile:%s", id);
+            String value = redisService.getStringValueByKey(key);
+            return objectMapper.readValue(value, FileResponseDTO.class);
+        }
+        catch (Exception e) {
+            LOG.error("[getPresignedUrl] Has exception: ", e);
+            return null;
+        }
+    }
+
+    @Override
     public void storeOtpChangeEmail(Integer userId, String newEmail, String changeEmail) {
-        String key = String.format("otp:%s:%s", userId, changeEmail);
-        redisService.setStringValueByKeyExpire(key, newEmail, 300);
+        try {
+            String key = String.format("otp:%s:%s", userId, changeEmail);
+            redisService.setStringValueByKeyExpire(key, newEmail, 300);
+        }
+        catch (Exception e) {
+            LOG.error("[storeOtpChangeEmail] Has exception: ", e);
+        }
     }
 
     @Override
     public String getOtpChangeEmail(Integer userId, String changeEmail) {
-        String key = String.format("otp:%s:%s", userId, changeEmail);
-        String email = redisService.getStringValueByKey(key);
-        return email.isEmpty() ? null : email;
+        try {
+            String key = String.format("otp:%s:%s", userId, changeEmail);
+            String email = redisService.getStringValueByKey(key);
+            return email.isEmpty() ? null : email;
+        }
+        catch (Exception e) {
+            LOG.error("[getOtpChangeEmail] Has exception: ", e);
+            return null;
+        }
     }
 
     @Override
@@ -277,6 +359,18 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         }
         catch (Exception e) {
             LOG.error("[clearFeedbackCache] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void clearPresignedUrlCache() {
+        try {
+            String pattern = "presignedUrl:*";
+            Set<String> keySet = redisService.getKeysByPattern(pattern);
+            redisService.deleteListStringValueByKey(keySet);
+        }
+        catch (Exception e) {
+            LOG.error("[clearPresignedUrlCache] Has exception: ", e);
         }
     }
 }

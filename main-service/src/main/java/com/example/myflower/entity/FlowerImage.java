@@ -2,6 +2,8 @@ package com.example.myflower.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -21,6 +23,7 @@ public class FlowerImage {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "media_file_id")
+    @Fetch(FetchMode.JOIN)
     private MediaFile mediaFile;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flower_id")

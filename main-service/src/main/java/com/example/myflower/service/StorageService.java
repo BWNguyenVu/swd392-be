@@ -10,4 +10,6 @@ public interface StorageService {
     void deleteFile(String fileName);
 
     String getFileUrl(String fileName);
+
+    void clearPresignedUrlCache();
 }

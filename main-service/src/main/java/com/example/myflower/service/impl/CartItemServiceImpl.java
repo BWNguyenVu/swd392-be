@@ -33,7 +33,6 @@ import java.util.List;
 public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final FlowerListingRepository flowerListingRepository;
-    private final AccountRepository accountRepository;
     private final FlowerListingService flowerListingService;
     private final StorageService storageService;
     @Autowired
@@ -117,7 +116,6 @@ public class CartItemServiceImpl implements CartItemService {
                 }
                 cartItemRepository.save(existingCartItem);
                 CartItemResponseDTO response = new CartItemResponseDTO(existingCartItem);
-                response.setFlowerImageUrl(storageService.getFileUrl(response.getFlowerImageUrl()));
 
                 return new ResponseEntity<>(new BaseResponseDTO("Ok", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);

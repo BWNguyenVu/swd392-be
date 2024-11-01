@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.myflower.consts.Constants;
+import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class StorageServiceImpl implements StorageService {
     @Value("${cloud.aws.bucket.name}")
     private String bucketName;
 
+    private final RedisCommandService redisCommandService;
     private final AmazonS3 s3Client;
 
     @Override
@@ -53,9 +55,20 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public String getFileUrl(String fileName) {
         if (Boolean.TRUE.equals(isUsingS3)) {
-            return this.generatePresignedUrl(fileName);
+            String cacheResult = redisCommandService.getPresignedUrl(fileName);
+            if (cacheResult != null) {
+                return cacheResult;
+            }
+            String url = this.generatePresignedUrl(fileName);
+            redisCommandService.storePresignedUrl(fileName, url);
+            return url;
         }
         return fileName;
+    }
+
+    @Override
+    public void clearPresignedUrlCache() {
+        redisCommandService.clearPresignedUrlCache();
     }
 
     private String generatePresignedUrl(String fileName) {

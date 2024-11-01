@@ -31,6 +31,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     private FeedbackRepository feedbackRepository;
     @NonNull
     private FlowerListingRepository flowerListingRepository;
+    @NonNull
+    private FeedbackMapper feedbackMapper;
 
     @Override
     public FeedbackResponseDTO addFeedback(CreateFeedbackRequestDTO requestDTO) {
@@ -58,7 +60,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .createdAt(LocalDateTime.now())
                 .build();
         Feedback savedFeedback = feedbackRepository.save(feedback);
-        return FeedbackMapper.toResponseDTO(savedFeedback);
+        return feedbackMapper.toResponseDTO(savedFeedback);
     }
 
     public FeedbackResponseDTO updateFeedback(Integer flowerId, UpdateFeedbackRequestDTO updateFeedbackRequestDTO) {
@@ -69,7 +71,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     public List<FeedbackResponseDTO> getFeedbackByFlowerId(Integer flowerId) {
         List<Feedback> result = feedbackRepository.findAllByFlowerIdAndIsDeletedFalse(flowerId);
         return result.stream()
-                .map(FeedbackMapper::toResponseDTO)
+                .map(feedbackMapper::toResponseDTO)
                 .toList();
     }
 
@@ -83,7 +85,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                                 .toList()
                 );
         return feedbackList.stream()
-                .map(FeedbackMapper::toResponseDTOWithFlowerData)
+                .map(feedbackMapper::toResponseDTOWithFlowerData)
                 .toList();
     }
 

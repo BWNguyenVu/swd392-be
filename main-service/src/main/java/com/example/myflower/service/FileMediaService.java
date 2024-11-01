@@ -1,5 +1,6 @@
 package com.example.myflower.service;
 
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.MediaFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,4 +12,6 @@ public interface FileMediaService {
     List<MediaFile> uploadMultipleFile(List<MultipartFile> multipartFileList);
 
     void deleteMultipleFiles(List<MediaFile> mediaFileList);
+
+    FileResponseDTO getFileWithUrl(Integer id);
 }

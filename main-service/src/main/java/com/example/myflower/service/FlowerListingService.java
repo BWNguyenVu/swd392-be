@@ -39,4 +39,6 @@ public interface FlowerListingService {
     FlowerListingResponseDTO rejectFlowerListing(Integer id, String reason);
 
     void disableExpiredFlowers();
+
+    FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id);
 }
