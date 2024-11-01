@@ -9,7 +9,7 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*", "https://blossom-app.store/", "**",  "http://localhost:4200/", "https://api-gateway.blossom-app.store/")
+                .allowedOrigins("*", "https://blossom.isolutions.top/", "**",  "http://localhost:4200/", "https://api-gateway.isolutions.top/")
                 .allowedHeaders("*")
                 .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers")
                 .allowedMethods("*")
