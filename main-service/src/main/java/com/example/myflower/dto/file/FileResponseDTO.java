@@ -11,5 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class FileResponseDTO implements Serializable {
     private Integer id;
+    private String fileName;
     private String url;
 }

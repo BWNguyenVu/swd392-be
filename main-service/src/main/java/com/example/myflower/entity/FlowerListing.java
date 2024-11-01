@@ -3,6 +3,8 @@ package com.example.myflower.entity;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
@@ -41,9 +43,9 @@ public class FlowerListing {
     private Integer stockQuantity;
     @Column(nullable = false)
     private String address;
-    @ManyToMany
-    @JoinTable(name = "flower_listing_images", joinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
-    private Set<MediaFile> mediaFiles = new HashSet<>();
+    @OneToMany(mappedBy = "flowerListing", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<FlowerImage> images = new HashSet<>();
     @Enumerated(EnumType.STRING)
     private FlowerListingStatusEnum status;
     @Column(name = "expire_date")
