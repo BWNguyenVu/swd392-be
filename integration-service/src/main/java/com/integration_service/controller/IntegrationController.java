@@ -25,7 +25,7 @@ public class IntegrationController {
         return integrationService.suggestAddress(requestDTO);
     }
 
-    @GetMapping("/ghtk/fee-ship")
+    @PostMapping("/ghtk/fee-ship")
     public ResponseEntity<?> getFeeShip(@RequestBody GHTKGetShippingFeeRequestDTO requestDTO){
         return integrationService.getFeeShip(requestDTO);
     }

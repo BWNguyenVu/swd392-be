@@ -375,7 +375,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
          MediaFile file = flowerImageList.stream()
                  .map(FlowerImage::getMediaFile)
                  .findFirst()
-                 .orElseThrow(() -> new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR));
+                 .orElseThrow(() -> new FlowerListingException(ErrorCode.MEDIA_FILE_NOT_FOUND));
          return mediaFileMapper.toResponseDTOWithUrl(file);
     }
 
@@ -456,15 +456,23 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id) {
-        FlowerListingCacheDTO cacheDTO = redisCommandService.getFlowerById(id);
-        AccountResponseDTO account = accountService.getProfileById(cacheDTO.getUserId());
-        List<FlowerCategoryResponseDTO> categories = cacheDTO.getCategories().stream()
-                .map(flowerCategoryService::getFlowerCategoryById)
-                .toList();
-        List<FileResponseDTO> images = cacheDTO.getImages().stream()
-                .map(fileMediaService::getFileWithUrl)
-                .toList();
-        return flowerListingMapper.toResponseDTO(cacheDTO, account, categories, images);
+        try {
+            FlowerListingCacheDTO cacheDTO = redisCommandService.getFlowerById(id);
+            if (cacheDTO == null) {
+                return null;
+            }
+            AccountResponseDTO account = accountService.getProfileById(cacheDTO.getUserId());
+            List<FlowerCategoryResponseDTO> categories = cacheDTO.getCategories().stream()
+                    .map(flowerCategoryService::getFlowerCategoryById)
+                    .toList();
+            List<FileResponseDTO> images = cacheDTO.getImages().stream()
+                    .map(fileMediaService::getFileWithUrl)
+                    .toList();
+            return flowerListingMapper.toResponseDTO(cacheDTO, account, categories, images);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     private boolean isHavingFlowerPermissions(Account account, FlowerListing flower) {

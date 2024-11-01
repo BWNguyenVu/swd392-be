@@ -318,7 +318,7 @@ public class OrderServiceImpl implements OrderService {
                 "%" + requestDTO.getSearch() + "%",
                 pageable);
 
-        return  orderDetails.map(
+        return orderDetails.map(
                 orderDetail -> {
                     OrderDetailResponseDTO responseDTO = OrderDetailResponseDTO.builder()
                             .id(orderDetail.getId())
@@ -330,7 +330,7 @@ public class OrderServiceImpl implements OrderService {
                             .status(orderDetail.getStatus())
                             .build();
                             FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
-                            flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                            flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getFlowerListing().getId())));
                             return responseDTO;
                 }
         );
@@ -385,7 +385,7 @@ public class OrderServiceImpl implements OrderService {
                             .status(orderDetail.getStatus())
                             .build();
                     FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
-                    flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                    flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getFlowerListing().getId())));
                     return responseDTO;
                 });
     }
