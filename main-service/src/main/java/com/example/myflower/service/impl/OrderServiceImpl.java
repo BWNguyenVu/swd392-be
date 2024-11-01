@@ -330,7 +330,7 @@ public class OrderServiceImpl implements OrderService {
                             .status(orderDetail.getStatus())
                             .build();
                             FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
-                            flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                            flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getFlowerListing().getId())));
                             return responseDTO;
                 }
         );
@@ -385,7 +385,7 @@ public class OrderServiceImpl implements OrderService {
                             .status(orderDetail.getStatus())
                             .build();
                     FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
-                    flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                    flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getFlowerListing().getId())));
                     return responseDTO;
                 });
     }
