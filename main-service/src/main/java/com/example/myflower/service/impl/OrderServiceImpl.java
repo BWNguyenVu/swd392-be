@@ -3,6 +3,7 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.notification.NotificationMessageDTO;
+import com.example.myflower.dto.order.responses.CountOrderStatusResponseDTO;
 import com.example.myflower.dto.order.requests.*;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
@@ -202,14 +203,13 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailRequestDTO item : orderDTO.getOrderDetails()) {
 
-            FlowerListing flowerListing = flowerListingRepository.findById(item.getFlowerListingId())
-                    .orElseThrow(() -> new OrderAppException(ErrorCode.FLOWER_NOT_FOUND));
+            FlowerListing flowerListing = flowerListingRepository.findByIdWithLock(item.getFlowerListingId());
             if (flowerListing.getStockQuantity().compareTo(item.getQuantity()) < 0) {
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             }
             Account seller = flowerListing.getUser();
             sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);
-
+            flowerListingService.updateQuantityFlowerListing(flowerListing, item.getQuantity());
             OrderDetail orderDetail = OrderDetail.builder()
                     .orderSummary(orderSummary)
                     .seller(flowerListing.getUser())
@@ -319,15 +319,20 @@ public class OrderServiceImpl implements OrderService {
                 pageable);
 
         return  orderDetails.map(
-                orderDetail -> OrderDetailResponseDTO.builder()
-                        .id(orderDetail.getId())
-                        .price(orderDetail.getPrice())
-                        .quantity(orderDetail.getQuantity())
-                        .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
-                        .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
-                        .createAt(orderDetail.getCreatedAt())
-                        .status(orderDetail.getStatus())
-                        .build()
+                orderDetail -> {
+                    OrderDetailResponseDTO responseDTO = OrderDetailResponseDTO.builder()
+                            .id(orderDetail.getId())
+                            .price(orderDetail.getPrice())
+                            .quantity(orderDetail.getQuantity())
+                            .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                            .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                            .createAt(orderDetail.getCreatedAt())
+                            .status(orderDetail.getStatus())
+                            .build();
+                            FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
+                            flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                            return responseDTO;
+                }
         );
     }
 
@@ -369,16 +374,20 @@ public class OrderServiceImpl implements OrderService {
                 pageable);
 
         return  orderDetails.map(
-                        orderDetail -> OrderDetailResponseDTO.builder()
-                                .id(orderDetail.getId())
-                                .price(orderDetail.getPrice())
-                                .quantity(orderDetail.getQuantity())
-                                .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
-                                .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
-                                .createAt(orderDetail.getCreatedAt())
-                                .status(orderDetail.getStatus())
-                                .build()
-                );
+                orderDetail -> {
+                    OrderDetailResponseDTO responseDTO = OrderDetailResponseDTO.builder()
+                            .id(orderDetail.getId())
+                            .price(orderDetail.getPrice())
+                            .quantity(orderDetail.getQuantity())
+                            .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                            .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                            .createAt(orderDetail.getCreatedAt())
+                            .status(orderDetail.getStatus())
+                            .build();
+                    FlowerListingResponseDTO flowerListingResponseDTO = responseDTO.getFlowerListing();
+                    flowerListingResponseDTO.setImages(Collections.singletonList(flowerListingService.getFeaturedFlowerImage(orderDetail.getId())));
+                    return responseDTO;
+                });
     }
 
     public OrderResponseDTO buildOrderResponseDTO(OrderSummary orderSummary) {
@@ -566,6 +575,25 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
     }
-
-
+    @Override
+    public CountOrderStatusResponseDTO getCountOrderStatus() {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        List<Object[]> result = orderDetailRepository.countAllStatusesAndOrderSummary_User_Id(account.getId());
+        if (!result.isEmpty()) {
+            Object[] counts = result.get(0);
+            return new CountOrderStatusResponseDTO(
+                    ((Number) counts[0]).intValue(),
+                    ((Number) counts[1]).intValue(),
+                    ((Number) counts[2]).intValue(),
+                    ((Number) counts[3]).intValue(),
+                    ((Number) counts[4]).intValue(),
+                    ((Number) counts[5]).intValue(),
+                    ((Number) counts[6]).intValue()
+            );
+        }
+        return new CountOrderStatusResponseDTO(0, 0, 0, 0, 0, 0, 0);
+    }
 }

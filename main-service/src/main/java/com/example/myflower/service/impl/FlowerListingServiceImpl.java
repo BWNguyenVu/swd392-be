@@ -18,6 +18,7 @@ import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.entity.enumType.NotificationTypeEnum;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.exception.ErrorCode;
+import com.example.myflower.exception.order.OrderAppException;
 import com.example.myflower.mapper.FlowerListingMapper;
 import com.example.myflower.mapper.MediaFileMapper;
 import com.example.myflower.repository.FlowerCategoryRepository;
@@ -86,6 +87,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @NonNull
     private KafkaTemplate<String, NotificationMessageDTO> kafkaNotificationTemplate;
+
 
     @Override
     public PaginationResponseDTO<FlowerListingResponseDTO> getFlowerListings(GetFlowerListingsRequestDTO requestDTO)
@@ -345,6 +347,15 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         FlowerListing updatedFlower = flowerListingRepository.save(flowerListing.get());
         redisCommandService.storeFlower(flowerListingMapper.toCacheDTO(updatedFlower));
+    }
+
+    @Override
+    public void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity) {
+        if (flowerListing.getStockQuantity().compareTo(quantity) < 0) {
+            throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+        }
+        flowerListing.setViews(flowerListing.getStockQuantity() - quantity);
+        flowerListingRepository.save(flowerListing);
     }
 
     @Override

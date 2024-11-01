@@ -215,6 +215,7 @@ public class AccountServiceImpl implements AccountService {
 
     private WalletLog createWalletLog(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
         WalletLog walletLog = WalletLog.builder()
+                .balance(account.getBalance())
                 .user(account)
                 .amount(amount)
                 .type(type)
@@ -291,6 +292,18 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
         return accountMapper.mapToAccountResponseDTO(account);
     }
+
+    @Override
+    public AccountResponseDTO updateStatusUser(UpdateAccountRequestDTO updateAccountRequestDTO){
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        account.setStatus(updateAccountRequestDTO.getStatus());
+        accountRepository.save(account);
+        return accountMapper.mapToAccountResponseDTO(account);
+    }
+
 
     @Override
     public PaginationResponseDTO<AccountResponseDTO> getAllUser(GetUsersRequestDTO requestDTO) {

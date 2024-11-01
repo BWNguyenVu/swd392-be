@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("**")
@@ -42,7 +40,7 @@ public class AuthController {
     @GetMapping("/verify/{token}")
     public ResponseEntity<Void> activateAccount(@PathVariable String token) throws Exception {
         if (authServiceImpl.verifyAccount(token)) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://103.250.78.50:6868/api/v1/auth/welcome")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).build();
         }
         return null;
     }

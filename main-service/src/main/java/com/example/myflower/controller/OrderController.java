@@ -193,4 +193,17 @@ public class OrderController {
             @RequestParam LocalDate endDate) {
         return orderService.getPriceOverTimeBySellerAndDateRange(startDate, endDate);
     }
+
+    @GetMapping("/count-status")
+    public ResponseEntity<BaseResponseDTO> getOrderStatus()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponseDTO.builder()
+                        .message("Count order status successfully")
+                        .success(true)
+                        .data(orderService.getCountOrderStatus())
+                        .build()
+        );
+    }
+
 }

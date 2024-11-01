@@ -16,6 +16,7 @@ public class WalletLogMapper {
                 .id(walletLog.getId())
                 .account(accountMapper.mapToAccountResponseDTO(walletLog.getUser()))
                 .type(walletLog.getType())
+                .balance(walletLog.getBalance())
                 .actor(walletLog.getActorEnum())
                 .amount(walletLog.getAmount())
                 .paymentMethod(walletLog.getPaymentMethod())

@@ -26,7 +26,7 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND(1017,"Email not found, please register account.", HttpStatus.NOT_FOUND),
     UNAUTHORIZED(1018, "Unauthorized", HttpStatus.UNAUTHORIZED),
     ACCOUNT_NOT_MATCH(3002, "Account not match.", HttpStatus.BAD_REQUEST),
-
+    ACCOUNT_BANNED(3002, "Account is banned", HttpStatus.BAD_REQUEST),
     //    Accounts | Emails | CODE: 15XX
     EMAIL_WAIT_VERIFY(1501, "This email has been registered and is not verified, please verify and login", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1502, "This email has been registered, please log in!", HttpStatus.BAD_REQUEST),

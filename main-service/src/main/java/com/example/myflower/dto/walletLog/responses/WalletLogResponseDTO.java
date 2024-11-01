@@ -28,6 +28,7 @@ public class WalletLogResponseDTO {
     private BigDecimal amount;
     private PaymentMethodEnum paymentMethod;
     private PaymentResponseDTO payment;
+    private BigDecimal balance;
     private WalletLogStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

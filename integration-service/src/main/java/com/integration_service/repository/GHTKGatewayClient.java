@@ -12,4 +12,9 @@ public interface GHTKGatewayClient {
     ResponseEntity<?> parseAddress(@RequestParam String address,
                                    @RequestHeader("Token") String token,
                                    @RequestHeader("Authorization") String authorization);
+
+    @GetMapping("/address/suggest")
+    ResponseEntity<?> suggestAddress(@RequestParam String search,
+                                @RequestHeader("Token") String token,
+                                @RequestHeader("Authorization") String authorization);
 }
