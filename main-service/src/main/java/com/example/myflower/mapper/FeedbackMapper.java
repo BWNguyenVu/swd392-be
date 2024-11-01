@@ -6,18 +6,19 @@ import com.example.myflower.dto.feedback.response.FeedbackResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.Feedback;
 import com.example.myflower.entity.FlowerListing;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class FeedbackMapper {
-    private FeedbackMapper() {}
+    @NonNull
+    private AccountMapper accountMapper;
 
-    public static FeedbackResponseDTO toResponseDTOWithFlowerData(Feedback feedback) {
+    public FeedbackResponseDTO toResponseDTOWithFlowerData(Feedback feedback) {
         Account account = feedback.getUser();
-        AccountResponseDTO accountResponseDTO = AccountResponseDTO.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .avatar(account.getAvatar())
-                .phone(account.getPhone())
-                .build();
+        AccountResponseDTO accountResponseDTO = accountMapper.mapToAccountResponseDTO(account);
         FlowerListing flowerListing = feedback.getFlower();
         FlowerListingResponseDTO flowerListingResponseDTO = null;
         if (flowerListing != null) {
@@ -36,14 +37,9 @@ public class FeedbackMapper {
                 .build();
     }
 
-    public static FeedbackResponseDTO toResponseDTO(Feedback feedback) {
+    public FeedbackResponseDTO toResponseDTO(Feedback feedback) {
         Account account = feedback.getUser();
-        AccountResponseDTO accountResponseDTO = AccountResponseDTO.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .avatar(account.getAvatar())
-                .phone(account.getPhone())
-                .build();
+        AccountResponseDTO accountResponseDTO = accountMapper.mapToAccountResponseDTO(account);
         return FeedbackResponseDTO.builder()
                 .id(feedback.getId())
                 .user(accountResponseDTO)

@@ -29,4 +29,6 @@ public interface AccountService {
     AccountResponseDTO updateProfile(UpdateAccountRequestDTO accountRequestDTO);
     SellerResponseDTO getSellerById(Integer sellerId);
     PaginationResponseDTO<AccountResponseDTO> getAllUser(GetUsersRequestDTO requestDTO);
+
+    AccountResponseDTO getProfileById(Integer id);
 }

@@ -1,9 +1,12 @@
 package com.example.myflower.service.impl;
 
 import com.example.myflower.consts.Constants;
+import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.requests.CreateFlowerListingRequestDTO;
 import com.example.myflower.dto.auth.requests.GetFlowerListingsRequestDTO;
 import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
+import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
+import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
 import com.example.myflower.dto.notification.NotificationMessageDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
@@ -16,6 +19,7 @@ import com.example.myflower.entity.enumType.NotificationTypeEnum;
 import com.example.myflower.exception.flowers.FlowerListingException;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.mapper.FlowerListingMapper;
+import com.example.myflower.mapper.MediaFileMapper;
 import com.example.myflower.repository.FlowerCategoryRepository;
 import com.example.myflower.repository.FlowerImageRepository;
 import com.example.myflower.repository.FlowerListingRepository;
@@ -27,8 +31,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +59,14 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     private StorageService storageService;
 
     @NonNull
+    @Lazy
+    private AccountService accountService;
+
+    @NonNull
+    @Lazy
+    private FlowerCategoryService flowerCategoryService;
+
+    @NonNull
     private FlowerListingRepository flowerListingRepository;
 
     @NonNull
@@ -63,10 +75,16 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @NonNull
     private FlowerImageRepository flowerImageRepository;
 
-    @Autowired
+    @NonNull
     private SchedulerService schedulerService;
 
-    @Autowired
+    @NonNull
+    private FlowerListingMapper flowerListingMapper;
+
+    @NonNull
+    private MediaFileMapper mediaFileMapper;
+
+    @NonNull
     private KafkaTemplate<String, NotificationMessageDTO> kafkaNotificationTemplate;
 
     @Override
@@ -114,10 +132,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 pageable
         );
 
-        PaginationResponseDTO<FlowerListingResponseDTO> responseDTO = FlowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
-        //Map file name to storage url
-        responseDTO.getContent()
-                .forEach(flower -> flower.setImages(this.getFlowerImages(flower.getId())));
+        PaginationResponseDTO<FlowerListingResponseDTO> responseDTO = flowerListingMapper.toFlowerListingListResponseDTO(flowerListingsPage);
+
         LOG.info("[getFlowerListings] End with result: {}", responseDTO);
         return responseDTO;
     }
@@ -129,7 +145,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         Account currentAccount = AccountUtils.getCurrentAccount();
         Boolean isDeleted = null;
         if (!AccountUtils.isAdminRole(currentAccount)) {
-            FlowerListingResponseDTO cacheResponseDTO = redisCommandService.getFlowerById(id);
+            FlowerListingResponseDTO cacheResponseDTO = this.getCachedFlowerDetailsById(id);
             if (cacheResponseDTO != null) {
                 return cacheResponseDTO;
             }
@@ -138,10 +154,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListing result = flowerListingRepository
                 .findByIdAndDeleteStatus(id, isDeleted)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
-        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
-        responseDTO.setImages(this.getFlowerImages(id));
+        FlowerListingCacheDTO cacheDTO = flowerListingMapper.toCacheDTO(result);
+        redisCommandService.storeFlower(cacheDTO);
+        FlowerListingResponseDTO responseDTO = flowerListingMapper.toFlowerListingResponseDTO(result);
 
-        redisCommandService.setFlowerById(responseDTO);
         schedulerService.updateFlowerViews(id, 1);
         LOG.info("[getFlowerListingByID] End with response data: {}", responseDTO);
         return responseDTO;
@@ -157,10 +173,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         List<FlowerListing> result = flowerListingRepository.findByUserId(userId);
         List<FlowerListingResponseDTO> responseDTO = result.stream()
-                .map(FlowerListingMapper::toFlowerListingResponseDTO)
+                .map(flowerListingMapper::toFlowerListingResponseDTO)
                 .toList();
-        //Map file name to storage url
-        responseDTO.forEach(flower -> flower.setImages(this.getFlowerImages(flower.getId())));
+
         LOG.info("[getFlowerListingsByUserID] End with response data: {}", responseDTO);
         return responseDTO;
     }
@@ -172,12 +187,13 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         // Fetch categories by their IDs
         List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
         LOG.info("[createFlowerListing] Found flower categories: {}", categories);
-        List<MultipartFile> imageFileList = flowerListingRequestDTO.getImages();
 
-        for (MultipartFile imageFile : imageFileList) {
-            if (!ValidationUtils.validateImage(imageFile)) {
-                throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
-            }
+        //Validate images
+        List<MultipartFile> imageFileList = flowerListingRequestDTO.getImages();
+        boolean allImagesValid = imageFileList.stream()
+                .allMatch(ValidationUtils::validateImage);
+        if (!allImagesValid) {
+            throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
         }
 
         FlowerListing flowerListing = FlowerListing
@@ -194,29 +210,22 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .status(FlowerListingStatusEnum.PENDING)
                 .isDeleted(Boolean.FALSE)
                 .build();
-        FlowerListing result = flowerListingRepository.save(flowerListing);
 
         List<MediaFile> fileEntityList = fileMediaService.uploadMultipleFile(imageFileList);
-        List<FlowerImage> flowerImageEntityList = new ArrayList<>();
-        fileEntityList.forEach(fileEntity -> {
-            FlowerImage flowerImage = FlowerImage.builder()
-                    .mediaFile(fileEntity)
-                    .flowerListing(flowerListing)
-                    .build();
-            flowerImageEntityList.add(flowerImage);
-        });
-        flowerImageRepository.saveAll(flowerImageEntityList);
-
-        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(result);
-        List<FileResponseDTO> fileResponseList = fileEntityList.stream()// Get MediaFile from FlowerImage
-                .map(mediaFile -> FileResponseDTO.builder() // Create FileResponseDTO
-                        .id(mediaFile.getId()) // Set the ID from MediaFile
-                        .url(storageService.getFileUrl(mediaFile.getFileName())) // Set the URL
+        Set<FlowerImage> flowerImageList = fileEntityList.stream()
+                .map(file -> FlowerImage.builder()
+                        .flowerListing(flowerListing)
+                        .mediaFile(file)
                         .build())
-                .toList();
-        responseDTO.setImages(fileResponseList);
+                .collect(Collectors.toSet());
+        flowerListing.setImages(flowerImageList);
+        FlowerListing result = flowerListingRepository.save(flowerListing);
 
-        redisCommandService.setFlowerById(responseDTO);
+        FlowerListingCacheDTO cacheDTO = flowerListingMapper.toCacheDTO(result);
+        redisCommandService.storeFlower(cacheDTO);
+
+        FlowerListingResponseDTO responseDTO = flowerListingMapper.toFlowerListingResponseDTO(result);
+
         LOG.info("[createFlowerListing] End with result: {}", responseDTO);
         return responseDTO;
     }
@@ -262,27 +271,26 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
         flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
 
-        FlowerListing updatedFlowerListing = flowerListingRepository.save(flowerListing);
-        //Save new flower image entities
-        List<FlowerImage> flowerImageEntityList = new ArrayList<>();
         List<MediaFile> fileEntityList = fileMediaService.uploadMultipleFile(imageFileList);
-        fileEntityList.forEach(fileEntity -> {
-            FlowerImage flowerImage = FlowerImage.builder()
-                    .mediaFile(fileEntity)
-                    .flowerListing(flowerListing)
-                    .build();
-            flowerImageEntityList.add(flowerImage);
-        });
-        flowerImageRepository.saveAll(flowerImageEntityList);
-        //Delete old flower image entities
-        flowerImageRepository.deleteAllByMediaFileIdIn(flowerListingRequestDTO.getDeletedImages());
+
+        Set<FlowerImage> images = fileEntityList.stream()
+                .map(file -> FlowerImage.builder()
+                        .flowerListing(flowerListing)
+                        .mediaFile(file)
+                        .build())
+                .collect(Collectors.toSet());
+        images.addAll(remainingImages);
+        flowerListing.setImages(images);
+        FlowerListing result = flowerListingRepository.save(flowerListing);
+
         //Delete all selected images in storage
         fileMediaService.deleteMultipleFiles(deletedImages);
 
-        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlowerListing);
-        responseDTO.setImages(this.getFlowerImages(id));
+        FlowerListingCacheDTO cacheDTO = flowerListingMapper.toCacheDTO(result);
+        redisCommandService.storeFlower(cacheDTO);
 
-        redisCommandService.setFlowerById(responseDTO);
+        FlowerListingResponseDTO responseDTO = flowerListingMapper.toFlowerListingResponseDTO(result);
+
         LOG.info("[updateFlowerListing] End with new data: {}", responseDTO);
         return responseDTO;
     }
@@ -312,9 +320,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         }
         flowerListing.setDeleted(Boolean.FALSE);
         FlowerListing updatedFlower = flowerListingRepository.save(flowerListing);
-        FlowerListingResponseDTO responseDTO = FlowerListingMapper.toFlowerListingResponseDTO(updatedFlower);
-        responseDTO.setImages(this.getFlowerImages(id));
-        redisCommandService.setFlowerById(responseDTO);
+        redisCommandService.storeFlower(flowerListingMapper.toCacheDTO(updatedFlower));
     }
 
     @Override
@@ -337,7 +343,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         } else {
             throw new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND);
         }
-        flowerListingRepository.save(flowerListing.get());
+        FlowerListing updatedFlower = flowerListingRepository.save(flowerListing.get());
+        redisCommandService.storeFlower(flowerListingMapper.toCacheDTO(updatedFlower));
     }
 
     @Override
@@ -345,10 +352,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         List<FlowerImage> flowerImageList = flowerImageRepository.findAllByFlowerListingId(flowerId);
         return flowerImageList.stream()
                 .map(FlowerImage::getMediaFile) // Get MediaFile from FlowerImage
-                .map(mediaFile -> FileResponseDTO.builder() // Create FileResponseDTO
-                        .id(mediaFile.getId()) // Set the ID from MediaFile
-                        .url(storageService.getFileUrl(mediaFile.getFileName())) // Set the URL
-                        .build())
+                .map(mediaFileMapper::toResponseDTOWithUrl)
                 .toList();
     }
 
@@ -360,10 +364,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                  .map(FlowerImage::getMediaFile)
                  .findFirst()
                  .orElseThrow(() -> new FlowerListingException(ErrorCode.INTERNAL_SERVER_ERROR));
-         return FileResponseDTO.builder()
-                 .id(file.getId())
-                 .url(storageService.getFileUrl(file.getFileName()))
-                 .build();
+         return mediaFileMapper.toResponseDTOWithUrl(file);
     }
 
     @Override
@@ -390,7 +391,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
                 .build();
         kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
-        return FlowerListingMapper.toFlowerListingResponseDTO(approvedListing);
+        return flowerListingMapper.toFlowerListingResponseDTO(approvedListing);
     }
 
     @Override
@@ -420,7 +421,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
                 .build();
         kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
-        return FlowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
+        return flowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
     }
 
     @Override
@@ -439,6 +440,19 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                     .build();
             kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
         });
+    }
+
+    @Override
+    public FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id) {
+        FlowerListingCacheDTO cacheDTO = redisCommandService.getFlowerById(id);
+        AccountResponseDTO account = accountService.getProfileById(cacheDTO.getUserId());
+        List<FlowerCategoryResponseDTO> categories = cacheDTO.getCategories().stream()
+                .map(flowerCategoryService::getFlowerCategoryById)
+                .toList();
+        List<FileResponseDTO> images = cacheDTO.getImages().stream()
+                .map(fileMediaService::getFileWithUrl)
+                .toList();
+        return flowerListingMapper.toResponseDTO(cacheDTO, account, categories, images);
     }
 
     private boolean isHavingFlowerPermissions(Account account, FlowerListing flower) {
