@@ -37,6 +37,9 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
     @NonNull
     private FlowerCategoryRepository flowerCategoryRepository;
 
+    @NonNull
+    private FlowerCategoryMapper flowerCategoryMapper;
+
     @Override
     @Transactional
     public FlowerCategoryResponseDTO createFlowerCategory(CreateFlowerCategoryRequestDTO requestDTO) {
@@ -62,8 +65,7 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
-            FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
-            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
+            FlowerCategoryResponseDTO responseDTO = flowerCategoryMapper.toCategoryResponseDTO(result);
             redisCommandService.setFlowerCategoryById(responseDTO);
             return responseDTO;
         }
@@ -87,9 +89,8 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
         //Get from database
         List<FlowerCategory> results = flowerCategoryRepository.findAllByDeleteStatus(isDeleted);
         List<FlowerCategoryResponseDTO> responseDTOList = results.stream()
-                .map(FlowerCategoryMapper::toCategoryResponseDTO)
+                .map(flowerCategoryMapper::toCategoryResponseDTO)
                 .toList();
-        responseDTOList.forEach(responseDTO -> responseDTO.setImageUrl(storageService.getFileUrl(responseDTO.getImageUrl())));
         //Save to cache
         if (!responseDTOList.isEmpty() && Boolean.FALSE.equals(isDeleted)) {
             redisCommandService.setAllFlowerCategoriesWithDeleteStatusFalse(responseDTOList);
@@ -110,8 +111,7 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
         }
         FlowerCategory result = flowerCategoryRepository.findByIdAndDeleteStatus(id, isDeleted)
                 .orElseThrow(() -> new FlowerCategoryException(ErrorCode.FLOWER_CATEGORY_NOT_FOUND));
-        FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
-        responseDTO.setImageUrl(storageService.getFileUrl(responseDTO.getImageUrl()));
+        FlowerCategoryResponseDTO responseDTO = flowerCategoryMapper.toCategoryResponseDTO(result);
         if (Boolean.FALSE.equals(isDeleted)) {
             //Save to cache
             redisCommandService.setFlowerCategoryById(responseDTO);
@@ -145,10 +145,9 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
             flowerCategory.setUpdatedAt(LocalDateTime.now());
             //Save to database
             FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
-            FlowerCategoryResponseDTO responseDTO = FlowerCategoryMapper.toCategoryResponseDTO(result);
+            FlowerCategoryResponseDTO responseDTO = flowerCategoryMapper.toCategoryResponseDTO(result);
             //Delete old image
             storageService.deleteFile(fileName);
-            responseDTO.setImageUrl(storageService.getFileUrl(fileName));
             //Save to cache
             redisCommandService.setFlowerCategoryById(responseDTO);
             return responseDTO;
@@ -185,6 +184,6 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
         flowerCategory.setDeleted(Boolean.FALSE);
         flowerCategory.setUpdatedAt(LocalDateTime.now());
         FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
-        redisCommandService.setFlowerCategoryById(FlowerCategoryMapper.toCategoryResponseDTO(result));
+        redisCommandService.setFlowerCategoryById(flowerCategoryMapper.toCategoryResponseDTO(result));
     }
 }

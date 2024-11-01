@@ -3,8 +3,8 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.notification.NotificationMessageDTO;
-import com.example.myflower.dto.order.requests.*;
 import com.example.myflower.dto.order.responses.CountOrderStatusResponseDTO;
+import com.example.myflower.dto.order.requests.*;
 import com.example.myflower.dto.order.responses.OrderResponseDTO;
 import com.example.myflower.dto.order.responses.OrderDetailResponseDTO;
 import com.example.myflower.dto.order.responses.ReportResponseDTO;
@@ -61,6 +61,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private AuditRepository auditRepository;
+
+    @Autowired
+    private FlowerListingMapper flowerListingMapper;
 
     @Autowired
     private KafkaTemplate<String, OrderResponseDTO> kafkaTemplate;
@@ -321,7 +324,7 @@ public class OrderServiceImpl implements OrderService {
                             .id(orderDetail.getId())
                             .price(orderDetail.getPrice())
                             .quantity(orderDetail.getQuantity())
-                            .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                            .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
                             .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
                             .createAt(orderDetail.getCreatedAt())
                             .status(orderDetail.getStatus())
@@ -376,7 +379,7 @@ public class OrderServiceImpl implements OrderService {
                             .id(orderDetail.getId())
                             .price(orderDetail.getPrice())
                             .quantity(orderDetail.getQuantity())
-                            .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                            .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
                             .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
                             .createAt(orderDetail.getCreatedAt())
                             .status(orderDetail.getStatus())
@@ -461,7 +464,7 @@ public class OrderServiceImpl implements OrderService {
                 .id(orderResponse.getId())
                 .price(orderResponse.getPrice())
                 .quantity(orderResponse.getQuantity())
-                .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderResponse.getFlowerListing()))
+                .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderResponse.getFlowerListing()))
                 .orderSummary(buildOrderResponseDTO(orderResponse.getOrderSummary()))
                 .createAt(orderResponse.getCreatedAt())
                 .status(orderResponse.getStatus())
@@ -490,7 +493,7 @@ public class OrderServiceImpl implements OrderService {
                 .id(orderDetail.getId())
                 .price(orderDetail.getPrice())
                 .quantity(orderDetail.getQuantity())
-                .flowerListing(FlowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
+                .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
                 .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
                 .createAt(orderDetail.getCreatedAt())
                 .status(orderDetail.getStatus())

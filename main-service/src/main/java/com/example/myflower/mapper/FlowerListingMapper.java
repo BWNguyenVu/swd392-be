@@ -1,29 +1,39 @@
 package com.example.myflower.mapper;
 
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
+import com.example.myflower.dto.file.FileResponseDTO;
+import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
-import com.example.myflower.entity.Account;
-import com.example.myflower.entity.FlowerListing;
+import com.example.myflower.entity.*;
+import com.example.myflower.service.StorageService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class FlowerListingMapper {
-    private FlowerListingMapper() {}
+    @NonNull
+    private AccountMapper accountMapper;
+    @NonNull
+    private MediaFileMapper mediaFileMapper;
+    @NonNull
+    private FlowerCategoryMapper flowerCategoryMapper;
 
-    public static FlowerListingResponseDTO toFlowerListingResponseDTO(FlowerListing flowerListing) {
+    public FlowerListingResponseDTO toFlowerListingResponseDTO(FlowerListing flowerListing) {
         Account account = flowerListing.getUser();
-        AccountResponseDTO accountResponseDTO = AccountResponseDTO.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .avatar(account.getAvatar())
-                .phone(account.getPhone())
-                .build();
+        AccountResponseDTO accountResponseDTO = accountMapper.mapToAccountResponseDTO(account);
+        List<FileResponseDTO> images = flowerListing.getImages().stream()
+                .map(FlowerImage::getMediaFile)
+                .map(mediaFileMapper::toResponseDTOWithUrl).toList();
         //Map flower category
         List<FlowerCategoryResponseDTO> flowerCategories = flowerListing.getCategories().stream()
-                .map(FlowerCategoryMapper::toCategoryResponseDTO)
+                .map(flowerCategoryMapper::toCategoryResponseDTO)
                 .toList();
         return FlowerListingResponseDTO.builder()
                 .id(flowerListing.getId())
@@ -34,6 +44,7 @@ public class FlowerListingMapper {
                 .stockQuantity(flowerListing.getStockQuantity())
                 .address(flowerListing.getAddress())
                 .categories(flowerCategories)
+                .images(images)
                 .status(flowerListing.getStatus())
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
@@ -41,10 +52,60 @@ public class FlowerListingMapper {
                 .build();
     }
 
-    public static PaginationResponseDTO<FlowerListingResponseDTO> toFlowerListingListResponseDTO(Page<FlowerListing> flowerListingPage) {
+    public FlowerListingCacheDTO toCacheDTO(FlowerListing flowerListing) {
+        return FlowerListingCacheDTO.builder()
+                .id(flowerListing.getId())
+                .name(flowerListing.getName())
+                .description(flowerListing.getDescription())
+                .price(flowerListing.getPrice())
+                .userId(flowerListing.getUser().getId())
+                .stockQuantity(flowerListing.getStockQuantity())
+                .address(flowerListing.getAddress())
+                .categories(
+                        flowerListing.getCategories().stream()
+                                .map(FlowerCategory::getId)
+                                .toList()
+                )
+                .images(
+                        flowerListing.getImages().stream()
+                                .map(FlowerImage::getMediaFile)
+                                .map(MediaFile::getId)
+                                .toList()
+                )
+                .status(flowerListing.getStatus())
+                .views(flowerListing.getViews())
+                .createdAt(flowerListing.getCreatedAt())
+                .updatedAt(flowerListing.getUpdatedAt())
+                .build();
+    }
+
+    public FlowerListingResponseDTO toResponseDTO(
+            FlowerListingCacheDTO cacheDTO,
+            AccountResponseDTO accountResponseDTO,
+            List<FlowerCategoryResponseDTO> flowerCategoryResponseDTO,
+            List<FileResponseDTO> fileResponseDTO
+    ) {
+        return FlowerListingResponseDTO.builder()
+                .id(cacheDTO.getId())
+                .name(cacheDTO.getName())
+                .description(cacheDTO.getDescription())
+                .price(cacheDTO.getPrice())
+                .user(accountResponseDTO)
+                .stockQuantity(cacheDTO.getStockQuantity())
+                .address(cacheDTO.getAddress())
+                .categories(flowerCategoryResponseDTO)
+                .images(fileResponseDTO)
+                .status(cacheDTO.getStatus())
+                .views(cacheDTO.getViews())
+                .createdAt(cacheDTO.getCreatedAt())
+                .updatedAt(cacheDTO.getUpdatedAt())
+                .build();
+    }
+
+    public PaginationResponseDTO<FlowerListingResponseDTO> toFlowerListingListResponseDTO(Page<FlowerListing> flowerListingPage) {
         List<FlowerListingResponseDTO> flowerListingResponseDTOList = flowerListingPage
                 .stream()
-                .map(FlowerListingMapper::toFlowerListingResponseDTO)
+                .map(this::toFlowerListingResponseDTO)
                 .toList();
         return PaginationResponseDTO.<FlowerListingResponseDTO>builder()
                 .content(flowerListingResponseDTOList)

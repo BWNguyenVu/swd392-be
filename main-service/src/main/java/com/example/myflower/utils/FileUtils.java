@@ -1,10 +1,12 @@
 package com.example.myflower.utils;
 
+import io.jsonwebtoken.lang.Collections;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
@@ -34,6 +36,9 @@ public class FileUtils {
     }
 
     public static List<MultipartFile> filterEmptyFiles(List<MultipartFile> files) {
+        if (Collections.isEmpty(files)) {
+            return new ArrayList<>();
+        }
         return files.stream()
                 .filter(file -> file != null && !file.isEmpty()) // Check if file is not null and not empty
                 .toList();

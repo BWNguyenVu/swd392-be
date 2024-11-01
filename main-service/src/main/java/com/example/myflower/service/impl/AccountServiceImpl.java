@@ -22,6 +22,7 @@ import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +61,7 @@ public class AccountServiceImpl implements AccountService {
     private TransactionService transactionService;
 
     @Autowired
+    @Lazy
     private FlowerListingService flowerListingService;
 
     @Override
@@ -338,5 +340,12 @@ public class AccountServiceImpl implements AccountService {
         Page<Account> accountList = accountRepository
                 .findAccountWithParameters(requestDTO.getRoles(), requestDTO.getSearch(), pageable);
         return accountMapper.toPaginationResponseDTO(accountList);
+    }
+
+    @Override
+    public AccountResponseDTO getProfileById(Integer id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND));
+        return accountMapper.mapToAccountResponseDTO(account);
     }
 }

@@ -1,11 +1,14 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.entity.MediaFile;
 import com.example.myflower.entity.enumType.StorageMethodEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.mediaFile.MediaFileException;
+import com.example.myflower.mapper.MediaFileMapper;
 import com.example.myflower.repository.MediaFileRepository;
 import com.example.myflower.service.FileMediaService;
+import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,11 @@ public class FileMediaServiceImpl implements FileMediaService {
     @NonNull
     private StorageService storageService;
     @NonNull
+    private RedisCommandService redisCommandService;
+    @NonNull
     private MediaFileRepository mediaFileRepository;
+    @NonNull
+    private MediaFileMapper mediaFileMapper;
 
     @Override
     @Transactional
@@ -48,7 +55,13 @@ public class FileMediaServiceImpl implements FileMediaService {
                         .build();
                 mediaFileList.add(mediaFile);
             }
-            return mediaFileRepository.saveAll(mediaFileList);
+            //Save to database
+            List<MediaFile> result = mediaFileRepository.saveAll(mediaFileList);
+            //Add to cache
+            result.stream()
+                    .map(mediaFileMapper::toResponseDTO)
+                    .forEach(fileDTO -> redisCommandService.storeMediaFile(fileDTO));
+            return result;
         }
         catch (Exception e) {
             throw new MediaFileException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -66,5 +79,23 @@ public class FileMediaServiceImpl implements FileMediaService {
         catch (Exception e) {
             throw new MediaFileException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public FileResponseDTO getFileWithUrl(Integer id) {
+        FileResponseDTO cachedFile = redisCommandService.getMediaFile(id);
+        if (cachedFile != null) {
+            return this.setFileUrl(cachedFile);
+        }
+
+        MediaFile result = mediaFileRepository.findById(id)
+                .orElseThrow(() -> new MediaFileException(ErrorCode.MEDIA_FILE_NOT_FOUND));
+
+        return mediaFileMapper.toResponseDTOWithUrl(result);
+    }
+
+    private FileResponseDTO setFileUrl(FileResponseDTO responseDTO) {
+        responseDTO.setUrl(storageService.getFileUrl(responseDTO.getFileName()));
+        return responseDTO;
     }
 }
