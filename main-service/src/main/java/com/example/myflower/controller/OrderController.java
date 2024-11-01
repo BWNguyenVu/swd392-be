@@ -74,7 +74,6 @@ public class OrderController {
     }
 
 
-
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-buyer")
     public ResponseEntity<BaseResponseDTO> getOrdersByUser(
@@ -87,25 +86,32 @@ public class OrderController {
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
     ) {
-        GetOrderDetailsRequestDTO requestDTO = GetOrderDetailsRequestDTO.builder()
-                .search(search)
-                .pageNumber(pageNumber)
-                .pageSize(pageSize)
-                .sortBy(sortBy)
-                .order(order)
-                .status(status)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-        Page<OrderDetailResponseDTO> responseDTOS = orderService.getAllOrderByBuyer(requestDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
-                .message("Get orders of buyer successfully")
-                .success(true)
-                .data(responseDTOS)
-                .build());
+        try {
+            GetOrderDetailsRequestDTO requestDTO = GetOrderDetailsRequestDTO.builder()
+                    .search(search)
+                    .pageNumber(pageNumber)
+                    .pageSize(pageSize)
+                    .sortBy(sortBy)
+                    .order(order)
+                    .status(status)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .build();
+            Page<OrderDetailResponseDTO> responseDTOS = orderService.getAllOrderByBuyer(requestDTO);
+
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
+                    .message("Get orders of buyer successfully")
+                    .success(true)
+                    .data(responseDTOS)
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
+                    .message(e.getCause().getMessage())
+                    .success(false)
+                    .build());
+        }
     }
-
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/by-seller")

@@ -32,9 +32,9 @@ import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    @Value("http://" + "${public.api.url}" + ":6868/")
+    @Value("http://" + "localhost" + ":4200/")
     private String returnUrl;
-    @Value("http://" + "${public.api.url}" + ":6868/")
+    @Value("http://" + "localhost" + ":4200/")
     private String cancelUrl;
     @Autowired
     private PayOS payOS;

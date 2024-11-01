@@ -167,7 +167,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public Account handleBalanceByOrder(Account account, BigDecimal amount, WalletLogTypeEnum type, WalletLogActorEnum actorEnum, OrderSummary orderSummary, Payment payment, WalletLogStatusEnum status, Boolean isRefund) {
-        adjustAccountBalance(account, amount, type);
+        BigDecimal balance = adjustAccountBalance(account, amount, type);
         switch (type) {
             case ADD:
                 WalletLog walletLogAdd = createWalletLog(account, amount, type, actorEnum, payment, status, isRefund);
@@ -192,7 +192,7 @@ public class AccountServiceImpl implements AccountService {
                 }
                 break;
             case DEPOSIT:
-                walletLogService.updateWalletLogByPayment(payment, status);
+                walletLogService.updateWalletLogByPayment(payment, status, balance);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported WalletLogTypeEnum: " + type);
@@ -201,12 +201,16 @@ public class AccountServiceImpl implements AccountService {
         return saveAccount(account);
     }
 
-    private void adjustAccountBalance(Account account, BigDecimal amount, WalletLogTypeEnum type) {
+    private BigDecimal adjustAccountBalance(Account account, BigDecimal amount, WalletLogTypeEnum type) {
+        BigDecimal balance = account.getBalance();
         if (type == WalletLogTypeEnum.ADD || type == WalletLogTypeEnum.DEPOSIT) {
             account.setBalance(account.getBalance().add(amount));
+            balance = account.getBalance();
         } else if (type == WalletLogTypeEnum.SUBTRACT) {
             account.setBalance(account.getBalance().subtract(amount));
+            balance = account.getBalance();
         }
+        return balance;
     }
 
     private Account saveAccount(Account account) {
