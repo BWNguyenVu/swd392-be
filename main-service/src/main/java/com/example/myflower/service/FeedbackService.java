@@ -2,6 +2,7 @@ package com.example.myflower.service;
 
 import com.example.myflower.dto.feedback.request.CreateFeedbackRequestDTO;
 import com.example.myflower.dto.feedback.response.FeedbackResponseDTO;
+import com.example.myflower.dto.feedback.response.RatingFeedbackResponseDTO;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface FeedbackService {
     void deleteFeedback(Integer id);
 
     void restoreFeedback(Integer id);
+
+    RatingFeedbackResponseDTO ratingByUserId(Integer accountId);
 }

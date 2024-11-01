@@ -14,4 +14,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     List<Feedback> findAllByFlowerId(Integer flowerId);
     boolean existsByFlowerIdAndUserIdAndIsDeletedFalse(Integer flowerId, Integer userId);
     Optional<Feedback> findByIdAndIsDeletedFalse(Integer id);
+    Integer countByFlower_UserId(Integer userId);
+    List<Feedback> findAllByFlower_UserId(Integer userId);
 }
