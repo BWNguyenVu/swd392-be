@@ -38,11 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("/verify/{token}")
-    public ResponseEntity<Void> activateAccount(@PathVariable String token) throws Exception {
-        if (authServiceImpl.verifyAccount(token)) {
-            return ResponseEntity.status(HttpStatus.FOUND).build();
-        }
-        return null;
+    public ResponseEntity<BaseResponseDTO> activateAccount(@PathVariable String token) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponseDTO.builder()
+                        .success(true)
+                        .data(authServiceImpl.verifyAccount(token))
+                        .message("Verify account successfully")
+                        .build()
+
+        );
     }
 
     @PostMapping("/forgot-password")
