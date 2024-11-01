@@ -83,7 +83,7 @@ public class EmailServiceImpl {
             emailDetail.setRecipient(accountDTO.getEmail());
             emailDetail.setSubject("Forgot Password Request");
 
-            String link = "localhost:4200/reset-password?token=" + token;
+            String link = "http://localhost:4200/reset-password?token=" + token;
             emailDetail.setMsgBody(link);
             sendEmailWithTemplate(emailDetail, "ForgotPasswordEmailTemplate");
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class EmailServiceImpl {
             context.setVariable("name", emailDetail.getName());
 
             String token = account.getTokens();
-            String link = "http://localhost:4200?token=" + token;
+            String link = "http://localhost:4200/verify-account?token=" + token;
             context.setVariable("link", link);
 
             String text = templateEngine.process("sendVerifyEmail", context);
