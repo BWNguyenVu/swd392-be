@@ -37,7 +37,7 @@ public class AuthController {
         return authServiceImpl.registerAccount(registerRequestDTO);
     }
 
-    @GetMapping("/verify/{token}")
+    @PostMapping("/verify/{token}")
     public ResponseEntity<Void> activateAccount(@PathVariable String token) throws Exception {
         if (authServiceImpl.verifyAccount(token)) {
             return ResponseEntity.status(HttpStatus.FOUND).build();

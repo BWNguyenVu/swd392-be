@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,9 +49,10 @@ public class WalletLogServiceImpl implements WalletLogService {
         return walletLog;
     }
     @Override
-    public WalletLog updateWalletLogByPayment(Payment payment, WalletLogStatusEnum status) {
+    public WalletLog updateWalletLogByPayment(Payment payment, WalletLogStatusEnum status, BigDecimal balance) {
         WalletLog walletLog = walletLogRepository.findWalletLogByPayment(payment);
         walletLog.setStatus(status);
+        walletLog.setBalance(balance);
         walletLog.setUpdatedAt(LocalDateTime.now());
         if (status.equals(WalletLogStatusEnum.SUCCESS)) {
             walletLog.setClosed(true);

@@ -41,4 +41,6 @@ public interface FlowerListingService {
     void disableExpiredFlowers();
 
     FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id);
+
+    List<FlowerListingResponseDTO> findAllFlowerListing();
 }

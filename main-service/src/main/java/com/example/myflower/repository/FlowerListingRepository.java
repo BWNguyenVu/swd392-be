@@ -60,4 +60,6 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT f FROM FlowerListing f WHERE f.id = :id")
     FlowerListing findByIdWithLock(Integer id);
+
+    @NotNull List<FlowerListing> findAll();
 }

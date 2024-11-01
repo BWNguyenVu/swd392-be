@@ -8,11 +8,12 @@ import com.example.myflower.entity.WalletLog;
 import com.example.myflower.entity.enumType.WalletLogStatusEnum;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface WalletLogService {
     WalletLog createWalletLog(WalletLog walletLog, Account account);
-    WalletLog updateWalletLogByPayment(Payment payment, WalletLogStatusEnum status);
+    WalletLog updateWalletLogByPayment(Payment payment, WalletLogStatusEnum status, BigDecimal balance);
     Page<WalletLogResponseDTO> getAllWalletLogByAccount(GetWalletLogsRequestDTO getWalletLogsRequestDTO);
     WalletLogResponseDTO getWalletLogById(Integer id);
     void softDeleteWalletLog(Integer id);
