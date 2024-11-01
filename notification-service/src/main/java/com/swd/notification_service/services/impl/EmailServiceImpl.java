@@ -99,7 +99,7 @@ public class EmailServiceImpl {
             context.setVariable("name", emailDetail.getName());
 
             String token = account.getTokens();
-            String link = "http://103.250.78.50:6868/api/v1/auth/verify/" + token;
+            String link = "http://localhost:4200/auth/verify/" + token;
             context.setVariable("link", link);
 
             String text = templateEngine.process("sendVerifyEmail", context);

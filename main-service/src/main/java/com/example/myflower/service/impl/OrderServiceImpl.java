@@ -503,82 +503,105 @@ public class OrderServiceImpl implements OrderService {
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        if(requestDTO.getStartDate() == null ){
+
+        if(requestDTO.getStartDate() == null) {
             requestDTO.setStartDate(LocalDate.of(1970, 1, 1));
         }
-
-        if(requestDTO.getEndDate() == null ){
+        if(requestDTO.getEndDate() == null) {
             requestDTO.setEndDate(LocalDate.of(9999, 12, 31));
         }
 
-        List<Object[]> result = orderDetailRepository.countAndSumPriceBySellerAndCreatedAtBetween(
-                account.getId(),
-                requestDTO.getStartDate().atStartOfDay(),
-                requestDTO.getEndDate().plusDays(1).atStartOfDay()
-        );
-        List<FlowerListingResponseDTO> flowerListingResponseDTOList = flowerListingService.getFlowerListingsByUserID(account.getId());
+        List<Object[]> result;
+        List<FlowerListingResponseDTO> flowerListingResponseDTOList;
         int totalCartCount = 0;
         int totalViews = 0;
+
+        if (account.getRole().equals(AccountRoleEnum.ADMIN)) {
+            result = orderDetailRepository.countAndSumPriceByCreatedAtBetween(
+                    requestDTO.getStartDate().atStartOfDay(),
+                    requestDTO.getEndDate().plusDays(1).atStartOfDay()
+            );
+            flowerListingResponseDTOList = flowerListingService.findAllFlowerListing();
+        } else {
+            result = orderDetailRepository.countAndSumPriceBySellerAndCreatedAtBetween(
+                    account.getId(),
+                    requestDTO.getStartDate().atStartOfDay(),
+                    requestDTO.getEndDate().plusDays(1).atStartOfDay()
+            );
+            flowerListingResponseDTOList = flowerListingService.getFlowerListingsByUserID(account.getId());
+        }
+
         for (FlowerListingResponseDTO flower : flowerListingResponseDTOList) {
             int count = cartItemService.countCart(requestDTO, flower.getId());
             totalCartCount += count;
             int viewsCount = auditRepository.countViewByTime(flower.getId(), requestDTO.getStartDate().atStartOfDay(), requestDTO.getEndDate().plusDays(1).atStartOfDay());
             totalViews += viewsCount;
         }
-        int totalOrders = ((Number) result.get(0)[1]).intValue();
-        double conversionCalculator = ( (double) totalOrders * 100) / totalViews;
+
+        int totalOrders = result.isEmpty() ? 0 : ((Number) result.get(0)[1]).intValue();
+        double conversionCalculator = totalViews == 0 ? 0 : ( (double) totalOrders * 100) / totalViews;
+
         return ReportResponseDTO.builder()
-                .totalPrice((BigDecimal) result.get(0)[0])
+                .totalPrice(result.isEmpty() ? BigDecimal.ZERO : (BigDecimal) result.get(0)[0])
                 .orders(totalOrders)
                 .addToCart(totalCartCount)
                 .views(totalViews)
                 .conversionRate(conversionCalculator)
                 .build();
-
     }
+
 
     @Override
     public List<Map<String, Object>> getPriceOverTimeBySellerAndDateRange(LocalDate startDate, LocalDate endDate) {
         Account account = AccountUtils.getCurrentAccount();
+        List<OrderDetail> orderDetails;
 
-        // Retrieve order details within the specified date range
-        List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailsBySellerAndDateRange(
-                account.getId(), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+        if (account.getRole().equals(AccountRoleEnum.ADMIN)) {
+            orderDetails = orderDetailRepository.findAllByCreatedAtBetween(
+                    startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+        } else {
+            orderDetails = orderDetailRepository.findOrderDetailsBySellerAndDateRange(
+                    account.getId(), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+        }
 
-        // Initialize hourly maps for prices and counts
         Map<Integer, BigDecimal> hourlyPriceMap = IntStream.range(0, 24)
                 .boxed()
                 .collect(Collectors.toMap(hour -> hour, hour -> BigDecimal.ZERO));
-
         Map<Integer, Integer> hourlyOrderCountMap = IntStream.range(0, 24)
                 .boxed()
                 .collect(Collectors.toMap(hour -> hour, hour -> 0));
 
-        // Aggregate actual prices and counts from order details
         orderDetails.forEach(od -> {
-            int hour = od.getCreatedAt().getHour(); // Get the hour of the order
+            int hour = od.getCreatedAt().getHour();
             hourlyPriceMap.merge(hour, od.getPrice(), BigDecimal::add);
             hourlyOrderCountMap.merge(hour, 1, Integer::sum);
         });
 
-        // Prepare the result with the hourly data
         return IntStream.range(0, 24)
                 .mapToObj(hour -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("time", String.format("%02d:00", hour)); // Format time as "HH:00"
+                    map.put("time", String.format("%02d:00", hour));
                     map.put("price", hourlyPriceMap.get(hour));
                     map.put("orderCount", hourlyOrderCountMap.get(hour));
                     return map;
                 })
                 .collect(Collectors.toList());
     }
+
     @Override
     public CountOrderStatusResponseDTO getCountOrderStatus() {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
             throw new OrderAppException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        List<Object[]> result = orderDetailRepository.countAllStatusesAndOrderSummary_User_Id(account.getId());
+
+        List<Object[]> result;
+        if (account.getRole().equals(AccountRoleEnum.ADMIN)) {
+            result = orderDetailRepository.countAllStatuses();
+        } else {
+            result = orderDetailRepository.countAllStatusesAndOrderSummary_User_Id(account.getId());
+        }
+
         if (!result.isEmpty()) {
             Object[] counts = result.get(0);
             return new CountOrderStatusResponseDTO(
@@ -593,4 +616,5 @@ public class OrderServiceImpl implements OrderService {
         }
         return new CountOrderStatusResponseDTO(0, 0, 0, 0, 0, 0, 0);
     }
+
 }

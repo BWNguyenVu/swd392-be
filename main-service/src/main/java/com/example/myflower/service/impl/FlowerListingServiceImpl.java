@@ -28,7 +28,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -467,4 +466,13 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         return AccountUtils.isAdminRole(account)
                 || Objects.equals(account.getId(), userId);
     }
+
+    @Override
+    public List<FlowerListingResponseDTO> findAllFlowerListing() {
+        List<FlowerListing> flowerListings = flowerListingRepository.findAll();
+        return flowerListings.stream()
+                .map(FlowerListingMapper::toFlowerListingResponseDTO)
+                .toList();
+    }
+
 }

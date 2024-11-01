@@ -55,12 +55,22 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             @Param("sellerId") Integer sellerId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
-
+    @Query("SELECT SUM(o.price), COUNT(o) " +
+            "FROM OrderDetail o " +
+            "WHERE o.createdAt BETWEEN :startDate AND :endDate")
+    List<Object[]> countAndSumPriceByCreatedAtBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
     @Query("SELECT od FROM OrderDetail od WHERE od.seller.id = :sellerId " +
             "AND od.createdAt BETWEEN :startDate AND :endDate " +
             "ORDER BY od.createdAt")
     List<OrderDetail> findOrderDetailsBySellerAndDateRange(
             @Param("sellerId") Integer sellerId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    List<OrderDetail> findAllByCreatedAtBetween(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
 
@@ -78,5 +88,15 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "WHERE os.user.id = :userId")
     List<Object[]> countAllStatusesAndOrderSummary_User_Id(@Param("userId") Integer userId);
 
+    @Query("SELECT " +
+            "SUM(CASE WHEN o.status = 'PENDING' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'PREPARING' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'SHIPPED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'DELIVERED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'BUYER_CANCELED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'SELLER_CANCELED' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN o.status = 'REFUNDED' THEN 1 ELSE 0 END) " +
+            "FROM OrderDetail o")
+    List<Object[]> countAllStatuses();
 
 }
