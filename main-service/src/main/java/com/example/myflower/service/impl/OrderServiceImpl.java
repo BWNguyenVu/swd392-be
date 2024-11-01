@@ -318,7 +318,7 @@ public class OrderServiceImpl implements OrderService {
                 "%" + requestDTO.getSearch() + "%",
                 pageable);
 
-        return  orderDetails.map(
+        return orderDetails.map(
                 orderDetail -> {
                     OrderDetailResponseDTO responseDTO = OrderDetailResponseDTO.builder()
                             .id(orderDetail.getId())
