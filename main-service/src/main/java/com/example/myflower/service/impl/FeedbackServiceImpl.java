@@ -3,6 +3,7 @@ package com.example.myflower.service.impl;
 import com.example.myflower.dto.feedback.request.CreateFeedbackRequestDTO;
 import com.example.myflower.dto.feedback.request.UpdateFeedbackRequestDTO;
 import com.example.myflower.dto.feedback.response.FeedbackResponseDTO;
+import com.example.myflower.dto.feedback.response.RatingFeedbackResponseDTO;
 import com.example.myflower.entity.Account;
 import com.example.myflower.entity.Feedback;
 import com.example.myflower.entity.FlowerListing;
@@ -115,5 +116,19 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = feedbackRepository.findById(id).orElseThrow(() -> new FeedbackAppException(ErrorCode.FEEDBACK_NOT_FOUND));
         feedback.setDeleted(Boolean.FALSE);
         feedbackRepository.save(feedback);
+    }
+    @Override
+    public RatingFeedbackResponseDTO ratingByUserId(Integer accountId) {
+        Integer count = feedbackRepository.countByFlower_UserId(accountId);
+        List<Feedback> feedbacks = feedbackRepository.findAllByFlower_UserId(accountId);
+        Double average = feedbacks.stream().mapToDouble(
+                feedback -> feedback.getRating().getValue())
+                .average()
+                .orElse(0.0);
+
+        return RatingFeedbackResponseDTO.builder()
+                .countFeedback(count)
+                .average(average)
+                .build();
     }
 }

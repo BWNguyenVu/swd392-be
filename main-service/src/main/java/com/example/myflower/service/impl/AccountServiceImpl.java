@@ -8,6 +8,7 @@ import com.example.myflower.dto.account.requests.UploadFileRequestDTO;
 import com.example.myflower.dto.account.responses.AccountResponseDTO;
 import com.example.myflower.dto.account.responses.GetBalanceResponseDTO;
 import com.example.myflower.dto.account.responses.SellerResponseDTO;
+import com.example.myflower.dto.feedback.response.RatingFeedbackResponseDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.payment.requests.CreatePaymentResponseDTO;
 import com.example.myflower.dto.account.responses.AddBalanceResponseDTO;
@@ -47,7 +48,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private FeedbackService feedbackService;
     // Constructor Injection cho các dependency
     public AccountServiceImpl(PaymentService paymentService, WalletLogService walletLogService) {
         this.paymentService = paymentService;
@@ -258,6 +260,7 @@ public class AccountServiceImpl implements AccountService {
     public SellerResponseDTO getSellerById(Integer sellerId){
         Optional<Account> account = accountRepository.findById(sellerId);
         Integer countProduct = flowerListingService.countProductBySeller(sellerId);
+        RatingFeedbackResponseDTO feedbackResponseDTO = feedbackService.ratingByUserId(sellerId);
         account.get().setAvatar(storageService.getFileUrl(account.get().getAvatar()));
         return SellerResponseDTO.builder()
                 .id(account.get().getId())
@@ -266,7 +269,10 @@ public class AccountServiceImpl implements AccountService {
                 .phone(account.get().getPhone())
                 .avatar(account.get().getAvatar())
                 .gender(account.get().getGender())
+                .ratingAverage(feedbackResponseDTO.getAverage())
+                .ratingCount(feedbackResponseDTO.getCountFeedback())
                 .productCount(countProduct)
+                .createAt(account.get().getCreateAt())
                 .build();
     }
 
