@@ -4,8 +4,9 @@ import com.example.myflower.service.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import vn.payos.type.PaymentData;
+import vn.payos.type.PaymentLinkData;
 
 @RestController
 @RequestMapping("/payments")
@@ -34,5 +35,11 @@ public class PaymentController {
             return response;
         }
     }
+
+    @GetMapping("/{orderCode}")
+    public PaymentLinkData getPaymentLinkInformation(@PathVariable Long orderCode) throws Exception{
+        return paymentService.getPaymentLinkInformation(orderCode);
+    }
+
 
 }
