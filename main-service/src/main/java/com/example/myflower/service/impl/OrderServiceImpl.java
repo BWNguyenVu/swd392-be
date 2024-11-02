@@ -205,7 +205,7 @@ public class OrderServiceImpl implements OrderService {
 
             FlowerListing flowerListing = flowerListingRepository.findByIdWithLock(item.getFlowerListingId());
             if (flowerListing.getStockQuantity().compareTo(item.getQuantity()) < 0) {
-                throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+                    throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             }
             Account seller = flowerListing.getUser();
             sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);

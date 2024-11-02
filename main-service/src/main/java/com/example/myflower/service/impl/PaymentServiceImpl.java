@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
-import vn.payos.type.CheckoutResponseData;
-import vn.payos.type.PaymentData;
-import vn.payos.type.Webhook;
-import vn.payos.type.WebhookData;
+import vn.payos.type.*;
 
 
 import java.math.BigDecimal;
@@ -111,6 +108,11 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to verify payment webhook data: " + e.getMessage());
         }
+    }
+
+    @Override
+    public PaymentLinkData getPaymentLinkInformation(Long orderCode) throws Exception{
+        return payOS.getPaymentLinkInformation(orderCode);
     }
 
     public PaymentResponseDTO getPaymentById(Integer id) {
