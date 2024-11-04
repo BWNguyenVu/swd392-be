@@ -12,6 +12,8 @@ import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FileMediaServiceImpl implements FileMediaService {
+    private static final Logger LOG = LogManager.getLogger(FileMediaServiceImpl.class);
+
     @Value("${cloud.aws.using.s3}")
     private Boolean isUsingS3;
 
@@ -40,6 +44,7 @@ public class FileMediaServiceImpl implements FileMediaService {
     @Transactional
     public List<MediaFile> uploadMultipleFile(List<MultipartFile> multipartFileList) {
         try {
+            LOG.info("[uploadMultipleFile] Start uploading multiple files with request {}", multipartFileList);
             List<String> fileNameList = new ArrayList<>();
             for (MultipartFile file : multipartFileList) {
                 String fileName = storageService.uploadFile(file);
@@ -57,6 +62,7 @@ public class FileMediaServiceImpl implements FileMediaService {
             }
             //Save to database
             List<MediaFile> result = mediaFileRepository.saveAll(mediaFileList);
+            LOG.info("[uploadMultipleFile] Saved to database, proceed to map to response DTO and cache the file");
             //Add to cache
             result.stream()
                     .map(mediaFileMapper::toResponseDTO)
