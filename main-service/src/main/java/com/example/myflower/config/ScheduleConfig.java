@@ -15,9 +15,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class ScheduleConfig {
     @NonNull
     private FlowerListingService flowerListingService;
+    @NonNull
     private StorageService storageService;
 
-    @Scheduled(cron = "0 0 0 0 * ?")
+    @Scheduled(fixedDelayString = "P1D")
     public void clearFlowerCache() {
         flowerListingService.clearFlowerListingCache();
     }
@@ -27,6 +28,6 @@ public class ScheduleConfig {
         flowerListingService.disableExpiredFlowers();
     }
 
-    @Scheduled(cron = "0 0 0 0 * ?") //Run daily
+    @Scheduled(fixedDelayString = "P3D") //Run daily
     public void clearPresignedUrlCache() {storageService.clearPresignedUrlCache();}
 }
