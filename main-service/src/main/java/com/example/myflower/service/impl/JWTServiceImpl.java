@@ -5,6 +5,7 @@ import com.example.myflower.entity.Account;
 import com.example.myflower.exception.token.InvalidToken;
 import com.example.myflower.service.JWTService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,7 +22,9 @@ import java.util.Map;
 import java.util.function.Function;
 @Component
 public class JWTServiceImpl implements JWTService {
-    private static final String SECRET = "CRAZY@IWASC";
+    @Value("${jwt.secret}")
+    private String secret;
+
     private final long EXPIRATION = 1 * 24 * 60 * 60 * 1000;
     private final long EXPIRATION_REFRESHTOKEN = 7 * 24 * 60 * 60 * 1000;
     private final long EXPIRATION_OTP = 5 * 60 * 1000;
@@ -34,7 +37,7 @@ public class JWTServiceImpl implements JWTService {
                 .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
@@ -49,7 +52,7 @@ public class JWTServiceImpl implements JWTService {
                 .claim("role", requestDTO.getRole().toString())
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
     @Override
@@ -61,7 +64,7 @@ public class JWTServiceImpl implements JWTService {
                 .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -74,7 +77,7 @@ public class JWTServiceImpl implements JWTService {
                 .setSubject(otp)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
@@ -103,7 +106,7 @@ public class JWTServiceImpl implements JWTService {
     public Claims extractAllClaims(String token) {
         try {
             return Jwts.parser()
-                    .setSigningKey(SECRET)
+                    .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
