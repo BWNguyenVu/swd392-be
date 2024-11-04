@@ -43,4 +43,6 @@ public interface FlowerListingService {
     FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id);
 
     List<FlowerListingResponseDTO> findAllFlowerListing();
+
+    FlowerListing findByIdWithLock(Integer flowerListingId);
 }
