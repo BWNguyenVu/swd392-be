@@ -300,6 +300,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
 
     @Override
     public void deleteFlower(Integer id) {
+        LOG.info("[deleteFlower] Start delete flower listing by ID {}", id);
         FlowerListing flowerListing = flowerListingRepository
                 .findById(id)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
@@ -310,10 +311,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setDeleted(Boolean.TRUE);
         flowerListingRepository.save(flowerListing);
         redisCommandService.deleteFlowerById(id);
+        LOG.info("[deleteFlower] End delete flower listing by ID {}", id);
     }
 
     @Override
     public void restoreFlower(Integer id) {
+        LOG.info("[deleteFlower] Start restore flower listing by ID {}", id);
         FlowerListing flowerListing = flowerListingRepository
                 .findById(id)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
@@ -324,10 +327,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setDeleted(Boolean.FALSE);
         FlowerListing updatedFlower = flowerListingRepository.save(flowerListing);
         redisCommandService.storeFlower(flowerListingMapper.toCacheDTO(updatedFlower));
+        LOG.info("[deleteFlower] End restore flower listing by ID {}", id);
     }
 
     @Override
     public Integer countProductBySeller(Integer sellerId) {
+        LOG.info("[countProductBySeller] Counting product by seller with ID {}", sellerId);
         return flowerListingRepository.countFlowerListingByUserIdAndStatusNotIn(sellerId, List.of(FlowerListingStatusEnum.PENDING, FlowerListingStatusEnum.REJECTED) );
     }
 
@@ -347,11 +352,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             throw new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND);
         }
         FlowerListing updatedFlower = flowerListingRepository.save(flowerListing.get());
-        redisCommandService.storeFlower(flowerListingMapper.toCacheDTO(updatedFlower));
+        redisCommandService.updateFlowerViews(updatedFlower.getId(), updatedFlower.getViews());
     }
 
     @Override
     public void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity) {
+        LOG.info("[updateQuantityFlowerListing] Updating flower ID {} with quantity {}", flowerListing.getId(), quantity);
         if (flowerListing.getStockQuantity().compareTo(quantity) < 0) {
             throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
         }
@@ -386,6 +392,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         if (!AccountUtils.isAdminRole(adminAccount)) {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
+        LOG.info("[approveFlowerListing] Approving flower with ID {}", id);
 
         FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
@@ -394,6 +401,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing approvedListing = flowerListingRepository.save(flowerListing);
+        LOG.info("[approveFlowerListing] Save to database completed");
+        LOG.info("[approveFlowerListing] Begin push notification to seller with account ID {}", flowerListing.getUser().getId());
         //Push notification
         NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
                 .userId(flowerListing.getUser().getId())
@@ -403,6 +412,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
                 .build();
         kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
+        LOG.info("[approveFlowerListing] Push notification to seller completed");
+        redisCommandService.updateFlowerStatus(approvedListing.getId(), approvedListing.getStatus());
         return flowerListingMapper.toFlowerListingResponseDTO(approvedListing);
     }
 
@@ -415,6 +426,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
 
+        LOG.info("[rejectFlowerListing] Rejecting flower with ID {}", id);
         FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
@@ -423,7 +435,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
         FlowerListing rejectedListing = flowerListingRepository.save(flowerListing);
-
+        LOG.info("[rejectFlowerListing] Save to database completed");
+        LOG.info("[rejectFlowerListing] Begin push notification to seller with account ID {}", flowerListing.getUser().getId());
         //Push notification
         NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
                 .userId(flowerListing.getUser().getId())
@@ -432,7 +445,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .destinationScreen(DestinationScreenEnum.MY_FLOWER_LISTING)
                 .type(NotificationTypeEnum.FLOWER_LISTING_STATUS)
                 .build();
+        LOG.info("[rejectFlowerListing] Push notification to seller completed");
         kafkaNotificationTemplate.send("push_notification_topic", notificationMessageDTO);
+        redisCommandService.updateFlowerStatus(rejectedListing.getId(), rejectedListing.getStatus());
         return flowerListingMapper.toFlowerListingResponseDTO(rejectedListing);
     }
 
@@ -457,8 +472,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Override
     public FlowerListingResponseDTO getCachedFlowerDetailsById(Integer id) {
         try {
+            LOG.info("[getCachedFlowerDetailsById] Begin get flower cache with ID {}", id);
             FlowerListingCacheDTO cacheDTO = redisCommandService.getFlowerById(id);
             if (cacheDTO == null) {
+                LOG.info("[getCachedFlowerDetailsById] No data found");
                 return null;
             }
             AccountResponseDTO account = accountService.getProfileById(cacheDTO.getUserId());
@@ -468,9 +485,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             List<FileResponseDTO> images = cacheDTO.getImages().stream()
                     .map(fileMediaService::getFileWithUrl)
                     .toList();
-            return flowerListingMapper.toResponseDTO(cacheDTO, account, categories, images);
+            FlowerListingResponseDTO responseDTO = flowerListingMapper.toResponseDTO(cacheDTO, account, categories, images);
+            LOG.info("[getCachedFlowerDetailsById] Get flower cache completed with data {}", responseDTO);
+            return responseDTO;
         }
         catch (Exception e) {
+            LOG.error("[getCachedFlowerDetailsById] Have exception", e);
             return null;
         }
     }

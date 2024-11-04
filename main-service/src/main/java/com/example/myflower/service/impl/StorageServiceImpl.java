@@ -10,6 +10,8 @@ import com.example.myflower.service.RedisCommandService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,8 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
+    private static final Logger LOG = LogManager.getLogger(StorageServiceImpl.class);
+
     @Value("${cloud.aws.using.s3}")
     private Boolean isUsingS3;
     @Value("${cloud.aws.bucket.name}")
@@ -31,11 +35,13 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public String uploadFile(MultipartFile uploadedFile) throws IOException {
+        LOG.info("[uploadFile] Start upload file, isUsingS3={}", isUsingS3);
         File file = FileUtils.convertMultiPartFileToFile(uploadedFile);
         try {
             if (Boolean.TRUE.equals(isUsingS3)) {
                 String fileName = FileUtils.generateFileName(uploadedFile);
                 s3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
+                LOG.info("[uploadFile] File uploaded to S3 with filename: {}", fileName);
                 return fileName;
             }
         }
@@ -47,6 +53,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void deleteFile(String fileName) {
+        LOG.info("[deleteFile] Start delete file with filename={}, isUsingS3={}", fileName, isUsingS3);
         if (Boolean.TRUE.equals(isUsingS3)) {
             s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         }
@@ -54,6 +61,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public String getFileUrl(String fileName) {
+        LOG.info("[getFileUrl] Start get file url with filename={}, isUsingS3={}", fileName, isUsingS3);
         if (Boolean.TRUE.equals(isUsingS3)) {
             String cacheResult = redisCommandService.getPresignedUrl(fileName);
             if (cacheResult != null) {
@@ -61,6 +69,7 @@ public class StorageServiceImpl implements StorageService {
             }
             String url = this.generatePresignedUrl(fileName);
             redisCommandService.storePresignedUrl(fileName, url);
+            LOG.info("[getFileUrl] Completed with presigned url {}", url);
             return url;
         }
         return fileName;
@@ -68,6 +77,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void clearPresignedUrlCache() {
+        LOG.info("[clearPresignedUrlCache] Start clear aws s3 presigned url");
         redisCommandService.clearPresignedUrlCache();
     }
 
