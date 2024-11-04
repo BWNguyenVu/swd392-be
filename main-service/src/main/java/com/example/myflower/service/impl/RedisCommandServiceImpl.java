@@ -4,6 +4,7 @@ import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
+import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.flowers.FlowerCategoryException;
 import com.example.myflower.exception.flowers.FlowerListingException;
@@ -147,6 +148,34 @@ public class RedisCommandServiceImpl implements RedisCommandService {
         }
         catch (Exception e) {
             LOG.error("[setFlowerById] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void updateFlowerStatus(Integer flowerId, FlowerListingStatusEnum statusEnum) {
+        try {
+            String key = String.format("flowers:%s", flowerId);
+            String value = redisService.getStringValueByKey(key);
+            FlowerListingCacheDTO cacheDTO = objectMapper.readValue(value, FlowerListingCacheDTO.class);
+            cacheDTO.setStatus(statusEnum);
+            objectMapper.writeValueAsString(cacheDTO);
+        }
+        catch (Exception e) {
+            LOG.error("[updateFlowerStatus] Has exception: ", e);
+        }
+    }
+
+    @Override
+    public void updateFlowerViews(Integer flowerId, Integer views) {
+        try {
+            String key = String.format("flowers:%s", flowerId);
+            String value = redisService.getStringValueByKey(key);
+            FlowerListingCacheDTO cacheDTO = objectMapper.readValue(value, FlowerListingCacheDTO.class);
+            cacheDTO.setViews(views);
+            objectMapper.writeValueAsString(cacheDTO);
+        }
+        catch (Exception e) {
+            LOG.error("[updateFlowerViews] Has exception: ", e);
         }
     }
 

@@ -4,6 +4,7 @@ import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.dto.file.FileResponseDTO;
 import com.example.myflower.dto.flowercategogy.response.FlowerCategoryResponseDTO;
 import com.example.myflower.dto.flowerlisting.FlowerListingCacheDTO;
+import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public interface RedisCommandService {
     void setFlowerById(FlowerListingResponseDTO responseDTO);
 
     void storeFlower(FlowerListingCacheDTO cacheDTO);
+
+    void updateFlowerStatus(Integer flowerId, FlowerListingStatusEnum statusEnum);
+
+    void updateFlowerViews(Integer flowerId, Integer views);
 
     // Method to delete a flower listing by its ID
     void deleteFlowerById(Integer id);
