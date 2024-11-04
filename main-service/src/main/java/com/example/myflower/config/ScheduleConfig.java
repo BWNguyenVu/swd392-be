@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class ScheduleConfig {
     @NonNull
     private FlowerListingService flowerListingService;
+    @NonNull
     private StorageService storageService;
 
     @Scheduled(fixedDelayString = "P1D")
