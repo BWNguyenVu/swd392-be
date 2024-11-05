@@ -31,7 +31,7 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
     @Value("https://blossom.isolutions.top/wallet/add-balance")
     private String returnUrl;
-    @Value("http://" + "localhost" + ":4200"+ "/wallet/add-balance")
+    @Value("https://blossom.isolutions.top/wallet/add-balance")
     private String cancelUrl;
     @Autowired
     private PayOS payOS;
