@@ -31,6 +31,8 @@ public interface RedisCommandService {
 
     void updateFlowerViews(Integer flowerId, Integer views);
 
+    void updateFlowerQuantity(Integer flowerId, Integer quantity);
+
     // Method to delete a flower listing by its ID
     void deleteFlowerById(Integer id);
 

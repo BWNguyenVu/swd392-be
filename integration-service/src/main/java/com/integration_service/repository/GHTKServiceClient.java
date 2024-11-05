@@ -1,16 +1,14 @@
 package com.integration_service.repository;
 
-import com.integration_service.dto.requests.GHTKGetShippingFeeRequestDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "ghtk-service-api", url = "https://services.giaohangtietkiem.vn/services/shipment/fee")
+@FeignClient(name = "ghtk-service-api", url = "https://services.giaohangtietkiem.vn/services")
 public interface GHTKServiceClient {
-
-    @GetMapping
+    @GetMapping("/shipment/fee")
     ResponseEntity<?> getShippingFee(
             @RequestParam("address") String address,
             @RequestParam("province") String province,

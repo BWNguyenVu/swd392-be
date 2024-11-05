@@ -186,4 +186,9 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
         FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
         redisCommandService.setFlowerCategoryById(flowerCategoryMapper.toCategoryResponseDTO(result));
     }
+
+    @Override
+    public void clearCategoryCache() {
+        redisCommandService.clearFlowerCategoryCache();
+    }
 }

@@ -261,7 +261,4 @@ public class EmailServiceImpl {
     }
 
 
-
-    // Example method to calculate subtotal if it's not directly provided
-
 }
