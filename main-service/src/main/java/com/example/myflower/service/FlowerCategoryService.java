@@ -14,4 +14,6 @@ public interface FlowerCategoryService {
     void deleteFlowerCategoryById(Integer id);
 
     void restoreFlowerCategoryById(Integer id);
+
+    void clearCategoryCache();
 }
