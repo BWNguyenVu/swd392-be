@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -91,6 +92,15 @@ public class OrderServiceImpl implements OrderService {
         if (account.getBalance() == null || account.getBalance().compareTo(totalPrice) < 0) {
             throw new OrderAppException(ErrorCode.ORDER_INVALID_FUNDS);
         }
+        List<FlowerListing> flowerListings = orderDTO.getOrderDetails().stream().map(
+                orderDetail -> findFlowerListing(orderDetail.getFlowerListingId())
+        ).toList();
+
+        for (int i = 0; i < flowerListings.size(); i++) {
+            if (flowerListings.get(i).getStockQuantity().compareTo(orderDTO.getOrderDetails().get(i).getQuantity()) < 0){
+                throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+            }
+        }
 
         // Create order summary
         OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
@@ -98,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
 
 
         // Create order details
-        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap);
+        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap, flowerListings);
 
         distributeBalance(account, totalPrice, orderSummary, sellerBalanceMap);
 
@@ -134,6 +144,13 @@ public class OrderServiceImpl implements OrderService {
         return orderResponseDTO;
     }
 
+    private FlowerListing findFlowerListing(Integer flowerId){
+        FlowerListing flowerListing = flowerListingService.findByIdWithLock(flowerId);
+        if (flowerListing.getStockQuantity().compareTo(flowerId) < 0) {
+            throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+        }
+        return flowerListing;
+    }
     @Override
     @Transactional
     public OrderResponseDTO orderByCod(CreateOrderRequestDTO orderDTO) throws OrderAppException {
@@ -151,13 +168,21 @@ public class OrderServiceImpl implements OrderService {
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        List<FlowerListing> flowerListings = orderDTO.getOrderDetails().stream().map(
+                orderDetail -> findFlowerListing(orderDetail.getFlowerListingId())
+        ).toList();
+
+        for (int i = 0; i < flowerListings.size(); i++) {
+            if (flowerListings.get(i).getStockQuantity().compareTo(orderDTO.getOrderDetails().get(i).getQuantity()) < 0){
+                throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+            }
+        }
         // Create order summary
         OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
         orderSummaryRepository.save(orderSummary);
 
-
         // Create order details
-        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap);
+        List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap, flowerListings);
 
         List<OrderDetailResponseDTO> orderDetailsResponseDTO = convertOrderDetailDTO(orderDetails);
         // Return response with order details
@@ -199,17 +224,17 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    private List<OrderDetail> createOrderDetails(CreateOrderRequestDTO orderDTO, OrderSummary orderSummary, Account account, Map<Account, BigDecimal> sellerBalanceMap) throws OrderAppException {
+    private List<OrderDetail> createOrderDetails(CreateOrderRequestDTO orderDTO, OrderSummary orderSummary, Account account, Map<Account, BigDecimal> sellerBalanceMap, List<FlowerListing> flowerListings) throws OrderAppException {
         List<OrderDetail> orderDetails = new ArrayList<>();
-        for (OrderDetailRequestDTO item : orderDTO.getOrderDetails()) {
 
-            FlowerListing flowerListing = flowerListingRepository.findByIdWithLock(item.getFlowerListingId());
-            if (flowerListing.getStockQuantity().compareTo(item.getQuantity()) < 0) {
-                    throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
-            }
+        for (int i = 0; i < orderDTO.getOrderDetails().size(); i++) {
+            OrderDetailRequestDTO item = orderDTO.getOrderDetails().get(i);
+            FlowerListing flowerListing = flowerListings.get(i);
+
             Account seller = flowerListing.getUser();
             sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);
             flowerListingService.updateQuantityFlowerListing(flowerListing, item.getQuantity());
+
             OrderDetail orderDetail = OrderDetail.builder()
                     .orderSummary(orderSummary)
                     .seller(flowerListing.getUser())
@@ -224,6 +249,7 @@ public class OrderServiceImpl implements OrderService {
             OrderDetail response = orderDetailRepository.save(orderDetail);
             orderDetails.add(response);
         }
+
         return orderDetails;
     }
 
@@ -436,7 +462,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
             case BUYER_CANCELED -> {
-                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING && orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
                 }
                 if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
@@ -446,7 +472,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
             case SELLER_CANCELED -> {
-                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING && orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
                 }
 
