@@ -21,4 +21,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     @Transactional
     @Query("UPDATE Notification n SET n.isRead = true WHERE n.userId = :userId")
     int markAllAsReadByUserId(Integer userId);
+
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.userId = :userId AND n.isRead = false")
+    int countUnreadByUserId(Integer userId);
 }

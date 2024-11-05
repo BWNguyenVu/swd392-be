@@ -1,6 +1,7 @@
 package com.swd.notification_service.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.swd.notification_service.dto.notifications.NotificationCountResponseDTO;
 import com.swd.notification_service.dto.notifications.NotificationResponseDTO;
 import com.swd.notification_service.dto.notifications.PushNotificationEventDTO;
 import com.swd.notification_service.dto.pagination.CursorPaginationRequest;
@@ -39,6 +40,13 @@ public class NotificationServiceImpl implements NotificationService {
         return result.stream()
                 .map(NotificationMapper::toResponseDTO)
                 .toList();
+    }
+
+    @Override
+    public NotificationCountResponseDTO getUnreadNotificationCount(Integer userId) {
+        return NotificationCountResponseDTO.builder()
+                .count(notificationRepository.countUnreadByUserId(userId))
+                .build();
     }
 
     @Override

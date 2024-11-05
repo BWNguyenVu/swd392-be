@@ -69,7 +69,7 @@ public class BroadcastNotificationController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/restore")
     public ResponseEntity<Void> restoreBroadcastNotification(@PathVariable Integer id) {
         broadcastNotificationService.restoreBroadcastNotification(id);
         return ResponseEntity.noContent().build();
