@@ -158,7 +158,8 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String value = redisService.getStringValueByKey(key);
             FlowerListingCacheDTO cacheDTO = objectMapper.readValue(value, FlowerListingCacheDTO.class);
             cacheDTO.setStatus(statusEnum);
-            objectMapper.writeValueAsString(cacheDTO);
+            String updatedValue = objectMapper.writeValueAsString(cacheDTO);
+            redisService.setStringValueByKey(key, updatedValue);
         }
         catch (Exception e) {
             LOG.error("[updateFlowerStatus] Has exception: ", e);
@@ -172,7 +173,24 @@ public class RedisCommandServiceImpl implements RedisCommandService {
             String value = redisService.getStringValueByKey(key);
             FlowerListingCacheDTO cacheDTO = objectMapper.readValue(value, FlowerListingCacheDTO.class);
             cacheDTO.setViews(views);
-            objectMapper.writeValueAsString(cacheDTO);
+            String updatedValue = objectMapper.writeValueAsString(cacheDTO);
+            redisService.setStringValueByKey(key, updatedValue);
+        }
+        catch (Exception e) {
+            LOG.error("[updateFlowerViews] Has exception: ", e);
+        }
+    }
+
+
+    @Override
+    public void updateFlowerQuantity(Integer flowerId, Integer quantity) {
+        try {
+            String key = String.format("flowers:%s", flowerId);
+            String value = redisService.getStringValueByKey(key);
+            FlowerListingCacheDTO cacheDTO = objectMapper.readValue(value, FlowerListingCacheDTO.class);
+            cacheDTO.setStockQuantity(quantity);
+            String updatedValue = objectMapper.writeValueAsString(cacheDTO);
+            redisService.setStringValueByKey(key, updatedValue);
         }
         catch (Exception e) {
             LOG.error("[updateFlowerViews] Has exception: ", e);

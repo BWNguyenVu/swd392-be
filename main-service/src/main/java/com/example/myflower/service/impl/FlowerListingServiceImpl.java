@@ -360,8 +360,9 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         if (flowerListing.getStockQuantity().compareTo(quantity) < 0) {
             throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
         }
-        flowerListing.setViews(flowerListing.getStockQuantity() - quantity);
+        flowerListing.setStockQuantity(flowerListing.getStockQuantity() - quantity);
         flowerListingRepository.save(flowerListing);
+        redisCommandService.updateFlowerQuantity(flowerListing.getId(), flowerListing.getStockQuantity());
     }
 
     @Override

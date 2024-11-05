@@ -52,4 +52,10 @@ public class FlowerCategoryController {
         flowerCategoryService.restoreFlowerCategoryById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/clear-cache")
+    public ResponseEntity<Void> clearCategoryCache() {
+        flowerCategoryService.clearCategoryCache();
+        return ResponseEntity.noContent().build();
+    }
 }
