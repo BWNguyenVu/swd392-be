@@ -46,6 +46,7 @@ public class FlowerListingMapper {
                 .categories(flowerCategories)
                 .images(images)
                 .status(flowerListing.getStatus())
+                .expireDate(flowerListing.getExpireDate())
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
