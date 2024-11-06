@@ -128,6 +128,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 requestDTO.getSearchString(),
                 requestDTO.getCategoryIds(),
                 requestDTO.getFlowerStatus(),
+                requestDTO.getMinPrice(),
+                requestDTO.getMaxPrice(),
                 deleteStatus,
                 pageable
         );
@@ -395,6 +397,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
 
+        if (FlowerListingStatusEnum.EXPIRED.equals(flowerListing.getStatus())) {
+            throw new FlowerListingException(ErrorCode.FLOWER_EXPIRED);
+        }
+
         flowerListing.setStatus(FlowerListingStatusEnum.APPROVED);
         flowerListing.setUpdatedAt(LocalDateTime.now());
 
@@ -427,6 +433,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         LOG.info("[rejectFlowerListing] Rejecting flower with ID {}", id);
         FlowerListing flowerListing = flowerListingRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
+
+        if (FlowerListingStatusEnum.EXPIRED.equals(flowerListing.getStatus())) {
+            throw new FlowerListingException(ErrorCode.FLOWER_EXPIRED);
+        }
 
         flowerListing.setStatus(FlowerListingStatusEnum.REJECTED);
         flowerListing.setRejectReason(reason);

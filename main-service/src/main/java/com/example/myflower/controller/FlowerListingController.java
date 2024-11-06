@@ -6,15 +6,18 @@ import com.example.myflower.dto.auth.requests.UpdateFlowerListingRequestDTO;
 import com.example.myflower.dto.pagination.PaginationResponseDTO;
 import com.example.myflower.dto.auth.responses.FlowerListingResponseDTO;
 import com.example.myflower.entity.Account;
+import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.service.FlowerListingService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -31,16 +34,23 @@ public class FlowerListingController {
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) FlowerListingStatusEnum status,
             @RequestParam(required = false) String order,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) Boolean deleted,
-            @RequestParam(required = false) List<Integer> categoryIds)
+            @RequestParam(required = false) List<Integer> categoryIds
+    )
     {
         GetFlowerListingsRequestDTO requestDTO = GetFlowerListingsRequestDTO.builder()
                 .searchString(searchString)
                 .pageNumber(pageNumber)
                 .pageSize(pageSize)
                 .sortBy(sortBy)
+                .flowerStatus(status)
                 .order(order)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
                 .deleteStatus(deleted)
                 .categoryIds(categoryIds)
                 .build();
@@ -74,12 +84,26 @@ public class FlowerListingController {
         return ResponseEntity.ok().body(flowerListingService.getFlowerListingsByUserID(userId));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFlowerListingById(@PathVariable Integer id) {
+        flowerListingService.deleteFlower(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/restore")
+    public ResponseEntity<Void> restoreFlowerListingById(@PathVariable Integer id) {
+        flowerListingService.restoreFlower(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     @PostMapping("/clear-cache")
     public ResponseEntity<Void> clearFlowerListingCache() {
         flowerListingService.clearFlowerListingCache();
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     @PostMapping("/disable-expired-flowers")
     public ResponseEntity<Void> disableExpiredFlowers() {
         flowerListingService.disableExpiredFlowers();
