@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,8 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
             "LEFT JOIN FETCH fl.categories fc " +
             "WHERE :name IS NULL OR fl.name ILIKE %:name% " +
             "AND (:status IS NULL OR fl.status = :status) " +
+            "AND (:minPrice IS NULL OR fl.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR fl.price <= :maxPrice) " +
             "AND (:isDeleted IS NULL OR fl.isDeleted = :isDeleted) " +
             "AND (:categoryIds IS NULL OR fl.id IN (" +
                 "SELECT DISTINCT fl.id FROM FlowerListing fl " +
@@ -33,6 +36,8 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     Page<FlowerListing> findAllByParameters(@Param("name") String name,
                                             @Param("categoryIds") List<Integer> categoryIds,
                                             @Param("status") FlowerListingStatusEnum status,
+                                            @Param("minPrice") BigDecimal minPrice,
+                                            @Param("maxPrice") BigDecimal maxPrice,
                                             @Param("isDeleted") Boolean isDeleted,
                                             Pageable pageable);
 
