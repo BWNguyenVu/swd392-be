@@ -120,16 +120,14 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         Account currentAccount = AccountUtils.getCurrentAccount();
         //If current user is admin then they can query delete status, otherwise can only get active flowers
         Boolean deleteStatus = Boolean.FALSE;
-        FlowerListingStatusEnum flowerStatus = FlowerListingStatusEnum.APPROVED;
         if (currentAccount != null && currentAccount.getRole().equals(AccountRoleEnum.ADMIN)) {
             deleteStatus = requestDTO.getDeleteStatus();
-            flowerStatus = requestDTO.getFlowerStatus();
         }
         //Get from database
         Page<FlowerListing> flowerListingsPage = flowerListingRepository.findAllByParameters(
                 requestDTO.getSearchString(),
                 requestDTO.getCategoryIds(),
-                flowerStatus,
+                requestDTO.getFlowerStatus(),
                 deleteStatus,
                 pageable
         );
