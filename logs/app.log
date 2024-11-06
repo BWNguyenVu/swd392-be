@@ -1,0 +1,609 @@
+ INFO- 2024-11-06 13:49:31.457 14452-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-11-06 13:49:31.512 14452-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 14452 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-11-06 13:49:31.544 14452-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-11-06 13:49:32.381 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:49:32.384 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:49:32.523 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 132 ms. Found 12 JPA repository interfaces.
+ INFO- 2024-11-06 13:49:32.539 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:49:32.541 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:49:32.560 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.561 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.561 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.562 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.562 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerImageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.562 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.562 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.MediaFileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.563 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.564 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.566 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.567 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.567 14452-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:49:32.568 14452-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 17 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-11-06 13:49:33.049 14452-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-11-06 13:49:33.058 14452-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:49:33.062 14452-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-11-06 13:49:33.062 14452-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-11-06 13:49:33.119 14452-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-11-06 13:49:33.119 14452-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1526 ms
+ INFO- 2024-11-06 13:49:33.270 14452-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-11-06 13:49:33.330 14452-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-11-06 13:49:33.362 14452-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-11-06 13:49:33.423 14452-[           main] o.h.e.b.i.EnversServiceImpl             : EnversServiceImpl - Envers integration enabled? : true
+ INFO- 2024-11-06 13:49:33.551 14452-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-11-06 13:49:33.573 14452-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-11-06 13:49:34.231 14452-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@705d72f0
+ INFO- 2024-11-06 13:49:34.233 14452-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-11-06 13:49:34.327 14452-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-11-06 13:49:34.688 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Payment
+ INFO- 2024-11-06 13:49:34.689 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Account
+ INFO- 2024-11-06 13:49:34.691 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Transaction
+ INFO- 2024-11-06 13:49:34.691 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Blog
+ INFO- 2024-11-06 13:49:34.691 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.WalletLog
+ INFO- 2024-11-06 13:49:34.692 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Feedback
+ INFO- 2024-11-06 13:49:34.692 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerImage
+ INFO- 2024-11-06 13:49:34.692 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerListing
+ INFO- 2024-11-06 13:49:34.693 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderDetail
+ INFO- 2024-11-06 13:49:34.693 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.MediaFile
+ INFO- 2024-11-06 13:49:34.693 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderSummary
+ INFO- 2024-11-06 13:49:34.693 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.CartItem
+ INFO- 2024-11-06 13:49:34.694 14452-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerCategory
+ERROR- 2024-11-06 13:49:35.624 14452-[           main] o.h.m.i.MetadataContext                 : MetadataContext - HHH015007: Illegal argument on static metamodel field injection : org.hibernate.envers.DefaultRevisionEntity_#class_; expected type :  org.hibernate.metamodel.model.domain.internal.EntityTypeImpl; encountered type : jakarta.persistence.metamodel.MappedSuperclassType
+ INFO- 2024-11-06 13:49:35.640 14452-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-11-06 13:49:42.603 14452-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:49:44.651 14452-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-11-06 13:49:46.070 14452-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-11-06 13:49:46.095 14452-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-11-06 13:49:46.096 14452-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-11-06 13:49:46.560 14452-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-11-06 13:49:46.874 14452-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:49:46.889 14452-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-11-06 13:49:46.944 14452-[           main] o.a.k.c.c.ConsumerConfig                : ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = latest
+	bootstrap.servers = [103.250.78.50:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-user-result-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = user-result-group
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+ INFO- 2024-11-06 13:49:46.993 14452-[           main] o.a.k.c.t.i.KafkaMetricsCollector       : KafkaMetricsCollector - initializing Kafka metrics collector
+ INFO- 2024-11-06 13:49:47.078 14452-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka version: 3.7.0
+ INFO- 2024-11-06 13:49:47.078 14452-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka commitId: 2ae524ed625438c5
+ INFO- 2024-11-06 13:49:47.079 14452-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka startTimeMs: 1730875787077
+ INFO- 2024-11-06 13:49:47.082 14452-[           main] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Subscribed to topic(s): user-request-topic
+ INFO- 2024-11-06 13:49:47.087 14452-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-11-06 13:49:47.088 14452-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@220481f9]]
+ INFO- 2024-11-06 13:49:47.088 14452-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-11-06 13:49:47.098 14452-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 15.987 seconds (process running for 17.045)
+ INFO- 2024-11-06 13:49:47.101 14452-[MessageBroker-2] c.e.m.s.i.StorageServiceImpl            : StorageServiceImpl - [clearPresignedUrlCache] Start clear aws s3 presigned url
+ INFO- 2024-11-06 13:49:47.101 14452-[MessageBroker-3] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Start clear flower listing cache
+ INFO- 2024-11-06 13:49:47.573 14452-[ntainer#0-0-C-1] o.a.k.c.Metadata                        : Metadata - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Cluster ID: o22Qh4lpR9aGA9nBcYo-Dg
+ INFO- 2024-11-06 13:49:47.626 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Discovered group coordinator 103.250.78.50:9092 (id: 2147483647 rack: null)
+ INFO- 2024-11-06 13:49:47.628 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:49:47.689 14452-[MessageBroker-3] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Finished clear cache
+ INFO- 2024-11-06 13:49:47.814 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: need to re-join with the given member-id: consumer-user-result-group-1-3cac11db-0310-4175-84a4-9f6758236843
+ INFO- 2024-11-06 13:49:47.815 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:49:49.911 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully joined group with generation Generation{generationId=40, memberId='consumer-user-result-group-1-3cac11db-0310-4175-84a4-9f6758236843', protocol='range'}
+ INFO- 2024-11-06 13:49:50.127 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully synced group in generation Generation{generationId=40, memberId='consumer-user-result-group-1-3cac11db-0310-4175-84a4-9f6758236843', protocol='range'}
+ INFO- 2024-11-06 13:49:50.131 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Notifying assignor about the new Assignment(partitions=[user-request-topic-0])
+ INFO- 2024-11-06 13:49:50.141 14452-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Adding newly assigned partitions: user-request-topic-0
+ INFO- 2024-11-06 13:49:50.248 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerUtils               : ConsumerUtils - Setting offset for partition user-request-topic-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[103.250.78.50:9092 (id: 0 rack: null)], epoch=0}}
+ INFO- 2024-11-06 13:49:50.350 14452-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions assigned: [user-request-topic-0]
+ INFO- 2024-11-06 13:49:56.935 14452-[nio-6868-exec-2] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:49:56.935 14452-[nio-6868-exec-2] o.s.w.s.DispatcherServlet               : DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:49:56.937 14452-[nio-6868-exec-2] o.s.w.s.DispatcherServlet               : DispatcherServlet - Completed initialization in 1 ms
+ INFO- 2024-11-06 13:50:24.586 14452-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-11-06 13:50:24.586 14452-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@220481f9]]
+ INFO- 2024-11-06 13:50:24.586 14452-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-11-06 13:50:24.588 14452-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Revoke previously assigned partitions user-request-topic-0
+ INFO- 2024-11-06 13:50:24.588 14452-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions revoked: [user-request-topic-0]
+ INFO- 2024-11-06 13:50:24.589 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Member consumer-user-result-group-1-3cac11db-0310-4175-84a4-9f6758236843 sending LeaveGroup request to coordinator 103.250.78.50:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+ INFO- 2024-11-06 13:50:24.589 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:50:24.590 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:50:24.590 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Unsubscribed all topics or patterns and assigned partitions
+ INFO- 2024-11-06 13:50:24.591 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:50:24.592 14452-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:50:25.072 14452-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics scheduler closed
+ INFO- 2024-11-06 13:50:25.073 14452-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+ INFO- 2024-11-06 13:50:25.073 14452-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+ INFO- 2024-11-06 13:50:25.073 14452-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics reporters closed
+ INFO- 2024-11-06 13:50:25.080 14452-[ntainer#0-0-C-1] o.a.k.c.u.AppInfoParser                 : AppInfoParser - App info kafka.consumer for consumer-user-result-group-1 unregistered
+ INFO- 2024-11-06 13:50:25.080 14452-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: Consumer stopped
+ INFO- 2024-11-06 13:50:25.286 14452-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:50:25.288 14452-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-11-06 13:50:25.290 14452-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.
+ INFO- 2024-11-06 13:50:28.428 12372-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-11-06 13:50:28.472 12372-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 12372 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-11-06 13:50:28.509 12372-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-11-06 13:50:29.322 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:50:29.324 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:50:29.458 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 129 ms. Found 12 JPA repository interfaces.
+ INFO- 2024-11-06 13:50:29.476 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:50:29.477 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:50:29.493 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.494 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.495 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.495 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.496 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerImageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.496 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.496 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.MediaFileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.497 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.498 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.500 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.501 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.501 12372-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:50:29.501 12372-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 17 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-11-06 13:50:29.991 12372-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-11-06 13:50:30.000 12372-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:50:30.001 12372-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-11-06 13:50:30.002 12372-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-11-06 13:50:30.053 12372-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-11-06 13:50:30.053 12372-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1503 ms
+ INFO- 2024-11-06 13:50:30.198 12372-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-11-06 13:50:30.245 12372-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-11-06 13:50:30.267 12372-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-11-06 13:50:30.320 12372-[           main] o.h.e.b.i.EnversServiceImpl             : EnversServiceImpl - Envers integration enabled? : true
+ INFO- 2024-11-06 13:50:30.448 12372-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-11-06 13:50:30.468 12372-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-11-06 13:50:31.207 12372-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@78b44fcb
+ INFO- 2024-11-06 13:50:31.208 12372-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-11-06 13:50:31.319 12372-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-11-06 13:50:31.642 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Payment
+ INFO- 2024-11-06 13:50:31.644 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Account
+ INFO- 2024-11-06 13:50:31.645 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Transaction
+ INFO- 2024-11-06 13:50:31.645 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Blog
+ INFO- 2024-11-06 13:50:31.646 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.WalletLog
+ INFO- 2024-11-06 13:50:31.646 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Feedback
+ INFO- 2024-11-06 13:50:31.646 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerImage
+ INFO- 2024-11-06 13:50:31.647 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerListing
+ INFO- 2024-11-06 13:50:31.647 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderDetail
+ INFO- 2024-11-06 13:50:31.647 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.MediaFile
+ INFO- 2024-11-06 13:50:31.648 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderSummary
+ INFO- 2024-11-06 13:50:31.648 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.CartItem
+ INFO- 2024-11-06 13:50:31.648 12372-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerCategory
+ERROR- 2024-11-06 13:50:32.468 12372-[           main] o.h.m.i.MetadataContext                 : MetadataContext - HHH015007: Illegal argument on static metamodel field injection : org.hibernate.envers.DefaultRevisionEntity_#class_; expected type :  org.hibernate.metamodel.model.domain.internal.EntityTypeImpl; encountered type : jakarta.persistence.metamodel.MappedSuperclassType
+ INFO- 2024-11-06 13:50:32.483 12372-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-11-06 13:50:39.349 12372-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:50:40.201 12372-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-11-06 13:50:41.040 12372-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-11-06 13:50:41.074 12372-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-11-06 13:50:41.075 12372-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-11-06 13:50:41.545 12372-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-11-06 13:50:41.819 12372-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:50:41.826 12372-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-11-06 13:50:41.853 12372-[           main] o.a.k.c.c.ConsumerConfig                : ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = latest
+	bootstrap.servers = [103.250.78.50:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-user-result-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = user-result-group
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+ INFO- 2024-11-06 13:50:41.896 12372-[           main] o.a.k.c.t.i.KafkaMetricsCollector       : KafkaMetricsCollector - initializing Kafka metrics collector
+ INFO- 2024-11-06 13:50:41.971 12372-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka version: 3.7.0
+ INFO- 2024-11-06 13:50:41.971 12372-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka commitId: 2ae524ed625438c5
+ INFO- 2024-11-06 13:50:41.971 12372-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka startTimeMs: 1730875841970
+ INFO- 2024-11-06 13:50:41.976 12372-[           main] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Subscribed to topic(s): user-request-topic
+ INFO- 2024-11-06 13:50:41.981 12372-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-11-06 13:50:41.981 12372-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7d4d30ac]]
+ INFO- 2024-11-06 13:50:41.982 12372-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-11-06 13:50:41.993 12372-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 13.84 seconds (process running for 14.671)
+ INFO- 2024-11-06 13:50:41.997 12372-[MessageBroker-4] c.e.m.s.i.StorageServiceImpl            : StorageServiceImpl - [clearPresignedUrlCache] Start clear aws s3 presigned url
+ INFO- 2024-11-06 13:50:41.997 12372-[MessageBroker-2] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Start clear flower listing cache
+ INFO- 2024-11-06 13:50:42.381 12372-[ntainer#0-0-C-1] o.a.k.c.Metadata                        : Metadata - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Cluster ID: o22Qh4lpR9aGA9nBcYo-Dg
+ INFO- 2024-11-06 13:50:42.385 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Discovered group coordinator 103.250.78.50:9092 (id: 2147483647 rack: null)
+ INFO- 2024-11-06 13:50:42.387 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:50:42.509 12372-[nio-6868-exec-2] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:50:42.510 12372-[nio-6868-exec-2] o.s.w.s.DispatcherServlet               : DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:50:42.511 12372-[nio-6868-exec-2] o.s.w.s.DispatcherServlet               : DispatcherServlet - Completed initialization in 1 ms
+ INFO- 2024-11-06 13:50:42.520 12372-[MessageBroker-2] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Finished clear cache
+ INFO- 2024-11-06 13:50:42.555 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: need to re-join with the given member-id: consumer-user-result-group-1-962092d4-432f-4031-a2a1-118fbee1b3a7
+ INFO- 2024-11-06 13:50:42.555 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:50:43.919 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully joined group with generation Generation{generationId=42, memberId='consumer-user-result-group-1-962092d4-432f-4031-a2a1-118fbee1b3a7', protocol='range'}
+ INFO- 2024-11-06 13:50:44.347 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully synced group in generation Generation{generationId=42, memberId='consumer-user-result-group-1-962092d4-432f-4031-a2a1-118fbee1b3a7', protocol='range'}
+ INFO- 2024-11-06 13:50:44.351 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Notifying assignor about the new Assignment(partitions=[user-request-topic-0])
+ INFO- 2024-11-06 13:50:44.353 12372-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Adding newly assigned partitions: user-request-topic-0
+ INFO- 2024-11-06 13:50:44.470 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerUtils               : ConsumerUtils - Setting offset for partition user-request-topic-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[103.250.78.50:9092 (id: 0 rack: null)], epoch=0}}
+ INFO- 2024-11-06 13:50:44.584 12372-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions assigned: [user-request-topic-0]
+ INFO- 2024-11-06 13:51:27.766 12372-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-11-06 13:51:27.766 12372-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7d4d30ac]]
+ INFO- 2024-11-06 13:51:27.767 12372-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-11-06 13:51:27.768 12372-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Revoke previously assigned partitions user-request-topic-0
+ INFO- 2024-11-06 13:51:27.768 12372-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions revoked: [user-request-topic-0]
+ INFO- 2024-11-06 13:51:27.768 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Member consumer-user-result-group-1-962092d4-432f-4031-a2a1-118fbee1b3a7 sending LeaveGroup request to coordinator 103.250.78.50:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+ INFO- 2024-11-06 13:51:27.769 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:51:27.769 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:51:27.769 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Unsubscribed all topics or patterns and assigned partitions
+ INFO- 2024-11-06 13:51:27.770 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:51:27.770 12372-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:51:28.074 12372-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics scheduler closed
+ INFO- 2024-11-06 13:51:28.074 12372-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+ INFO- 2024-11-06 13:51:28.074 12372-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+ INFO- 2024-11-06 13:51:28.075 12372-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics reporters closed
+ INFO- 2024-11-06 13:51:28.079 12372-[ntainer#0-0-C-1] o.a.k.c.u.AppInfoParser                 : AppInfoParser - App info kafka.consumer for consumer-user-result-group-1 unregistered
+ INFO- 2024-11-06 13:51:28.080 12372-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: Consumer stopped
+ INFO- 2024-11-06 13:51:28.300 12372-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:51:28.302 12372-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-11-06 13:51:28.304 12372-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.
+ INFO- 2024-11-06 13:51:32.985 26096-[kground-preinit] o.h.v.i.u.Version                       : Version - HV000001: Hibernate Validator 7.0.1.Final
+ INFO- 2024-11-06 13:51:33.024 26096-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Starting MyflowerApplication using Java 17.0.11 with PID 26096 (D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be\main-service\target\classes started by Lenovo in D:\Goc_cua_Vu\SpringBoot\SWD\swd392-be)
+ INFO- 2024-11-06 13:51:33.062 26096-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - The following 1 profile is active: "prod"
+ INFO- 2024-11-06 13:51:33.789 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:51:33.791 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:51:33.902 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 107 ms. Found 12 JPA repository interfaces.
+ INFO- 2024-11-06 13:51:33.915 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+ INFO- 2024-11-06 13:51:33.916 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+ INFO- 2024-11-06 13:51:33.930 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.AccountRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.932 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.933 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.933 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerCategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.934 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerImageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.934 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.FlowerListingRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.935 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.MediaFileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.935 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.936 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.OrderSummaryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.938 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.PaymentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.939 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.TransactionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.939 26096-[           main] .RepositoryConfigurationExtensionSupport: RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.example.myflower.repository.WalletLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+ INFO- 2024-11-06 13:51:33.939 26096-[           main] .s.d.r.c.RepositoryConfigurationDelegate: RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 18 ms. Found 0 Redis repository interfaces.
+ INFO- 2024-11-06 13:51:34.383 26096-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat initialized with port 6868 (http)
+ INFO- 2024-11-06 13:51:34.391 26096-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:51:34.393 26096-[           main] o.a.c.c.StandardService                 : StandardService - Starting service [Tomcat]
+ INFO- 2024-11-06 13:51:34.393 26096-[           main] o.a.c.c.StandardEngine                  : StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+ INFO- 2024-11-06 13:51:34.448 26096-[           main] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring embedded WebApplicationContext
+ INFO- 2024-11-06 13:51:34.449 26096-[           main] w.s.c.ServletWebServerApplicationContext: ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1343 ms
+ INFO- 2024-11-06 13:51:34.582 26096-[           main] o.h.j.i.u.LogHelper                     : LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+ INFO- 2024-11-06 13:51:34.629 26096-[           main] o.h.Version                             : Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+ INFO- 2024-11-06 13:51:34.666 26096-[           main] o.h.c.i.RegionFactoryInitiator          : RegionFactoryInitiator - HHH000026: Second-level cache disabled
+ INFO- 2024-11-06 13:51:34.720 26096-[           main] o.h.e.b.i.EnversServiceImpl             : EnversServiceImpl - Envers integration enabled? : true
+ INFO- 2024-11-06 13:51:34.836 26096-[           main] o.s.o.j.p.SpringPersistenceUnitInfo     : SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+ INFO- 2024-11-06 13:51:34.859 26096-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Starting...
+ INFO- 2024-11-06 13:51:35.404 26096-[           main] c.z.h.p.HikariPool                      : HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5e9671e6
+ INFO- 2024-11-06 13:51:35.406 26096-[           main] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Start completed.
+ WARN- 2024-11-06 13:51:35.497 26096-[           main] o.h.o.deprecation                       : deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+ INFO- 2024-11-06 13:51:35.831 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Payment
+ INFO- 2024-11-06 13:51:35.833 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Account
+ INFO- 2024-11-06 13:51:35.834 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Transaction
+ INFO- 2024-11-06 13:51:35.835 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Blog
+ INFO- 2024-11-06 13:51:35.835 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.WalletLog
+ INFO- 2024-11-06 13:51:35.836 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.Feedback
+ INFO- 2024-11-06 13:51:35.836 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerImage
+ INFO- 2024-11-06 13:51:35.837 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerListing
+ INFO- 2024-11-06 13:51:35.837 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderDetail
+ INFO- 2024-11-06 13:51:35.838 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.MediaFile
+ INFO- 2024-11-06 13:51:35.838 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.OrderSummary
+ INFO- 2024-11-06 13:51:35.838 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.CartItem
+ INFO- 2024-11-06 13:51:35.838 26096-[           main] o.h.e.c.i.m.AuditMetadataGenerator      : AuditMetadataGenerator - Adding properties for entity: com.example.myflower.entity.FlowerCategory
+ERROR- 2024-11-06 13:51:36.670 26096-[           main] o.h.m.i.MetadataContext                 : MetadataContext - HHH015007: Illegal argument on static metamodel field injection : org.hibernate.envers.DefaultRevisionEntity_#class_; expected type :  org.hibernate.metamodel.model.domain.internal.EntityTypeImpl; encountered type : jakarta.persistence.metamodel.MappedSuperclassType
+ INFO- 2024-11-06 13:51:36.685 26096-[           main] o.h.e.t.j.p.i.JtaPlatformInitiator      : JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+ INFO- 2024-11-06 13:51:45.007 26096-[           main] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:51:45.741 26096-[           main] o.s.d.j.r.q.QueryEnhancerFactory        : QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+ WARN- 2024-11-06 13:51:46.555 26096-[           main] JpaBaseConfiguration$JpaWebConfiguration: JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+ INFO- 2024-11-06 13:51:46.580 26096-[           main] eAuthenticationProviderManagerConfigurer: InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+ WARN- 2024-11-06 13:51:46.581 26096-[           main] r$InitializeUserDetailsManagerConfigurer: InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+ WARN- 2024-11-06 13:51:47.119 26096-[           main] ion$DefaultTemplateResolverConfiguration: ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+ INFO- 2024-11-06 13:51:47.385 26096-[           main] o.a.c.h.Http11NioProtocol               : Http11NioProtocol - Starting ProtocolHandler ["http-nio-6868"]
+ INFO- 2024-11-06 13:51:47.392 26096-[           main] o.s.b.w.e.t.TomcatWebServer             : TomcatWebServer - Tomcat started on port 6868 (http) with context path '/api/v1'
+ INFO- 2024-11-06 13:51:47.420 26096-[           main] o.a.k.c.c.ConsumerConfig                : ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = latest
+	bootstrap.servers = [103.250.78.50:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-user-result-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = user-result-group
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+ INFO- 2024-11-06 13:51:47.452 26096-[           main] o.a.k.c.t.i.KafkaMetricsCollector       : KafkaMetricsCollector - initializing Kafka metrics collector
+ INFO- 2024-11-06 13:51:47.528 26096-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka version: 3.7.0
+ INFO- 2024-11-06 13:51:47.529 26096-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka commitId: 2ae524ed625438c5
+ INFO- 2024-11-06 13:51:47.529 26096-[           main] o.a.k.c.u.AppInfoParser                 : AppInfoParser - Kafka startTimeMs: 1730875907527
+ INFO- 2024-11-06 13:51:47.533 26096-[           main] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Subscribed to topic(s): user-request-topic
+ INFO- 2024-11-06 13:51:47.538 26096-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Starting...
+ INFO- 2024-11-06 13:51:47.539 26096-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@79cf42f2]]
+ INFO- 2024-11-06 13:51:47.540 26096-[           main] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Started.
+ INFO- 2024-11-06 13:51:47.549 26096-[           main] c.e.m.MyflowerApplication               : MyflowerApplication - Started MyflowerApplication in 14.798 seconds (process running for 15.594)
+ INFO- 2024-11-06 13:51:47.553 26096-[MessageBroker-3] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Start clear flower listing cache
+ INFO- 2024-11-06 13:51:47.553 26096-[MessageBroker-2] c.e.m.s.i.StorageServiceImpl            : StorageServiceImpl - [clearPresignedUrlCache] Start clear aws s3 presigned url
+ INFO- 2024-11-06 13:51:48.014 26096-[ntainer#0-0-C-1] o.a.k.c.Metadata                        : Metadata - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Cluster ID: o22Qh4lpR9aGA9nBcYo-Dg
+ INFO- 2024-11-06 13:51:48.015 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Discovered group coordinator 103.250.78.50:9092 (id: 2147483647 rack: null)
+ INFO- 2024-11-06 13:51:48.017 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:51:48.120 26096-[MessageBroker-3] c.e.m.s.i.FlowerListingServiceImpl      : FlowerListingServiceImpl - [clearFlowerListingCache] Finished clear cache
+ INFO- 2024-11-06 13:51:48.173 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: need to re-join with the given member-id: consumer-user-result-group-1-57017a35-9ff8-4b93-90fe-aec80aec8abe
+ INFO- 2024-11-06 13:51:48.175 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] (Re-)joining group
+ INFO- 2024-11-06 13:51:49.228 26096-[nio-6868-exec-3] o.a.c.c.C.[.[.[/api/v1]                 : [/api/v1] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:51:49.229 26096-[nio-6868-exec-3] o.s.w.s.DispatcherServlet               : DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+ INFO- 2024-11-06 13:51:49.230 26096-[nio-6868-exec-3] o.s.w.s.DispatcherServlet               : DispatcherServlet - Completed initialization in 1 ms
+ INFO- 2024-11-06 13:51:49.964 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully joined group with generation Generation{generationId=44, memberId='consumer-user-result-group-1-57017a35-9ff8-4b93-90fe-aec80aec8abe', protocol='range'}
+ INFO- 2024-11-06 13:51:50.038 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Successfully synced group in generation Generation{generationId=44, memberId='consumer-user-result-group-1-57017a35-9ff8-4b93-90fe-aec80aec8abe', protocol='range'}
+ INFO- 2024-11-06 13:51:50.041 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Notifying assignor about the new Assignment(partitions=[user-request-topic-0])
+ INFO- 2024-11-06 13:51:50.043 26096-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Adding newly assigned partitions: user-request-topic-0
+ INFO- 2024-11-06 13:51:50.151 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerUtils               : ConsumerUtils - Setting offset for partition user-request-topic-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[103.250.78.50:9092 (id: 0 rack: null)], epoch=0}}
+ INFO- 2024-11-06 13:51:50.152 26096-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions assigned: [user-request-topic-0]
+ INFO- 2024-11-06 13:52:01.127 26096-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopping...
+ INFO- 2024-11-06 13:52:01.127 26096-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@79cf42f2]]
+ INFO- 2024-11-06 13:52:01.127 26096-[ionShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler    : SimpleBrokerMessageHandler - Stopped.
+ INFO- 2024-11-06 13:52:01.129 26096-[ntainer#0-0-C-1] k.c.c.i.ConsumerRebalanceListenerInvoker: ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Revoke previously assigned partitions user-request-topic-0
+ INFO- 2024-11-06 13:52:01.129 26096-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: partitions revoked: [user-request-topic-0]
+ INFO- 2024-11-06 13:52:01.130 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Member consumer-user-result-group-1-57017a35-9ff8-4b93-90fe-aec80aec8abe sending LeaveGroup request to coordinator 103.250.78.50:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+ INFO- 2024-11-06 13:52:01.131 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:52:01.131 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:52:01.131 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.LegacyKafkaConsumer         : LegacyKafkaConsumer - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Unsubscribed all topics or patterns and assigned partitions
+ INFO- 2024-11-06 13:52:01.132 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:52:01.132 26096-[ntainer#0-0-C-1] o.a.k.c.c.i.ConsumerCoordinator         : ConsumerCoordinator - [Consumer clientId=consumer-user-result-group-1, groupId=user-result-group] Request joining group due to: consumer pro-actively leaving the group
+ INFO- 2024-11-06 13:52:01.491 26096-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics scheduler closed
+ INFO- 2024-11-06 13:52:01.492 26096-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+ INFO- 2024-11-06 13:52:01.492 26096-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+ INFO- 2024-11-06 13:52:01.492 26096-[ntainer#0-0-C-1] o.a.k.c.m.Metrics                       : Metrics - Metrics reporters closed
+ INFO- 2024-11-06 13:52:01.496 26096-[ntainer#0-0-C-1] o.a.k.c.u.AppInfoParser                 : AppInfoParser - App info kafka.consumer for consumer-user-result-group-1 unregistered
+ INFO- 2024-11-06 13:52:01.497 26096-[ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer   : KafkaMessageListenerContainer - user-result-group: Consumer stopped
+ INFO- 2024-11-06 13:52:01.695 26096-[ionShutdownHook] j.LocalContainerEntityManagerFactoryBean: LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+ INFO- 2024-11-06 13:52:01.696 26096-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown initiated...
+ INFO- 2024-11-06 13:52:01.699 26096-[ionShutdownHook] c.z.h.HikariDataSource                  : HikariDataSource - HikariPool-1 - Shutdown completed.
