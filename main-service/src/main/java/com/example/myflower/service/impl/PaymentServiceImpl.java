@@ -29,9 +29,9 @@ import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    @Value("https://blossom.isolutions.top/wallet/add-balance")
+    @Value("payos.return-url")
     private String returnUrl;
-    @Value("https://blossom.isolutions.top/wallet/add-balance")
+    @Value("payos.cancel-url")
     private String cancelUrl;
     @Autowired
     private PayOS payOS;

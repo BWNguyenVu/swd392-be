@@ -1,5 +1,6 @@
 package com.swd.notification_service.controller;
 
+import com.swd.notification_service.dto.notifications.NotificationCountResponseDTO;
 import com.swd.notification_service.dto.notifications.NotificationResponseDTO;
 import com.swd.notification_service.dto.pagination.CursorPaginationRequest;
 import com.swd.notification_service.services.NotificationService;
@@ -32,6 +33,13 @@ public class NotificationController {
                 .cursor(cursor)
                 .build();
         return ResponseEntity.ok().body(notificationService.getAllNotifications(userId, paginationRequest));
+    }
+
+    @GetMapping("/unread-count/users/{userId}")
+    public ResponseEntity<NotificationCountResponseDTO> getUnreadNotificationsByUser(
+            @PathVariable Integer userId
+    ) {
+        return ResponseEntity.ok().body(notificationService.getUnreadNotificationCount(userId));
     }
 
     @PostMapping("/users/{userId}/read-all")

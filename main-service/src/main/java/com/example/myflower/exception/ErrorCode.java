@@ -37,7 +37,7 @@ public enum ErrorCode {
     //    ORDERS | CODE: 5XXX
     ORDER_NOT_FOUND(5000, "Order not found", HttpStatus.NOT_FOUND),
     ORDER_INVALID_FUNDS(5001, "Insufficient funds: Please top up your balance to complete this transaction", HttpStatus.BAD_REQUEST),
-
+    PERMISSION_NOT_ATTEND(5002, "Permission not attend", HttpStatus.BAD_REQUEST),
     //    WALLETS | CODE: 6XXX
     PRICE_INVALID(6000, "Price must be greater than 0", HttpStatus.BAD_REQUEST),
     BALANCE_INVALID(6001, "Amount must be greater than 0 and less than the remaining balance.", HttpStatus.BAD_REQUEST),
