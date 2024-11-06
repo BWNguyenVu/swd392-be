@@ -66,7 +66,7 @@ public enum ErrorCode {
     ORDER_NOT_CANCELED_BY_BUYER( 8001,"Order can't cancel", HttpStatus.BAD_REQUEST),
     ORDER_NOT_CANCELED_BY_SELLER( 8001,"Order can't cancel", HttpStatus.BAD_REQUEST),
     ORDER_INVALID(8002, "Payment method is not supported", HttpStatus.BAD_REQUEST),
-
+    ORDER_OWNER_VALID(8003, "You is owner flower, don't buy your flower!", HttpStatus.BAD_REQUEST),
     // MEDIA FILES | 90xx
     MEDIA_FILE_NOT_FOUND(9001, "Media file not found", HttpStatus.NOT_FOUND),
     ;
