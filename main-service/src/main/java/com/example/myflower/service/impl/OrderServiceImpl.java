@@ -101,8 +101,8 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
                 throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
-            } else if (!flowerListings.get(i).getUser().getId().equals(account.getId())) {
-                throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
+            } else if (flowerListings.get(i).getUser().getId().equals(account.getId())) {
+                throw new OrderAppException(ErrorCode.ORDER_OWNER_VALID);
             }
         }
 
@@ -148,9 +148,6 @@ public class OrderServiceImpl implements OrderService {
 
     private FlowerListing findFlowerListing(Integer flowerId){
         FlowerListing flowerListing = flowerListingService.findByIdWithLock(flowerId);
-        if (flowerListing.getStockQuantity().compareTo(flowerId) < 0) {
-            throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
-        }
         return flowerListing;
     }
     @Override
