@@ -483,6 +483,9 @@ public class OrderServiceImpl implements OrderService {
                     handleBalanceRefund(orderDetail);
                 }
             }
+            default -> {
+                throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
+            }
         }
 
         OrderDetail orderResponse = orderDetailRepository.save(orderDetail.get());
