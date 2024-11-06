@@ -29,7 +29,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/by-wallet")
     public ResponseEntity<OrderResponseDTO> orderByWallet(@RequestBody CreateOrderRequestDTO order) {
         try {
@@ -51,7 +51,7 @@ public class OrderController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/by-cod")
     public ResponseEntity<OrderResponseDTO> orderByCod(@RequestBody CreateOrderRequestDTO order) {
         try {

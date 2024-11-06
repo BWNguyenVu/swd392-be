@@ -99,13 +99,13 @@ public class OrderServiceImpl implements OrderService {
         for (int i = 0; i < flowerListings.size(); i++) {
             if (flowerListings.get(i).getStockQuantity().compareTo(orderDTO.getOrderDetails().get(i).getQuantity()) < 0){
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+            } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
+                throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
             }
         }
 
         // Create order summary
-        OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
-        orderSummaryRepository.save(orderSummary);
-
+        OrderSummary orderSummary = orderSummaryRepository.save(createOrderFromDTO(orderDTO, account, totalPrice));
 
         // Create order details
         List<OrderDetail> orderDetails = createOrderDetails(orderDTO, orderSummary, account, sellerBalanceMap, flowerListings);
@@ -175,6 +175,8 @@ public class OrderServiceImpl implements OrderService {
         for (int i = 0; i < flowerListings.size(); i++) {
             if (flowerListings.get(i).getStockQuantity().compareTo(orderDTO.getOrderDetails().get(i).getQuantity()) < 0){
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
+            } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
+                throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
             }
         }
         // Create order summary
