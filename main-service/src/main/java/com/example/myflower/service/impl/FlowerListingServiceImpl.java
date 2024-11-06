@@ -128,6 +128,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 requestDTO.getSearchString(),
                 requestDTO.getCategoryIds(),
                 requestDTO.getFlowerStatus(),
+                requestDTO.getMinPrice(),
+                requestDTO.getMaxPrice(),
                 deleteStatus,
                 pageable
         );

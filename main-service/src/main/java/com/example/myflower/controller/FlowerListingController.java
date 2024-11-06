@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,11 @@ public class FlowerListingController {
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false) FlowerListingStatusEnum status,
             @RequestParam(required = false) String order,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) Boolean deleted,
-            @RequestParam(required = false) List<Integer> categoryIds)
+            @RequestParam(required = false) List<Integer> categoryIds
+    )
     {
         GetFlowerListingsRequestDTO requestDTO = GetFlowerListingsRequestDTO.builder()
                 .searchString(searchString)
@@ -45,6 +49,8 @@ public class FlowerListingController {
                 .sortBy(sortBy)
                 .flowerStatus(status)
                 .order(order)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
                 .deleteStatus(deleted)
                 .categoryIds(categoryIds)
                 .build();

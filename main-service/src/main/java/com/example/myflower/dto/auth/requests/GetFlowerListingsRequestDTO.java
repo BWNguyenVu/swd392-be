@@ -4,6 +4,7 @@ import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -17,6 +18,8 @@ public class GetFlowerListingsRequestDTO {
     private Integer pageSize;
     private String sortBy;
     private String order;
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
     private Boolean deleteStatus;
     private FlowerListingStatusEnum flowerStatus;
     private List<Integer> categoryIds;
