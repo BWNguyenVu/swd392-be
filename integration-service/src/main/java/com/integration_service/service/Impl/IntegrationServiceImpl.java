@@ -90,8 +90,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public ResponseEntity<?> getFeeShip(GHTKGetShippingFeeRequestDTO requestDTO){
         String shopToken = integrationScheduler.getShopToken();
-        ResponseEntity<?> response = ghtkServiceClient.getShippingFee(requestDTO.getAddress(), requestDTO.getProvince(), requestDTO.getDistrict(), requestDTO.getWard(), requestDTO.getPick_address(), requestDTO.getPick_province(),
+        return ghtkServiceClient.getShippingFee(requestDTO.getAddress(), requestDTO.getProvince(), requestDTO.getDistrict(), requestDTO.getWard(), requestDTO.getPick_address(), requestDTO.getPick_province(),
                 requestDTO.getPick_district(), requestDTO.getPick_ward(), requestDTO.getWeight(), requestDTO.getValue(), requestDTO.getDeliver_option(), requestDTO.getTags(), requestDTO.getTransport(), shopToken);
-        return response;
     }
 }

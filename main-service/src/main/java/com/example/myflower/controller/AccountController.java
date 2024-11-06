@@ -43,7 +43,6 @@ public class    AccountController {
         return accountService.getBalance();
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
     @GetMapping("/profile")
     public ResponseEntity<BaseResponseDTO> getProfile() {
         try {

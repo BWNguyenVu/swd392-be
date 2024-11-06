@@ -101,6 +101,8 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
                 throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
+            } else if (!flowerListings.get(i).getUser().getId().equals(account.getId())) {
+                throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
             }
         }
 
