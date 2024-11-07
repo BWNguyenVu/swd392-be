@@ -168,12 +168,13 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Override
     public List<FlowerListingResponseDTO> getFlowerListingsByUserID(Integer userId) {
         LOG.info("[getFlowerListingByUserID] Start get flower listing by userID {}", userId);
+        Boolean isDeleted = null;
         Account currentAccount = AccountUtils.getCurrentAccount();
         if (!this.isHavingFlowerPermissions(currentAccount, userId)) {
-            LOG.error("[getFlowerListingByUserID] Current user is unauthorized to access this resource");
-            throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
+            LOG.error("[getFlowerListingByUserID] Current user is not a seller or admin, proceed to get flowers by deleted false");
+            isDeleted = Boolean.FALSE;
         }
-        List<FlowerListing> result = flowerListingRepository.findByUserId(userId);
+        List<FlowerListing> result = flowerListingRepository.findByUserId(userId, isDeleted);
         List<FlowerListingResponseDTO> responseDTO = result.stream()
                 .map(flowerListingMapper::toFlowerListingResponseDTO)
                 .toList();
@@ -186,10 +187,12 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     @Transactional
     public FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account) {
         LOG.info("[createFlowerListing] Start create new flower listing with data: {}", flowerListingRequestDTO);
-        // Fetch categories by their IDs
-        List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
-        LOG.info("[createFlowerListing] Found flower categories: {}", categories);
 
+        //Validate flower expire date vs post expire date
+        if (flowerListingRequestDTO.getFlowerExpireDate()
+                .isBefore(flowerListingRequestDTO.getExpireDate())) {
+            throw new FlowerListingException(ErrorCode.FLOWER_EXPIRE_DATE_INVALID);
+        }
         //Validate images
         List<MultipartFile> imageFileList = flowerListingRequestDTO.getImages();
         boolean allImagesValid = imageFileList.stream()
@@ -197,6 +200,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         if (!allImagesValid) {
             throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
         }
+
+        // Fetch categories by their IDs
+        List<FlowerCategory> categories = flowerCategoryRepository.findByIdIn(flowerListingRequestDTO.getCategories());
+        LOG.info("[createFlowerListing] Found flower categories: {}", categories);
 
         FlowerListing flowerListing = FlowerListing
                 .builder()

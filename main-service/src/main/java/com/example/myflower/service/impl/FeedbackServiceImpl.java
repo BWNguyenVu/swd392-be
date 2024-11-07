@@ -78,7 +78,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackResponseDTO> getFeedbackBySeller(Integer sellerId) {
-        List<FlowerListing> flowerListingList = flowerListingRepository.findByUserId(sellerId);
+        List<FlowerListing> flowerListingList = flowerListingRepository.findByUserId(sellerId, Boolean.FALSE);
         List<Feedback> feedbackList = feedbackRepository
                 .findAllByFlowerIdInAndIsDeletedFalse(
                         flowerListingList.stream()

@@ -52,6 +52,7 @@ public enum ErrorCode {
     QUANTITY_INVALID(3105, "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
     NO_IMAGE_LEFT(3106, "No images left after deletion and no new images provided", HttpStatus.BAD_REQUEST),
     FLOWER_EXPIRED(3107, "Flower has been expired", HttpStatus.BAD_REQUEST),
+    FLOWER_EXPIRE_DATE_INVALID(3108, "Flower expire date must be after post expire date", HttpStatus.BAD_REQUEST),
 
     // FEEDBACKS | CODE: 35XX
     FEEDBACK_NOT_FOUND(3501, "Feedback not found", HttpStatus.NOT_FOUND),

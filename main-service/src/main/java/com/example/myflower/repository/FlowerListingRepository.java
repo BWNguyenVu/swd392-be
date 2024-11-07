@@ -54,8 +54,8 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
             "JOIN FETCH fl.user u " +
             "LEFT JOIN FETCH fl.categories fc " +
             "WHERE u.id = :userId " +
-            "AND (fc.isDeleted IS NULL OR fc.isDeleted = false)")
-    List<FlowerListing> findByUserId(@Param("userId") Integer userId);
+            "AND (:isDeleted IS NULL OR fc.isDeleted = :isDeleted)")
+    List<FlowerListing> findByUserId(@Param("userId") Integer userId, @Param("deleted") Boolean isDeleted);
 
     Integer countFlowerListingByUserIdAndStatusNotIn(Integer userId, List<FlowerListingStatusEnum> statusList);
 
