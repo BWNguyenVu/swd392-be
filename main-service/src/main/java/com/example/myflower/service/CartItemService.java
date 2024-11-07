@@ -19,4 +19,6 @@ public interface CartItemService {
     List<Object[]> getCartHistoryById(Integer cartItemId);
     Integer getCartHistoryCountByAccountId();
     Integer countCart(GetReportRequestDTO requestDTO, Integer flowerId);
+
+    void checkCartItem() throws Exception;
 }

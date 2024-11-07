@@ -10,7 +10,6 @@ import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.entity.enumType.FlowerListingStatusEnum;
 import com.example.myflower.exception.ErrorCode;
 import com.example.myflower.exception.account.AccountAppException;
-import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.repository.AuditRepository;
 import com.example.myflower.repository.CartItemRepository;
 import com.example.myflower.repository.FlowerListingRepository;
@@ -86,6 +85,12 @@ public class CartItemServiceImpl implements CartItemService {
                         HttpStatus.BAD_REQUEST);
 
             CartItem existingCartItem = cartItemRepository.findByUserAndFlower(currentAccount, existingFlowerListing);
+
+            if (existingCartItem.getQuantity() + request.getQuantity() > existingFlowerListing.getStockQuantity()) {
+                return new ResponseEntity<>(new BaseResponseDTO(
+                        ErrorCode.FLOWER_OUT_OF_STOCK.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
+                        HttpStatus.BAD_REQUEST);
+            }
 
             if (existingCartItem == null) {
                 if (request.getQuantity() < 0)
@@ -183,5 +188,15 @@ public class CartItemServiceImpl implements CartItemService {
         LocalDateTime startDate = requestDTO.getStartDate().atStartOfDay();
         LocalDateTime endDate = requestDTO.getEndDate().plusDays(1).atStartOfDay();
         return cartItemAuditRepository.countCartByTime(flowerId, startDate, endDate);
+    }
+    @Override
+    public void checkCartItem() throws Exception {
+        Account currentAccount = AccountUtils.getCurrentAccount();
+        for (CartItem cartItem : cartItemRepository.findAllByUser(currentAccount)) {
+            FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
+            if (flowerListing.getStockQuantity().equals(0)) {
+                removeFlowerFromCart(cartItem.getId());
+            }
+        }
     }
 }
