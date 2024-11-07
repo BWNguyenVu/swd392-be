@@ -42,9 +42,4 @@ public class SchedulerServiceImpl implements SchedulerService {
         viewCountMap.clear();
     }
 
-    @Scheduled(fixedRate = 60000)
-    public void clearCartItemByFlowerOutOfStock(){
-        List<FlowerListing> flowerListings = flowerListingService.findAllFlowerByStockQuantity(0);
-
-    }
 }
