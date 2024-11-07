@@ -1,5 +1,6 @@
 package com.example.myflower.service.impl;
 
+import com.example.myflower.entity.FlowerListing;
 import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.SchedulerService;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,5 +40,11 @@ public class SchedulerServiceImpl implements SchedulerService {
             }
         }
         viewCountMap.clear();
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void clearCartItemByFlowerOutOfStock(){
+        List<FlowerListing> flowerListings = flowerListingService.findAllFlowerByStockQuantity(0);
+
     }
 }

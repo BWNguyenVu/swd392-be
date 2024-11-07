@@ -5,6 +5,8 @@ import com.example.myflower.dto.cart.requests.InsertUpdateFlowerToCartRequestDTO
 import com.example.myflower.entity.CartItem;
 import com.example.myflower.service.CartItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +46,16 @@ public class CartItemController {
     @GetMapping("/history/account/count")
     public Integer getCartHistoryCountByAccountId() {
         return cartItemService.getCartHistoryCountByAccountId();
+    }
+
+    @PostMapping("/check-cart")
+    public ResponseEntity<BaseResponseDTO> checkCart() throws Exception {
+        cartItemService.checkCartItem();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponseDTO.builder()
+                        .success(true)
+                        .message("Check cart successfully")
+                        .build()
+        );
     }
 }
