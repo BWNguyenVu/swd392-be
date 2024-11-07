@@ -16,14 +16,13 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private OrderSummary orderSummary;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     private WalletLog walletLog;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

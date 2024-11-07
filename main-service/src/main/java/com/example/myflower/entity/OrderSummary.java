@@ -7,6 +7,7 @@ import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,11 +20,11 @@ public class OrderSummary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private Account user;
-    @OneToOne(fetch = FetchType.LAZY)
-    private Transaction transaction;
+    @OneToMany()
+    private List<Transaction> transactions;
     @Column(nullable = false, length = 100)
     private String buyerName;
     @Column(nullable = false, length = 50)
