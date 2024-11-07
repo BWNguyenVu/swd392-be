@@ -29,6 +29,7 @@ public class WalletLogResponseDTO {
     private PaymentMethodEnum paymentMethod;
     private PaymentResponseDTO payment;
     private BigDecimal balance;
+    private boolean isRefund;
     private WalletLogStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
