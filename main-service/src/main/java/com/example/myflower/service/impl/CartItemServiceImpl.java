@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,13 +44,21 @@ public class CartItemServiceImpl implements CartItemService {
             if (currentAccount == null) {
                 return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
             }
-
+            boolean isChange = false;
             List<CartItem> cartItems = cartItemRepository.findAllByUser(currentAccount);
             for (CartItem cartItem : cartItems) {
                 FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
                 if (flowerListing.getStockQuantity().equals(0)) {
                     removeFlowerFromCart(cartItem.getId());
+                    isChange = true;
+                } else if (flowerListing.getStockQuantity().compareTo(cartItem.getQuantity()) < 0) {
+                    cartItem.setQuantity(flowerListing.getStockQuantity());
+                    cartItemRepository.save(cartItem);
+                    isChange = true;
                 }
+            }
+            if (isChange) {
+                cartItems = cartItemRepository.findAllByUser(currentAccount);
             }
             List<CartItemResponseDTO> cartItemResponse = cartItems.stream()
                     .map(CartItemResponseDTO::new)
