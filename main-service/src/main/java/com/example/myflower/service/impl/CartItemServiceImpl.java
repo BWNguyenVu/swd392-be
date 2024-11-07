@@ -45,6 +45,12 @@ public class CartItemServiceImpl implements CartItemService {
             }
 
             List<CartItem> cartItems = cartItemRepository.findAllByUser(currentAccount);
+            for (CartItem cartItem : cartItems) {
+                FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
+                if (flowerListing.getStockQuantity().equals(0)) {
+                    removeFlowerFromCart(cartItem.getId());
+                }
+            }
             List<CartItemResponseDTO> cartItemResponse = cartItems.stream()
                     .map(CartItemResponseDTO::new)
                     .toList();
@@ -189,14 +195,5 @@ public class CartItemServiceImpl implements CartItemService {
         LocalDateTime endDate = requestDTO.getEndDate().plusDays(1).atStartOfDay();
         return cartItemAuditRepository.countCartByTime(flowerId, startDate, endDate);
     }
-    @Override
-    public void checkCartItem() throws Exception {
-        Account currentAccount = AccountUtils.getCurrentAccount();
-        for (CartItem cartItem : cartItemRepository.findAllByUser(currentAccount)) {
-            FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
-            if (flowerListing.getStockQuantity().equals(0)) {
-                removeFlowerFromCart(cartItem.getId());
-            }
-        }
-    }
+
 }

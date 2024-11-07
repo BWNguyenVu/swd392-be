@@ -20,5 +20,4 @@ public interface CartItemService {
     Integer getCartHistoryCountByAccountId();
     Integer countCart(GetReportRequestDTO requestDTO, Integer flowerId);
 
-    void checkCartItem() throws Exception;
 }
