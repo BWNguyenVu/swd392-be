@@ -91,8 +91,8 @@ public class CartItemServiceImpl implements CartItemService {
                         HttpStatus.BAD_REQUEST);
 
             CartItem existingCartItem = cartItemRepository.findByUserAndFlower(currentAccount, existingFlowerListing);
-
-            if (existingCartItem.getQuantity() + request.getQuantity() > existingFlowerListing.getStockQuantity()) {
+            Integer existingQuantityCartItem = existingCartItem == null ? 0 : existingCartItem.getQuantity();
+            if (existingQuantityCartItem + request.getQuantity() > existingFlowerListing.getStockQuantity()) {
                 return new ResponseEntity<>(new BaseResponseDTO(
                         ErrorCode.FLOWER_OUT_OF_STOCK.getMessage(), false, HttpStatus.BAD_REQUEST.value(), null),
                         HttpStatus.BAD_REQUEST);
