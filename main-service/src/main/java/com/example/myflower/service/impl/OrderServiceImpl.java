@@ -101,8 +101,8 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
                 throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
-            } else if (!flowerListings.get(i).getUser().getId().equals(account.getId())) {
-                throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
+            } else if (flowerListings.get(i).getUser().getId().equals(account.getId())) {
+                throw new OrderAppException(ErrorCode.ORDER_OWNER_VALID);
             }
         }
 
@@ -148,9 +148,6 @@ public class OrderServiceImpl implements OrderService {
 
     private FlowerListing findFlowerListing(Integer flowerId){
         FlowerListing flowerListing = flowerListingService.findByIdWithLock(flowerId);
-        if (flowerListing.getStockQuantity().compareTo(flowerId) < 0) {
-            throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
-        }
         return flowerListing;
     }
     @Override
@@ -466,30 +463,34 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
             case BUYER_CANCELED -> {
-                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING && orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
                 }
                 if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
                     handleBalanceRefund(orderDetail);
+                } else if (orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.COD)){
+                    throw new OrderAppException(ErrorCode.ORDER_COD_CANNOT_BE_CANCELLED);
                 }
             }
             case SELLER_CANCELED -> {
-                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING && orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
                 }
+                if ( orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
+                    if(account.getId().equals(orderDetail.get().getSeller().getId())){
+                        orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
+                        orderDetail.get().setCancelReason(requestDTO.getReason());
 
-                if(account.getId().equals(orderDetail.get().getSeller().getId())){
-                    orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
-                    orderDetail.get().setCancelReason(requestDTO.getReason());
-
-                    handleBalanceRefund(orderDetail);
+                        handleBalanceRefund(orderDetail);
+                    }
+                } else if (orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.COD)){
+                    throw new OrderAppException(ErrorCode.ORDER_COD_CANNOT_BE_CANCELLED);
                 }
+
             }
-            default -> {
-                throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
-            }
+            default -> throw new OrderAppException(ErrorCode.ORDER_NOT_FOUND);
         }
 
         OrderDetail orderResponse = orderDetailRepository.save(orderDetail.get());
@@ -507,7 +508,7 @@ public class OrderServiceImpl implements OrderService {
     private void handleBalanceRefund(Optional<OrderDetail> orderDetail) {
         Account accountAdmin = adminService.getAccountAdmin();
         BigDecimal refundBuyer = orderDetail.get().getPrice();
-        BigDecimal refundSeller = refundBuyer.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getBalance()));
+        BigDecimal refundSeller = refundBuyer.multiply(BigDecimal.valueOf(1).subtract(accountAdmin.getFeeService()));
         BigDecimal refundAdmin = refundBuyer.subtract(refundSeller);
         // refund buyer
         accountService.handleBalanceByOrder(orderDetail.get().getOrderSummary().getUser(), refundBuyer, WalletLogTypeEnum.ADD, WalletLogActorEnum.BUYER, orderDetail.get().getOrderSummary(), null, WalletLogStatusEnum.SUCCESS, true);
