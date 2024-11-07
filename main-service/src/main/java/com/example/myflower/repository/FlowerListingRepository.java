@@ -67,4 +67,6 @@ public interface FlowerListingRepository extends JpaRepository<FlowerListing, In
     FlowerListing findByIdWithLock(Integer id);
 
     @NotNull List<FlowerListing> findAll();
+
+    List<FlowerListing> findAllByStockQuantity(Integer stockQuantity);
 }
