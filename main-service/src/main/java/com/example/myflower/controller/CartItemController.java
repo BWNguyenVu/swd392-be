@@ -47,15 +47,4 @@ public class CartItemController {
     public Integer getCartHistoryCountByAccountId() {
         return cartItemService.getCartHistoryCountByAccountId();
     }
-
-    @PostMapping("/check-cart")
-    public ResponseEntity<BaseResponseDTO> checkCart() throws Exception {
-        cartItemService.checkCartItem();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                BaseResponseDTO.builder()
-                        .success(true)
-                        .message("Check cart successfully")
-                        .build()
-        );
-    }
 }
