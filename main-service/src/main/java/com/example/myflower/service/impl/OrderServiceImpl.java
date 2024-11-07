@@ -463,10 +463,10 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
             case BUYER_CANCELED -> {
-                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
+                if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING ) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_BUYER);
                 }
-                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId())){
+                if(account.getId().equals(orderDetail.get().getOrderSummary().getUser().getId()) && orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)){
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
                     handleBalanceRefund(orderDetail);
@@ -478,7 +478,7 @@ public class OrderServiceImpl implements OrderService {
                 if (orderDetail.get().getStatus() != OrderDetailsStatusEnum.PENDING) {
                     throw new OrderAppException(ErrorCode.ORDER_NOT_CANCELED_BY_SELLER);
                 }
-                if ( orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
+                if (orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.WALLET)) {
                     if(account.getId().equals(orderDetail.get().getSeller().getId())){
                         orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
                         orderDetail.get().setCancelReason(requestDTO.getReason());
