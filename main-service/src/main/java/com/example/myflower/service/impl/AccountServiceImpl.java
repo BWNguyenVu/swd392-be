@@ -304,14 +304,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseDTO updateStatusUser(UpdateAccountRequestDTO updateAccountRequestDTO){
+    public AccountResponseDTO updateStatusUser(UpdateAccountRequestDTO updateAccountRequestDTO, Integer userId){
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
-            throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+            throw new AuthAppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
-        account.setStatus(updateAccountRequestDTO.getStatus());
-        accountRepository.save(account);
-        return accountMapper.mapToAccountResponseDTO(account);
+        Account user = accountRepository.findById(userId)
+                .orElseThrow(() -> new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        user.setStatus(updateAccountRequestDTO.getStatus());
+        accountRepository.save(user);
+        return accountMapper.mapToAccountResponseDTO(user);
     }
 
 

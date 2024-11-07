@@ -22,6 +22,7 @@ public class WalletLogMapper {
                 .paymentMethod(walletLog.getPaymentMethod())
                 .payment(payment == null ? null : PaymentMapper.buildPaymentResponseDTO(payment))
                 .status(walletLog.getStatus())
+                .isRefund(walletLog.isRefund())
                 .createdAt(walletLog.getCreatedAt())
                 .updatedAt(walletLog.getUpdatedAt())
                 .build();

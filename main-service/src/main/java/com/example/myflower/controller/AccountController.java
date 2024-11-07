@@ -87,12 +87,12 @@ public class    AccountController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PatchMapping("/update-status-user")
-    public ResponseEntity<BaseResponseDTO> updateStatusUser(@RequestBody AccountStatusEnum status){
+    @PostMapping("/update-status-user/{userId}")
+    public ResponseEntity<BaseResponseDTO> updateStatusUser(@RequestBody UpdateAccountRequestDTO request, @PathVariable Integer userId){
         UpdateAccountRequestDTO updateAccountRequestDTO = UpdateAccountRequestDTO.builder()
-                .status(status)
+                .status(request.getStatus())
                 .build();
-        AccountResponseDTO accountResponseDTO = accountService.updateStatusUser(updateAccountRequestDTO);
+        AccountResponseDTO accountResponseDTO = accountService.updateStatusUser(updateAccountRequestDTO, userId);
         return ResponseEntity.status(HttpStatus.OK).body(BaseResponseDTO.builder()
                 .message("Update profile successful")
                 .success(true)
