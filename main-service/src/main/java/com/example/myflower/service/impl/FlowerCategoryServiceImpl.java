@@ -17,6 +17,8 @@ import com.example.myflower.utils.AccountUtils;
 import com.example.myflower.utils.ValidationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FlowerCategoryServiceImpl implements FlowerCategoryService {
+    private static final Logger LOG = LogManager.getLogger(FlowerCategoryServiceImpl.class);
     @NonNull
     private RedisCommandService redisCommandService;
 
@@ -54,6 +57,7 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
                 throw new FlowerCategoryException(ErrorCode.INVALID_IMAGE);
             }
 
+            LOG.info("[createFlowerCategory]: Start creating flower category with request data {}", requestDTO);
             //Store image at file storage
             String fileName = storageService.uploadFile(imageFile);
 
@@ -70,6 +74,7 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
             return responseDTO;
         }
         catch (IOException e) {
+            LOG.info("[createFlowerCategory]: Has exception {}", requestDTO);
             throw new FlowerCategoryException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -127,27 +132,32 @@ public class FlowerCategoryServiceImpl implements FlowerCategoryService {
                 throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
             }
 
-            MultipartFile imageFile = requestDTO.getImage();
-            if (!ValidationUtils.validateImage(imageFile)) {
-                throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
-            }
-
             FlowerCategory flowerCategory = flowerCategoryRepository.findByIdAndDeleteStatus(id, Boolean.FALSE)
                     .orElseThrow(() -> new FlowerCategoryException(ErrorCode.FLOWER_CATEGORY_NOT_FOUND));
 
 
-            //Store image at file storage
-            String fileName = storageService.uploadFile(imageFile);
+            String removedImage = null;
+            if (requestDTO.getImage() != null) {
+                removedImage = flowerCategory.getImageUrl();
+                MultipartFile imageFile = requestDTO.getImage();
+                if (!ValidationUtils.validateImage(imageFile)) {
+                    throw new FlowerListingException(ErrorCode.INVALID_IMAGE);
+                }
+                //Store image at file storage
+                String fileName = storageService.uploadFile(imageFile);
+                flowerCategory.setImageUrl(fileName);
+            }
             //Update fields
             flowerCategory.setName(requestDTO.getName());
             flowerCategory.setCategoryParent(requestDTO.getParentCategory());
-            flowerCategory.setImageUrl(fileName);
             flowerCategory.setUpdatedAt(LocalDateTime.now());
             //Save to database
             FlowerCategory result = flowerCategoryRepository.save(flowerCategory);
             FlowerCategoryResponseDTO responseDTO = flowerCategoryMapper.toCategoryResponseDTO(result);
-            //Delete old image
-            storageService.deleteFile(fileName);
+            if (removedImage != null) {
+                //Delete old image
+                storageService.deleteFile(removedImage);
+            }
             //Save to cache
             redisCommandService.setFlowerCategoryById(responseDTO);
             return responseDTO;

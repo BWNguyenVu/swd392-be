@@ -108,7 +108,11 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
             Account returnAccount = (Account) authentication.getPrincipal();
             // CALL FUNC || GENERATE TOKEN (1DAY) AND REFRESH TOKEN (7DAYS)
-            String refreshToken = jwtService.generateRefreshToken(account.getEmail());
+            String refreshToken = redisCommandService.getValidRefreshTokenByUserId(account.getId());
+            if (refreshToken == null) {
+                refreshToken = jwtService.generateRefreshToken(account.getEmail());
+                redisCommandService.storeRefreshToken(account.getId(), refreshToken);
+            }
             account.setTokens(jwtService.generateAccessToken(
                     GenerateAccessTokenRequestDTO.builder()
                             .userId(account.getId())

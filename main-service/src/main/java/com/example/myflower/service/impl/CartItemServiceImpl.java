@@ -18,6 +18,8 @@ import com.example.myflower.service.FlowerListingService;
 import com.example.myflower.service.StorageService;
 import com.example.myflower.utils.AccountUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CartItemServiceImpl implements CartItemService {
+    private static final Logger LOG = LogManager.getLogger(CartItemServiceImpl.class);
     private final CartItemRepository cartItemRepository;
     private final FlowerListingRepository flowerListingRepository;
     private final FlowerListingService flowerListingService;
     private final StorageService storageService;
     @Autowired
     private AuditRepository cartItemAuditRepository;
+    @Transactional
     @Override
     public ResponseEntity<BaseResponseDTO> getCartItemsByUser() throws Exception {
         try {
@@ -44,10 +48,12 @@ public class CartItemServiceImpl implements CartItemService {
             if (currentAccount == null) {
                 return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
             }
+            LOG.info("[getCartItemsByUser]: Getting cart item by user ID {}", currentAccount.getId());
+
             boolean isChange = false;
             List<CartItem> cartItems = cartItemRepository.findAllByUser(currentAccount);
             for (CartItem cartItem : cartItems) {
-                FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
+                FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getFlower().getId());
                 if (flowerListing.getStockQuantity().equals(0)) {
                     removeFlowerFromCart(cartItem.getId());
                     isChange = true;
@@ -69,7 +75,8 @@ public class CartItemServiceImpl implements CartItemService {
                     cartItemResponse), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(new BaseResponseDTO("e.getMessage()", false, HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error("[getCartItemsByUser]: Has error", e);
+            return new ResponseEntity<>(new BaseResponseDTO(e.getMessage(), false, HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -81,6 +88,7 @@ public class CartItemServiceImpl implements CartItemService {
             if (currentAccount == null)
                 return new ResponseEntity<>(new BaseResponseDTO(ErrorCode.NOT_LOGIN.getMessage(), false, HttpStatus.UNAUTHORIZED.value(), null), HttpStatus.UNAUTHORIZED);
 
+            LOG.info("[getCartItemsByUser]: Inserting/Updating cart item by user ID {}", currentAccount.getId());
             FlowerListing existingFlowerListing = flowerListingRepository.findById(request.getFlowerListingId())
                     .orElse(null);
 
@@ -136,12 +144,14 @@ public class CartItemServiceImpl implements CartItemService {
                 }
                 cartItemRepository.save(existingCartItem);
                 CartItemResponseDTO response = new CartItemResponseDTO(existingCartItem);
+                response.setFlowerImageUrl(flowerListingService.getFeaturedFlowerImage(response.getFlowerId()).getUrl());
 
                 return new ResponseEntity<>(new BaseResponseDTO("Ok", true, HttpStatus.OK.value(),
                         response), HttpStatus.OK);
             }
 
-        }catch (Exception e){
+        }catch (Exception e) {
+            LOG.error("[insertUpdateFlowerToCart]: Has error", e);
             return new ResponseEntity<>(new BaseResponseDTO(e.getMessage(), false, HttpStatus.INTERNAL_SERVER_ERROR.value(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

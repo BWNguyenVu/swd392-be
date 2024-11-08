@@ -50,6 +50,8 @@ public class FlowerListing {
     private FlowerListingStatusEnum status;
     @Column(name = "expire_date")
     private LocalDateTime expireDate;
+    @Column(name = "flower_expire_date")
+    private LocalDateTime flowerExpireDate;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

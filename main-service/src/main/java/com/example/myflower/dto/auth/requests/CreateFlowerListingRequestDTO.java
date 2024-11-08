@@ -37,4 +37,6 @@ public class CreateFlowerListingRequestDTO {
     private List<MultipartFile> images;
     @NotNull(message = "Expire date is required")
     private LocalDateTime expireDate;
+    @NotNull(message = "Flower's expire date is required")
+    private LocalDateTime flowerExpireDate;
 }

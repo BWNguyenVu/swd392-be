@@ -22,6 +22,7 @@ import com.example.myflower.mapper.AccountMapper;
 import com.example.myflower.repository.AccountRepository;
 import com.example.myflower.service.*;
 import com.example.myflower.utils.AccountUtils;
+import com.example.myflower.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import vn.payos.type.ItemData;
 
 import java.io.IOException;
@@ -282,6 +284,10 @@ public class AccountServiceImpl implements AccountService {
         Account account = AccountUtils.getCurrentAccount();
         if (account == null) {
             throw new AuthAppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        MultipartFile imageFile = uploadFileRequestDTO.getFile();
+        if (!ValidationUtils.validateImage(imageFile)) {
+            throw new AccountAppException(ErrorCode.INVALID_IMAGE);
         }
         String imageUrl = storageService.uploadFile(uploadFileRequestDTO.getFile());
         account.setAvatar(imageUrl);

@@ -61,12 +61,12 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public String getFileUrl(String fileName) {
-        LOG.info("[getFileUrl] Start get file url with filename={}, isUsingS3={}", fileName, isUsingS3);
         if (Boolean.TRUE.equals(isUsingS3)) {
             String cacheResult = redisCommandService.getPresignedUrl(fileName);
             if (cacheResult != null) {
                 return cacheResult;
             }
+            LOG.info("[getFileUrl] Start get file url in S3 storage with filename={}", fileName);
             String url = this.generatePresignedUrl(fileName);
             redisCommandService.storePresignedUrl(fileName, url);
             LOG.info("[getFileUrl] Completed with presigned url {}", url);
