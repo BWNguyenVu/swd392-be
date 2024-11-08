@@ -34,7 +34,7 @@ public class AddressServiceImpl implements AddressService {
         Address address = Address.builder()
                 .recipientName(requestDTO.getRecipientName())
                 .streetAddress(requestDTO.getStreetAddress())
-                .city(requestDTO.getCity())
+                .ward(requestDTO.getWard())
                 .district(requestDTO.getDistrict())
                 .province(requestDTO.getProvince())
                 .phoneNumber(requestDTO.getPhoneNumber())
@@ -83,7 +83,7 @@ public class AddressServiceImpl implements AddressService {
         }
         address.setRecipientName(requestDTO.getRecipientName());
         address.setStreetAddress(requestDTO.getStreetAddress());
-        address.setCity(requestDTO.getCity());
+        address.setWard(requestDTO.getWard());
         address.setDistrict(requestDTO.getDistrict());
         address.setProvince(requestDTO.getProvince());
         address.setPhoneNumber(requestDTO.getPhoneNumber());
