@@ -16,7 +16,7 @@ public class AddressMapper {
                 .id(address.getId())
                 .recipientName(address.getRecipientName())
                 .streetAddress(address.getStreetAddress())
-                .city(address.getCity())
+                .ward(address.getWard())
                 .district(address.getDistrict())
                 .province(address.getProvince())
                 .phoneNumber(address.getPhoneNumber())
