@@ -51,6 +51,7 @@ public class FlowerListingMapper {
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
+                .isDeleted(flowerListing.isDeleted())
                 .build();
     }
 
@@ -80,6 +81,7 @@ public class FlowerListingMapper {
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
+                .isDeleted(flowerListing.isDeleted())
                 .build();
     }
 
@@ -105,6 +107,7 @@ public class FlowerListingMapper {
                 .flowerExpireDate(cacheDTO.getFlowerExpireDate())
                 .createdAt(cacheDTO.getCreatedAt())
                 .updatedAt(cacheDTO.getUpdatedAt())
+                .isDeleted(cacheDTO.getIsDeleted())
                 .build();
     }
 
