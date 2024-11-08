@@ -37,3 +37,10 @@ spring:
       timeout: 3600
   main:
     allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+    org.springframework.kafka: DEBUG
+
