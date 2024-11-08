@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class AddressRequestDTO {
     private String recipientName;
     private String streetAddress;
-    private String city;
+    private String ward;
     private String district;
     private String province;
     private String phoneNumber;

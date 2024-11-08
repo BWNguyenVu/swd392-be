@@ -13,7 +13,7 @@ public class AddressResponseDTO {
     private Integer id;
     private String recipientName;
     private String streetAddress;
-    private String city;
+    private String ward;
     private String district;
     private String province;
     private String phoneNumber;

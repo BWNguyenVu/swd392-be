@@ -25,7 +25,7 @@ public class Address {
     private String streetAddress;
 
     @Column(nullable = false)
-    private String city;
+    private String ward;
 
     @Column(nullable = false)
     private String district;
