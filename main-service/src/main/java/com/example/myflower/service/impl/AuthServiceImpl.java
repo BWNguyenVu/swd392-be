@@ -181,6 +181,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         account.setExternalAuthType(AccountProviderEnum.LOCAL);
         account.setGender(registerRequestDTO.getAccountGenderEnum());
         account.setRole(AccountRoleEnum.USER);
+        account.setPhone(registerRequestDTO.getPhone());
         account.setAvatar(Constants.DEFAULT_USER_AVATAR);
         account.setName(registerRequestDTO.getName());
         account.setEmail(registerRequestDTO.getEmail());
