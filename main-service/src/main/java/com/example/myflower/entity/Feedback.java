@@ -29,7 +29,7 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flowerId", referencedColumnName = "id", nullable = false)
     private FlowerListing flower;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
@@ -40,4 +40,16 @@ public class Feedback {
     private LocalDateTime updatedAt;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

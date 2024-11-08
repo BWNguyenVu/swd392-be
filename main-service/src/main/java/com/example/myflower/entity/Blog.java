@@ -33,4 +33,16 @@ public class Blog {
     private LocalDateTime updatedAt;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
