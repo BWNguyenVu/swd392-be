@@ -170,7 +170,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         LOG.info("[getFlowerListingByUserID] Start get flower listing by userID {}", userId);
         Boolean isDeleted = null;
         Account currentAccount = AccountUtils.getCurrentAccount();
-        if (!this.isHavingFlowerPermissions(currentAccount, userId)) {
+        if (!AccountUtils.isAdminRole(currentAccount)) {
             LOG.error("[getFlowerListingByUserID] Current user is not a seller or admin, proceed to get flowers by deleted false");
             isDeleted = Boolean.FALSE;
         }
@@ -332,7 +332,7 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .findById(id)
                 .orElseThrow(() -> new FlowerListingException(ErrorCode.FLOWER_NOT_FOUND));
         Account currentAccount = AccountUtils.getCurrentAccount();
-        if (!this.isHavingFlowerPermissions(currentAccount, flowerListing)) {
+        if (!AccountUtils.isAdminRole(currentAccount)) {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
         flowerListing.setDeleted(Boolean.FALSE);
