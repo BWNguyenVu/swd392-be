@@ -176,8 +176,11 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
             } else if (!flowerListings.get(i).getStatus().equals(FlowerListingStatusEnum.APPROVED)) {
                 throw new OrderAppException(ErrorCode.FLOWER_NOT_APPROVED);
+            } else if (flowerListings.get(i).getUser().getId().equals(account.getId())) {
+                throw new OrderAppException(ErrorCode.ORDER_OWNER_VALID);
             }
         }
+
         // Create order summary
         OrderSummary orderSummary = createOrderFromDTO(orderDTO, account, totalPrice);
         orderSummaryRepository.save(orderSummary);
@@ -234,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
 
             Account seller = flowerListing.getUser();
             sellerBalanceMap.merge(seller, item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())), BigDecimal::add);
-            flowerListingService.updateQuantityFlowerListing(flowerListing, item.getQuantity());
+            flowerListingService.updateQuantityFlowerListing(flowerListing, item.getQuantity(), false);
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .orderSummary(orderSummary)
@@ -353,6 +356,7 @@ public class OrderServiceImpl implements OrderService {
                             .quantity(orderDetail.getQuantity())
                             .flowerListing(flowerListingMapper.toFlowerListingResponseDTO(orderDetail.getFlowerListing()))
                             .orderSummary(buildOrderResponseDTO(orderDetail.getOrderSummary()))
+                            .paymentMethod(orderDetail.getPaymentMethod())
                             .createAt(orderDetail.getCreatedAt())
                             .status(orderDetail.getStatus())
                             .build();
@@ -470,6 +474,7 @@ public class OrderServiceImpl implements OrderService {
                     orderDetail.get().setStatus(OrderDetailsStatusEnum.BUYER_CANCELED);
                     orderDetail.get().setCancelReason(requestDTO.getReason());
                     handleBalanceRefund(orderDetail);
+                    flowerListingService.updateQuantityFlowerListing(orderDetail.get().getFlowerListing(), orderDetail.get().getQuantity(), true);
                 } else if (orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.COD)){
                     throw new OrderAppException(ErrorCode.ORDER_COD_CANNOT_BE_CANCELLED);
                 }
@@ -482,7 +487,8 @@ public class OrderServiceImpl implements OrderService {
                     if(account.getId().equals(orderDetail.get().getSeller().getId())){
                         orderDetail.get().setStatus(OrderDetailsStatusEnum.SELLER_CANCELED);
                         orderDetail.get().setCancelReason(requestDTO.getReason());
-
+                        // update quantity
+                        flowerListingService.updateQuantityFlowerListing(orderDetail.get().getFlowerListing(), orderDetail.get().getQuantity(), true);
                         handleBalanceRefund(orderDetail);
                     }
                 } else if (orderDetail.get().getPaymentMethod().equals(PaymentMethodEnum.COD)){

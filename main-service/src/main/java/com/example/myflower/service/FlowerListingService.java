@@ -28,7 +28,7 @@ public interface FlowerListingService {
     Integer countProductBySeller(Integer sellerId);
     void updateViewsFlowerListing(Integer flowerListingId, Integer views);
 
-    void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity);
+    void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity, boolean isRefund );
 
     List<FileResponseDTO> getFlowerImages(Integer flowerId);
 

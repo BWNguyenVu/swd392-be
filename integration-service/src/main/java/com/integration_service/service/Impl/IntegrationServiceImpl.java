@@ -91,8 +91,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     public ResponseEntity<?> getFeeShip(GHTKGetShippingFeeRequestDTO requestDTO){
         try {
             String shopToken = integrationScheduler.getShopToken();
-            return ghtkServiceClient.getShippingFee(requestDTO.getAddress(), requestDTO.getProvince(), requestDTO.getDistrict(), requestDTO.getWard(), requestDTO.getPick_address(), requestDTO.getPick_province(),
+            ResponseEntity<?> response = ghtkServiceClient.getShippingFee(requestDTO.getAddress(), requestDTO.getProvince(), requestDTO.getDistrict(), requestDTO.getWard(), requestDTO.getPick_address(), requestDTO.getPick_province(),
                     requestDTO.getPick_district(), requestDTO.getPick_ward(), requestDTO.getWeight(), requestDTO.getValue(), requestDTO.getDeliver_option(), requestDTO.getTags(), requestDTO.getTransport(), shopToken);
+            return response;
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getLocalizedMessage());
