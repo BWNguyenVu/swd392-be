@@ -60,4 +60,16 @@ public class FlowerListing {
     private boolean isDeleted;
     @Column(name ="reject_reason")
     private String rejectReason;
+
+    @PrePersist
+    protected void onCreate() {
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

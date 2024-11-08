@@ -18,9 +18,9 @@ public class MediaFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String fileName;
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1000)
     private String caption;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -29,4 +29,10 @@ public class MediaFile {
     private LocalDateTime createdAt;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+    }
 }
