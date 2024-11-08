@@ -18,6 +18,5 @@ public class UpdateFlowerCategoryRequestDTO {
     private String name;
     @NotNull(message = "Parent category is required")
     private CategoryParentEnum parentCategory;
-    @NotNull(message = "Image is required")
     private MultipartFile image;
 }
