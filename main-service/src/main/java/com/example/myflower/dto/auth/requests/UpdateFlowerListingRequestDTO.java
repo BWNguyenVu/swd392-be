@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,10 @@ public class UpdateFlowerListingRequestDTO {
     private Integer stockQuantity;
     @NotBlank(message = "Address is required")
     private String address;
+    @NotNull(message = "Expire date is required")
+    private LocalDateTime expireDate;
+    @NotNull(message = "Flower's expire date is required")
+    private LocalDateTime flowerExpireDate;
     private List<Integer> categories;
     private List<MultipartFile> newImages;
     private List<Integer> deletedImages = new ArrayList<>();

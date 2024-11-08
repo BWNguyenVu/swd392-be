@@ -25,6 +25,7 @@ public class FlowerListingCacheDTO {
     private List<Integer> images;
     private FlowerListingStatusEnum status;
     private LocalDateTime expireDate;
+    private LocalDateTime flowerExpireDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer views;
