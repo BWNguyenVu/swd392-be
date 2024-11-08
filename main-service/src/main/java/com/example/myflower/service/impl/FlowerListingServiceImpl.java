@@ -362,12 +362,16 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     }
 
     @Override
-    public void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity) {
+    public void updateQuantityFlowerListing(FlowerListing flowerListing, Integer quantity, boolean isRefund ) {
         LOG.info("[updateQuantityFlowerListing] Updating flower ID {} with quantity {}", flowerListing.getId(), quantity);
         if (flowerListing.getStockQuantity().compareTo(quantity) < 0) {
             throw new OrderAppException(ErrorCode.FLOWER_OUT_OF_STOCK);
         }
-        flowerListing.setStockQuantity(flowerListing.getStockQuantity() - quantity);
+        if (isRefund) {
+            flowerListing.setStockQuantity(flowerListing.getStockQuantity() + quantity);
+        } else {
+            flowerListing.setStockQuantity(flowerListing.getStockQuantity() - quantity);
+        }
         flowerListingRepository.save(flowerListing);
         redisCommandService.updateFlowerQuantity(flowerListing.getId(), flowerListing.getStockQuantity());
     }
