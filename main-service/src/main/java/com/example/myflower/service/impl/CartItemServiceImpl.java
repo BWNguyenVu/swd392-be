@@ -40,6 +40,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final StorageService storageService;
     @Autowired
     private AuditRepository cartItemAuditRepository;
+    @Transactional
     @Override
     public ResponseEntity<BaseResponseDTO> getCartItemsByUser() throws Exception {
         try {
@@ -52,7 +53,7 @@ public class CartItemServiceImpl implements CartItemService {
             boolean isChange = false;
             List<CartItem> cartItems = cartItemRepository.findAllByUser(currentAccount);
             for (CartItem cartItem : cartItems) {
-                FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getId());
+                FlowerListing flowerListing = flowerListingService.findByIdWithLock(cartItem.getFlower().getId());
                 if (flowerListing.getStockQuantity().equals(0)) {
                     removeFlowerFromCart(cartItem.getId());
                     isChange = true;
