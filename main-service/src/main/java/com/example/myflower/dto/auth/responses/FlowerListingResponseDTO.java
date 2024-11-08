@@ -31,6 +31,7 @@ public class FlowerListingResponseDTO implements Serializable {
     private List<FileResponseDTO> images;
     private FlowerListingStatusEnum status;
     private LocalDateTime expireDate;
+    private LocalDateTime flowerExpireDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer views;

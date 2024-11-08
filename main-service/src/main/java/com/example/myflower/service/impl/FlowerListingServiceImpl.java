@@ -252,6 +252,11 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
 
+        //Validate flower expire date vs post expire date
+        if (flowerListingRequestDTO.getFlowerExpireDate()
+                .isBefore(flowerListingRequestDTO.getExpireDate())) {
+            throw new FlowerListingException(ErrorCode.FLOWER_EXPIRE_DATE_INVALID);
+        }
         List<MultipartFile> imageFileList = FileUtils.filterEmptyFiles(flowerListingRequestDTO.getNewImages());
         for (MultipartFile imageFile : imageFileList) {
             if (!ValidationUtils.validateImage(imageFile)) {

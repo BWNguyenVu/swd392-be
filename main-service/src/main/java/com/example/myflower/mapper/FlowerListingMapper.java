@@ -47,6 +47,7 @@ public class FlowerListingMapper {
                 .images(images)
                 .status(flowerListing.getStatus())
                 .expireDate(flowerListing.getExpireDate())
+                .flowerExpireDate(flowerListing.getFlowerExpireDate())
                 .views(flowerListing.getViews())
                 .createdAt(flowerListing.getCreatedAt())
                 .updatedAt(flowerListing.getUpdatedAt())
@@ -61,6 +62,8 @@ public class FlowerListingMapper {
                 .price(flowerListing.getPrice())
                 .userId(flowerListing.getUser().getId())
                 .stockQuantity(flowerListing.getStockQuantity())
+                .expireDate(flowerListing.getExpireDate())
+                .flowerExpireDate(flowerListing.getFlowerExpireDate())
                 .address(flowerListing.getAddress())
                 .categories(
                         flowerListing.getCategories().stream()
@@ -98,6 +101,8 @@ public class FlowerListingMapper {
                 .images(fileResponseDTO)
                 .status(cacheDTO.getStatus())
                 .views(cacheDTO.getViews())
+                .expireDate(cacheDTO.getExpireDate())
+                .flowerExpireDate(cacheDTO.getFlowerExpireDate())
                 .createdAt(cacheDTO.getCreatedAt())
                 .updatedAt(cacheDTO.getUpdatedAt())
                 .build();
