@@ -280,8 +280,10 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         List<FlowerImage> remainingImages = flowerImageList.stream()
                 .filter(image -> !flowerListingRequestDTO.getDeletedImages().contains(image.getMediaFile().getId()))
                 .toList();
-        List<MediaFile> deletedImages = flowerImageList.stream()
+        List<FlowerImage> deletedImages = flowerImageList.stream()
                 .filter(image -> !remainingImages.contains(image))
+                .toList();
+        List<MediaFile> deletedFiles = deletedImages.stream()
                 .map(FlowerImage::getMediaFile)
                 .toList();
         // Check if the remainingImages list is empty and the newImages list is also empty
@@ -312,7 +314,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         FlowerListing result = flowerListingRepository.save(flowerListing);
 
         //Delete all selected images in storage
-        fileMediaService.deleteMultipleFiles(deletedImages);
+        flowerImageRepository.deleteAll(deletedImages);
+        fileMediaService.deleteMultipleFiles(deletedFiles);
 
         FlowerListingCacheDTO cacheDTO = flowerListingMapper.toCacheDTO(result);
         redisCommandService.storeFlower(cacheDTO);
