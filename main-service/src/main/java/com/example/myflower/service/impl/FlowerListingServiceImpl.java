@@ -294,6 +294,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
         flowerListing.setAddress(flowerListingRequestDTO.getAddress());
         flowerListing.setPrice(flowerListingRequestDTO.getPrice());
         flowerListing.setStockQuantity(flowerListingRequestDTO.getStockQuantity());
+        flowerListing.setFlowerExpireDate(flowerListingRequestDTO.getFlowerExpireDate());
+        flowerListing.setExpireDate(flowerListingRequestDTO.getExpireDate());
         flowerListing.setUpdatedAt(LocalDateTime.now());
         flowerListing.setStatus(FlowerListingStatusEnum.PENDING);
 
