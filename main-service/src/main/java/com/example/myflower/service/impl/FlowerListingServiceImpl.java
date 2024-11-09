@@ -188,6 +188,11 @@ public class FlowerListingServiceImpl implements FlowerListingService {
     public FlowerListingResponseDTO createFlowerListing(CreateFlowerListingRequestDTO flowerListingRequestDTO, Account account) {
         LOG.info("[createFlowerListing] Start create new flower listing with data: {}", flowerListingRequestDTO);
 
+        // Validate that the expireDate is after today
+        if (!flowerListingRequestDTO.getExpireDate().isAfter(LocalDateTime.now())) {
+            throw new FlowerListingException(ErrorCode.EXPIRE_DATE_INVALID);
+        }
+
         //Validate flower expire date vs post expire date
         if (flowerListingRequestDTO.getFlowerExpireDate()
                 .isBefore(flowerListingRequestDTO.getExpireDate())) {
@@ -214,6 +219,8 @@ public class FlowerListingServiceImpl implements FlowerListingService {
                 .price(flowerListingRequestDTO.getPrice())
                 .stockQuantity(flowerListingRequestDTO.getStockQuantity())
                 .categories(new HashSet<>(categories))
+                .flowerExpireDate(flowerListingRequestDTO.getFlowerExpireDate())
+                .expireDate(flowerListingRequestDTO.getExpireDate())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .status(FlowerListingStatusEnum.PENDING)
@@ -252,11 +259,16 @@ public class FlowerListingServiceImpl implements FlowerListingService {
             throw new FlowerListingException(ErrorCode.UNAUTHORIZED);
         }
 
+        // Validate that the expireDate is after today
+        if (!flowerListingRequestDTO.getExpireDate().isAfter(LocalDateTime.now())) {
+            throw new FlowerListingException(ErrorCode.EXPIRE_DATE_INVALID);
+        }
         //Validate flower expire date vs post expire date
         if (flowerListingRequestDTO.getFlowerExpireDate()
                 .isBefore(flowerListingRequestDTO.getExpireDate())) {
             throw new FlowerListingException(ErrorCode.FLOWER_EXPIRE_DATE_INVALID);
         }
+
         List<MultipartFile> imageFileList = FileUtils.filterEmptyFiles(flowerListingRequestDTO.getNewImages());
         for (MultipartFile imageFile : imageFileList) {
             if (!ValidationUtils.validateImage(imageFile)) {
