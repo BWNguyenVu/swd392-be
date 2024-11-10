@@ -1,1 +1,1 @@
-Flower Reselling Platform (In progress)
+Flower Reselling Platform (Closed)
